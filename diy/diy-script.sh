@@ -1,5 +1,25 @@
 #!/bin/bash
 
+# kernel - 6.12
+curl -s https://raw.githubusercontent.com/oppen321/ZeroWrt/refs/heads/kernel-6.12/tags/kernel-6.12 > include/kernel-6.12
+
+# x86_64 - target 6.12
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/config-6.12 > target/linux/x86/config-6.12
+mkdir -p target/linux/x86/patches-6.12
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/patches-6.12/100-fix_cs5535_clockevt.patch > target/linux/x86/patches-6.12/100-fix_cs5535_clockevt.patch
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/patches-6.12/103-pcengines_apu6_platform.patch > target/linux/x86/patches-6.12/103-pcengines_apu6_platform.patch
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/patches-6.12/992-enable-intel-guc.patch > target/linux/x86/patches-6.12/992-enable-intel-guc.patch
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/patches-6.12/993-bnx2x_warpcore_8727_2_5g_sgmii_txfault.patch > target/linux/x86/patches-6.12/993-bnx2x_warpcore_8727_2_5g_sgmii_txfault.patch
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/patches-6.12/996-intel-igc-i225-i226-disable-eee.patch > target/linux/x86/patches-6.12/996-intel-igc-i225-i226-disable-eee.patch
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/patches-6.12/999-Add-xtsproxy-Crypto-API-module.patch > target/linux/x86/patches-6.12/999-Add-xtsproxy-Crypto-API-module.patch
+
+# x86_64 - target
+sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
+sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/base-files/etc/board.d/01_leds > target/linux/x86/base-files/etc/board.d/01_leds
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/base-files/etc/board.d/02_network > target/linux/x86/base-files/etc/board.d/02_network
+
 # 修改默认IP
 sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
 
