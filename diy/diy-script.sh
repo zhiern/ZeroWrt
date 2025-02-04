@@ -5,6 +5,7 @@ curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/ta
 curl -s https://raw.githubusercontent.com/oppen321/ZeroWrt/refs/heads/kernel-6.12/tags/kernel-6.12 > include/kernel-6.12
 
 # x86_64 - target 6.12
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/generic/config-6.12 > target/linux/x86/generic/config-6.12
 curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/64/config-6.12 > target/linux/x86/64/config-6.12
 curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/config-6.12 > target/linux/x86/config-6.12
 mkdir -p target/linux/x86/patches-6.12
