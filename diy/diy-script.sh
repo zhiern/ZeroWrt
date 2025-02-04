@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # kernel - 6.12
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/Makefile > target/linux/x86/Makefile
 curl -s https://raw.githubusercontent.com/oppen321/ZeroWrt/refs/heads/kernel-6.12/tags/kernel-6.12 > include/kernel-6.12
 
 # x86_64 - target 6.12
@@ -16,7 +17,7 @@ curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/ta
 
 # x86_64 - target
 sed -ri "s/(KERNEL_PATCHVER:=)[^\"]*/\16.12/" target/linux/x86/Makefile
-sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefile
+sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.12' target/linux/x86/Makefile
 curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/base-files/etc/board.d/01_leds > target/linux/x86/base-files/etc/board.d/01_leds
 curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/base-files/etc/board.d/02_network > target/linux/x86/base-files/etc/board.d/02_network
 
