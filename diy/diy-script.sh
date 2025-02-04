@@ -20,6 +20,12 @@ sed -i '/KERNEL_PATCHVER/a\KERNEL_TESTING_PATCHVER:=6.6' target/linux/x86/Makefi
 curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/base-files/etc/board.d/01_leds > target/linux/x86/base-files/etc/board.d/01_leds
 curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/base-files/etc/board.d/02_network > target/linux/x86/base-files/etc/board.d/02_network
 
+# legacy
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/legacy/config-6.12 > target/linux/x86/legacy/config-6.12
+
+# geode
+curl -s https://raw.githubusercontent.com/coolsnowwolf/lede/refs/heads/master/target/linux/x86/geode/config-6.12 > target/linux/x86/geode/config-6.12
+
 # 修改默认IP
 sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/files/bin/config_generate
 
