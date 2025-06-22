@@ -1,3 +1,11 @@
+#=================================================
+# https://github.com/zhiern/OpenWRT
+# Description: Build OpenWrt using GitHub Actions
+# Lisence: MIT
+# Author: P3TERX
+# Blog: https://p3terx.com
+#=================================================
+
 name: 🔄 检查更新
 
 on:
