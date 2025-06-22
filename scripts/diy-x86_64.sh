@@ -380,7 +380,7 @@ sed -i 's/syslog/none/g' feeds/packages/admin/netdata/files/netdata.conf
 git clone https://$github/sbwml/luci-app-mosdns -b v5 package/new/mosdns
 
 # OpenAppFilter
-git clone https://github.com/destan19/OpenAppFilter package/new/OpenAppFilter
+git clone https://$github/destan19/OpenAppFilter package/new/OpenAppFilter
 
 # adguardhome
 git clone $gitea/luci-app-adguardhome package/new/luci-app-adguardhome
@@ -390,14 +390,14 @@ sed -i 's/services/network/g' feeds/luci/applications/luci-app-nlbwmon/root/usr/
 sed -i 's/services/network/g' feeds/luci/applications/luci-app-nlbwmon/htdocs/luci-static/resources/view/nlbw/config.js
 
 # mentohust
-git clone https://github.com/sbwml/luci-app-mentohust package/new/mentohust
+git clone https://$github/sbwml/luci-app-mentohust package/new/mentohust
 
 # argon
-git clone https://github.com/jerrykuku/luci-theme-argon.git package/new/luci-theme-argon
+git clone https://$github/jerrykuku/luci-theme-argon.git package/new/luci-theme-argon
 curl -s $mirror/Customize/argon/bg1.jpg > package/new/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 
 # argon-config
-git clone https://github.com/jerrykuku/luci-app-argon-config.git package/new/luci-app-argon-config
+git clone https://$github/jerrykuku/luci-app-argon-config.git package/new/luci-app-argon-config
 sed -i "s/bing/none/g" package/new/luci-app-argon-config/root/etc/config/argon
 
 # 主题设置
@@ -407,7 +407,7 @@ sed -i 's|<a class="luci-link" href="https://github.com/openwrt/luci" target="_b
 sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">ArgonTheme <%# vPKG_VERSION %></a>|<a href="https://github.com/zhiern/OpenWRT" target="_blank">ZeroWrt</a> |g' package/new/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
 
 # lucky
-git clone https://github.com/gdy666/luci-app-lucky.git package/new/lucky
+git clone https://$github/gdy666/luci-app-lucky.git package/new/lucky
 
 # pkgs
 git clone $gitea/openwrt-package package/new/openwrt-package
@@ -440,7 +440,7 @@ exit 0
 '> ./package/base-files/files/etc/rc.local
 
 # 默认设置
-git clone --depth=1 -b openwrt-24.10 https://github.com/zhiern/default-settings package/new/default-settings
+git clone --depth=1 -b openwrt-24.10 https://$github/zhiern/default-settings package/new/default-settings
 
 # distfeeds.conf
 mkdir -p files/etc/opkg
