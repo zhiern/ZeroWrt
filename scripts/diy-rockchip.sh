@@ -194,16 +194,16 @@ curl -s $mirror/openwrt/patch/firewall4/nftables/0002-nftables-add-brcm-fullcone
 curl -s $mirror/openwrt/patch/firewall4/nftables/0003-drop-rej-file.patch > package/network/utils/nftables/patches/0003-drop-rej-file.patch
 
 # FullCone module
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/nft-fullcone package/new/nft-fullcone
+git clone $gitea/nft-fullcone package/new/nft-fullcone
 
 # IPv6 NAT
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/package_new_nat6 package/new/nat6
+git clone $gitea/package_new_nat6 package/new/nat6
 
 # natflow
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/package_new_natflow package/new/natflow
+git clone $gitea/package_new_natflow package/new/natflow
 
 # sfe
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/shortcut-fe package/new/shortcut-fe
+git clone $gitea/shortcut-fe package/new/shortcut-fe
 
 # Patch Luci add nft_fullcone/bcm_fullcone & shortcut-fe & natflow & ipv6-nat & custom nft command option
 pushd feeds/luci
@@ -231,16 +231,16 @@ popd
 curl -s $mirror/openwrt/patch/kernel-6.6/igc-fix/996-intel-igc-i225-i226-disable-eee.patch > target/linux/x86/patches-6.6/996-intel-igc-i225-i226-disable-eee.patch
 
 # OTHERS
-curl -s $mirroropenwrt/patch/other/691-net-ipv6-fix-UDPv6-GSO-segmentation-with-NAT.patch > target/linux/generic/pending-6.6/691-net-ipv6-fix-UDPv6-GSO-segmentation-with-NAT.patch
+curl -s $mirror/openwrt/patch/other/691-net-ipv6-fix-UDPv6-GSO-segmentation-with-NAT.patch > target/linux/generic/pending-6.6/691-net-ipv6-fix-UDPv6-GSO-segmentation-with-NAT.patch
 
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
+git clone $gitea/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
     rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
-    git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/packages_utils_docker feeds/packages/utils/docker
-    git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/packages_utils_dockerd feeds/packages/utils/dockerd
-    git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/packages_utils_containerd feeds/packages/utils/containerd
-    git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/packages_utils_runc feeds/packages/utils/runc
+    git clone $gitea/packages_utils_docker feeds/packages/utils/docker
+    git clone $gitea/packages_utils_dockerd feeds/packages/utils/dockerd
+    git clone $gitea/packages_utils_containerd feeds/packages/utils/containerd
+    git clone $gitea/packages_utils_runc feeds/packages/utils/runc
     sed -i '/cgroupfs-mount/d' feeds/packages/utils/dockerd/Config.in
 sed -i '/sysctl.d/d' feeds/packages/utils/dockerd/Makefile
 pushd feeds/packages
@@ -256,8 +256,8 @@ sed -i 's/procd_set_param stderr 1/procd_set_param stderr 0/g' feeds/packages/ut
 
 # UPnP
 rm -rf feeds/{packages/net/miniupnpd,luci/applications/luci-app-upnp}
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/miniupnpd feeds/packages/net/miniupnpd -b v2.3.7
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/luci-app-upnp feeds/luci/applications/luci-app-upnp -b master
+git clone $gitea/miniupnpd feeds/packages/net/miniupnpd -b v2.3.7
+git clone $gitea/luci-app-upnp feeds/luci/applications/luci-app-upnp -b master
 
 # profile
 sed -i 's#\\u@\\h:\\w\\\$#\\[\\e[32;1m\\][\\u@\\h\\[\\e[0m\\] \\[\\033[01;34m\\]\\W\\[\\033[00m\\]\\[\\e[32;1m\\]]\\[\\e[0m\\]\\\$#g' package/base-files/files/etc/profile
@@ -329,7 +329,7 @@ sed -i "/BUILD_ID/aBUILD_DATE=\"$CURRENT_DATE\"" package/base-files/files/usr/li
 
 # golang 1.24
 rm -rf feeds/packages/lang/golang
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/packages_lang_golang -b 24.x feeds/packages/lang/golang
+git clone $gitea/packages_lang_golang -b 24.x feeds/packages/lang/golang
 
 # luci-app-webdav
 git clone https://$github/sbwml/luci-app-webdav package/new/luci-app-webdav
@@ -385,7 +385,7 @@ git clone https://$github/sbwml/feeds_packages_net_aria2 -b 22.03 feeds/packages
 
 # SSRP & Passwall
 rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box}
-git clone -b openwrt-24.10 https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/openwrt_helloworld package/new/helloworld
+git clone -b openwrt-24.10 $gitea/openwrt_helloworld package/new/helloworld
 
 # alist
 rm -rf feeds/packages/net/alist feeds/luci/applications/luci-app-alist
@@ -402,27 +402,27 @@ git clone https://$github/sbwml/luci-app-mosdns -b v5 package/new/mosdns
 
 # luci-app-sqm
 rm -rf feeds/luci/applications/luci-app-sqm
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/luci-app-sqm feeds/luci/applications/luci-app-sqm
+git clone $gitea/luci-app-sqm feeds/luci/applications/luci-app-sqm
 
 # OpenAppFilter
-git clone https://github.com/destan19/OpenAppFilter package/new/OpenAppFilter
+git clone https://$github/destan19/OpenAppFilter package/new/OpenAppFilter
 
 # adguardhome
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/luci-app-adguardhome package/new/luci-app-adguardhome
+git clone $gitea/luci-app-adguardhome package/new/luci-app-adguardhome
 
 # nlbwmon
 sed -i 's/services/network/g' feeds/luci/applications/luci-app-nlbwmon/root/usr/share/luci/menu.d/luci-app-nlbwmon.json
 sed -i 's/services/network/g' feeds/luci/applications/luci-app-nlbwmon/htdocs/luci-static/resources/view/nlbw/config.js
 
 # mentohust
-git clone https://github.com/sbwml/luci-app-mentohust package/new/mentohust
+git clone https://$github/sbwml/luci-app-mentohust package/new/mentohust
 
 # argon
 git clone https://github.com/jerrykuku/luci-theme-argon.git package/new/luci-theme-argon
 curl -s $mirror/Customize/argon/bg1.jpg > package/new/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 
 # argon-config
-git clone https://github.com/jerrykuku/luci-app-argon-config.git package/new/luci-app-argon-config
+git clone https://$github/jerrykuku/luci-app-argon-config.git package/new/luci-app-argon-config
 sed -i "s/bing/none/g" package/new/luci-app-argon-config/root/etc/config/argon
 
 # 主题设置Add commentMore actions
@@ -432,20 +432,20 @@ sed -i 's|<a class="luci-link" href="https://github.com/openwrt/luci" target="_b
 sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">ArgonTheme <%# vPKG_VERSION %></a>|<a href="https://github.com/zhiern/OpenWRT" target="_blank">ZeroWrt</a> |g' package/new/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
 
 # lucky
-git clone https://github.com/gdy666/luci-app-lucky.git package/new/lucky
+git clone https://$github/gdy666/luci-app-lucky.git package/new/lucky
 
 # pkgs
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/openwrt-package package/new/openwrt-package
+git clone $gitea/openwrt-package package/new/openwrt-package
 
 # autocore-arm
-git clone https://$GITEA_USERTNAME:$GITEA_PASSWORD@$gitea/autocore-arm package/new/autocore-arm
+git clone $gitea/autocore-arm package/new/autocore-arm
 
 # 使用特定的优化
 sed -i 's,-mcpu=generic,-march=armv8-a+crc+crypto,g' include/target.mk
 sed -i 's,kmod-r8168,kmod-r8169,g' target/linux/rockchip/image/armv8.mk
 
 # 默认设置
-git clone --depth=1 -b aarch64 https://github.com/oppen321/default-settings package/new/default-settings
+git clone --depth=1 -b aarch64 https://$github/zhiern/default-settings package/new/default-settings
 
 # distfeeds.conf
 mkdir -p files/etc/opkg
