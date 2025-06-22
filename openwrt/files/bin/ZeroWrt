@@ -1,0 +1,2107 @@
+#!/bin/bash
+
+# 初始化语言变量
+LANG_CHOICE=""
+AGREED="no"
+
+# 彩色输出函数
+color_output() {
+    echo -e "$1"
+}
+
+# 显示语言选择菜单
+select_language() {
+    clear
+    color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+    color_output "\e[36m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\e[0m"
+    color_output "\e[36m┃                                       ┃\e[0m"
+    color_output "\e[36m┃        \e[33m请选择语言/Select Language\e[36m     ┃\e[0m"
+    color_output "\e[36m┃                                       ┃\e[0m"
+    color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+    color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+    color_output ""
+    color_output "1. 中文"
+    color_output "2. English"
+    color_output "0. 退出/Exit"  
+    color_output ""
+    color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+    
+    while [[ -z "$LANG_CHOICE" ]]; do
+        read -p "$(color_output "\e[33m请选择语言 [0-2]: \e[0m")" LANG_CHOICE
+        case "$LANG_CHOICE" in
+            1) LANG_CHOICE="zh";;
+            2) LANG_CHOICE="en";;
+            0) exit 0 ;;
+            *) 
+                color_output "\e[31m无效选择，请重新输入\e[0m"
+                LANG_CHOICE=""
+                ;;
+        esac
+    done
+}
+
+# 显示用户协议
+show_agreement() {
+    clear
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+        color_output "\e[36m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\e[0m"
+        color_output "\e[36m┃        \e[33mZeroWrt 配置工具用户协议\e[36m       ┃\e[0m"
+        color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+        color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+        color_output ""
+        color_output "1. 本工具仅用于学习和研究目的，不得用于非法用途。"
+        color_output "2. 使用本工具可能会修改您的路由器配置，请谨慎操作。"
+        color_output "3. 作者不对使用本工具造成的任何损失负责。"
+        color_output "4. 继续使用表示您同意以上条款。"
+        color_output ""
+        color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+        
+        while [[ "$AGREED" != "yes" ]]; do
+            read -p "$(color_output "\e[33m您是否同意上述条款？(yes/no): \e[0m")" AGREED
+            case "$AGREED" in
+                yes|YES|y|Y) 
+                    AGREED="yes"
+                    ;;
+                no|NO|n|N)
+                    color_output "\e[31m您必须同意条款才能使用本工具。\e[0m"
+                    exit 1
+                    ;;
+                *)
+                    color_output "\e[31m请输入yes或no\e[0m"
+                    ;;
+            esac
+        done
+    else
+        color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+        color_output "\e[36m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\e[0m"
+        color_output "\e[36m┃   \e[33mZeroWrt Config Tool User Agreement\e[36m  ┃\e[0m"
+        color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+        color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+        color_output ""
+        color_output "1. This tool is for learning and research only, not for illegal use."
+        color_output "2. Using this tool may modify your router settings, use with caution."
+        color_output "3. The author is not responsible for any damage caused by this tool."
+        color_output "4. Continuing to use means you agree to these terms."
+        color_output ""
+        color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+        
+        while [[ "$AGREED" != "yes" ]]; do
+            read -p "$(color_output "\e[33mDo you agree to these terms? (yes/no): \e[0m")" AGREED
+            case "$AGREED" in
+                yes|YES|y|Y) 
+                    AGREED="yes"
+                    ;;
+                no|NO|n|N)
+                    color_output "\e[31mYou must agree to the terms to use this tool.\e[0m"
+                    exit 1
+                    ;;
+                *)
+                    color_output "\e[31mPlease enter yes or no\e[0m"
+                    ;;
+            esac
+        done
+    fi
+}
+
+# 打印脚本头部，增加美观
+print_header() {
+    clear
+    # 获取系统信息
+    local model=$(cat /tmp/sysinfo/model 2>/dev/null || echo "未知设备")
+    # 使用更可靠的方式获取 CPU 使用率
+    local cpu_usage=$(grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {printf "%.1f%%", usage}')
+    local mem_total=$(free | grep Mem | awk '{print $2}')
+    local mem_used=$(free | grep Mem | awk '{print $3}')
+    local mem_usage=$((mem_used * 100 / mem_total))
+
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+        color_output "\e[36m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\e[0m"
+        color_output "\e[36m┃                                       ┃\e[0m"
+        color_output "\e[36m┃        \e[33m欢迎使用 ZeroWrt 配置工具\e[36m      ┃\e[0m"
+        color_output "\e[36m┃                                       ┃\e[0m"
+        color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+        color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+        color_output ""
+        color_output "\e[34m系统信息\e[0m"
+        color_output "----------------------------------------"
+        color_output "  设备型号: $model"
+        color_output "  CPU 占用: $cpu_usage"
+        color_output "  内存占用: ${mem_usage}%"
+        color_output "----------------------------------------"
+        color_output "\e[32m说明：本工具用于配置 ZeroWrt      \e[0m"
+        color_output "\e[32m博客：https://www.kejizero.online\e[0m"
+        color_output "----------------------------------------"
+    else
+        color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+        color_output "\e[36m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\e[0m"
+        color_output "\e[36m┃                                       ┃\e[0m"
+        color_output "\e[36m┃      \e[33mWelcome to ZeroWrt Config Tool\e[36m   ┃\e[0m"
+        color_output "\e[36m┃                                       ┃\e[0m"
+        color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+        color_output "\e[36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\e[0m"
+        color_output ""
+        color_output "\e[34mSystem Information\e[0m"
+        color_output "----------------------------------------"
+        color_output "  Device Model: $model"
+        color_output "  CPU Usage: $cpu_usage"
+        color_output "  Memory Usage: ${mem_usage}%"
+        color_output "----------------------------------------"
+        color_output "\e[32mDescription: This tool configures ZeroWrt\e[0m"
+        color_output "\e[32mBlog: https://www.kejizero.online\e[0m"
+        color_output "----------------------------------------"
+    fi
+    echo ""
+}
+
+# 显示菜单
+show_menu() {
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[36m┏━━━━━━━━━━━━━━━ 功能菜单 ━━━━━━━━━━━━━━━┓\e[0m"
+        color_output "\e[36m┃                                        ┃\e[0m"
+        color_output "\e[36m┃\e[0m  1. 更改 LAN 口 IP 地址                \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  2. 更改管理员密码                     \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  3. 切换默认主题                       \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  4. 恢复出厂设置                       \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  5. 一键换源                           \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  6. 一键部署                           \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  7. 一键加载驱动                       \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  8. IPv6 配置向导                      \e[36m┃\e[0m"                  
+        color_output "\e[36m┃\e[0m  9. 网络模式配置向导                   \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  10. iStoreOS 风格化                   \e[36m┃\e[0m" 
+        color_output "\e[36m┃\e[0m  11. 系统信息查询                      \e[36m┃\e[0m"           
+        color_output "\e[36m┃\e[0m  12. 检测更新                          \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  0. 退出                               \e[36m┃\e[0m"
+        color_output "\e[36m┃                                        ┃\e[0m"
+        color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+        read -p "$(color_output "\e[33m请输入您的选择 [0-10]: \e[0m")" choice
+    else
+        color_output "\e[36m┏━━━━━━━━━━━━━━━ MENU ━━━━━━━━━━━━━━━━━━┓\e[0m"
+        color_output "\e[36m┃                                       ┃\e[0m"
+        color_output "\e[36m┃\e[0m  1. Change LAN IP Address             \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  2. Change Admin Password             \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  3. Switch Default Theme              \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  4. Factory Reset                     \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  5. Change Software Sources           \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  6. One-click Deployment              \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  7. One-click loading of     drivers  \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  8. IPv6-Wizard                       \e[36m┃\e[0m"         
+        color_output "\e[36m┃\e[0m  9. network_mode_wizard               \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  10. iStoreOS Styling                 \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  11. System information query         \e[36m┃\e[0m"    
+        color_output "\e[36m┃\e[0m  12. Check for Updates                \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  0. Exit                              \e[36m┃\e[0m"
+        color_output "\e[36m┃                                       ┃\e[0m"
+        color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+        read -p "$(color_output "\e[33mEnter your choice [0-10]: \e[0m")" choice
+    fi
+    
+    case "$choice" in
+        1) change_ip ;;
+        2) change_password ;;
+        3) change_theme ;;
+        4) reset_config ;;
+        5) change_source ;;
+        6) install_apps ;;
+        7) Load_driver ;;
+        8) ipv6_wizard ;;        
+        9) network_mode_wizard ;;
+        10) istore_style ;;
+        11) system_info ;;        
+        12) check_update ;;
+        0) exit 0 ;;
+        *) 
+            if [[ "$LANG_CHOICE" == "zh" ]]; then
+                color_output "\e[31m无效选项，请重新输入\e[0m"
+            else
+                color_output "\e[31mInvalid option, please try again\e[0m"
+            fi
+            show_menu 
+            ;;
+    esac
+}
+
+# 1. 更换 LAN 口 IP 地址
+change_ip() {
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[34m[更改 LAN 口 IP 地址]\e[0m"
+        read -p "请输入新的 LAN 口 IP 地址（如 192.168.1.2）: " new_ip
+        if [[ -n "$new_ip" ]]; then
+            uci set network.lan.ipaddr="$new_ip"
+            uci commit network
+            color_output "\e[32mLAN 口 IP 已成功更改为 $new_ip\e[0m"
+            color_output "\e[33m系统将在 10 秒后自动重启，请使用新的 IP 地址重新连接。\e[0m"
+            sleep 10
+            reboot
+        else
+            color_output "\e[31m无效的 IP 地址，操作取消。\e[0m"
+            read -p "按 Enter 键返回菜单..." 
+            show_menu
+        fi
+    else
+        color_output "\e[34m[Change LAN IP Address]\e[0m"
+        read -p "Enter new LAN IP address (e.g. 192.168.1.2): " new_ip
+        if [[ -n "$new_ip" ]]; then
+            uci set network.lan.ipaddr="$new_ip"
+            uci commit network
+            color_output "\e[32mLAN IP successfully changed to $new_ip\e[0m"
+            color_output "\e[33mSystem will reboot in 10 seconds, please reconnect using the new IP.\e[0m"
+            sleep 10
+            reboot
+        else
+            color_output "\e[31mInvalid IP address, operation cancelled.\e[0m"
+            read -p "Press Enter to return to menu..." 
+            show_menu
+        fi
+    fi
+}
+
+# 2. 更改管理员密码
+change_password() {
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[34m[更改管理员密码]\e[0m"
+        read -p "请输入新的管理员密码: " new_password
+        if [[ -n "$new_password" ]]; then
+            # 使用 openssl 生成密码哈希，使用 -1 参数生成 MD5 格式的密码哈希
+            password_hash=$(openssl passwd -1 "$new_password")
+            
+            # 获取当前 shadow 文件的其他行
+            tail -n +2 /etc/shadow > /tmp/shadow.tmp
+            
+            # 创建新的 root 行
+            echo "root:$password_hash:0:0:99999:7:::" > /etc/shadow
+            
+            # 添加其他行
+            cat /tmp/shadow.tmp >> /etc/shadow
+            
+            # 清理临时文件
+            rm -f /tmp/shadow.tmp
+            
+            color_output "\e[32m管理员密码已成功更改。\e[0m"
+        else
+            color_output "\e[31m无效的密码，操作取消。\e[0m"
+        fi
+        read -p "按 Enter 键返回菜单..."
+    else
+        color_output "\e[34m[Change Admin Password]\e[0m"
+        read -p "Enter new admin password: " new_password
+        if [[ -n "$new_password" ]]; then
+            # 使用 openssl 生成密码哈希，使用 -1 参数生成 MD5 格式的密码哈希
+            password_hash=$(openssl passwd -1 "$new_password")
+            
+            # 获取当前 shadow 文件的其他行
+            tail -n +2 /etc/shadow > /tmp/shadow.tmp
+            
+            # 创建新的 root 行
+            echo "root:$password_hash:0:0:99999:7:::" > /etc/shadow
+            
+            # 添加其他行
+            cat /tmp/shadow.tmp >> /etc/shadow
+            
+            # 清理临时文件
+            rm -f /tmp/shadow.tmp
+            
+            color_output "\e[32mAdmin password changed successfully.\e[0m"
+        else
+            color_output "\e[31mInvalid password, operation cancelled.\e[0m"
+        fi
+        read -p "Press Enter to return to menu..."
+    fi
+    show_menu
+}
+
+# 3. 切换默认主题
+change_theme() {
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[34m[切换默认主题]\e[0m"
+        uci set luci.main.mediaurlbase='/luci-static/bootstrap'
+        uci commit luci
+        color_output "\e[32m主题已成功切换为默认主题。\e[0m"
+        read -p "按 Enter 键返回菜单..."
+    else
+        color_output "\e[34m[Switch Default Theme]\e[0m"
+        uci set luci.main.mediaurlbase='/luci-static/bootstrap'
+        uci commit luci
+        color_output "\e[32mTheme successfully switched to default.\e[0m"
+        read -p "Press Enter to return to menu..."
+    fi
+    show_menu
+}
+
+# 4. 一键重置配置
+reset_config() {
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[31m[恢复出厂设置]\e[0m"
+        color_output "\e[31m警告：此操作将清除所有设置！\e[0m"
+        read -p "确定要继续吗？(y/n): " confirm
+        if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+            echo "恢复出厂设置中..."
+            firstboot -y
+            color_output "\e[33m设备将在 5 秒钟后重启...\e[0m"
+            sleep 5
+            reboot
+        else
+            color_output "\e[32m操作已取消\e[0m"
+            read -p "按 Enter 键返回菜单..."
+            show_menu
+        fi
+    else
+        color_output "\e[31m[Factory Reset]\e[0m"
+        color_output "\e[31mWarning: This will erase all settings!\e[0m"
+        read -p "Are you sure you want to continue? (y/n): " confirm
+        if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+            echo "Resetting to factory defaults..."
+            firstboot -y
+            color_output "\e[33mDevice will reboot in 5 seconds...\e[0m"
+            sleep 5
+            reboot
+        else
+            color_output "\e[32mOperation cancelled\e[0m"
+            read -p "Press Enter to return to menu..."
+            show_menu
+        fi
+    fi
+}
+
+# 5. 一键换源
+change_source() {
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[34m[更换软件源]\e[0m"
+        color_output "\e[36m请选择要使用的源：\e[0m"
+        color_output "1. 阿里源"
+        color_output "2. 清华源"
+        color_output "3. 中科大源"
+        color_output "4. 高校联合镜像站"
+        color_output "5. 南方科技大学"
+        color_output "6. 官方源"
+        color_output "0. 返回"
+        read -p "请输入您的选择 [0-6]: " source_choice
+    else
+        color_output "\e[34m[Change Software Sources]\e[0m"
+        color_output "\e[36mSelect source to use:\e[0m"
+        color_output "1. Aliyun Mirror"
+        color_output "2. Tsinghua Mirror"
+        color_output "3. USTC Mirror"
+        color_output "4. University Union Mirror"
+        color_output "5. SUSTech Mirror"
+        color_output "6. Official Source"
+        color_output "0. Back"
+        read -p "Enter your choice [0-6]: " source_choice
+    fi
+
+    # 仅支持 x86_64 和 aarch64 架构
+    arch=$(uname -m)
+    case "$arch" in
+        "x86_64")
+            arch_name="x86_64"
+            target_core_url="https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/targets/x86/64/kmods/6.6.86-1-af351158cfb5febf5155a3aa53785982"
+            extras_url="https://opkg.cooluc.com/openwrt-24.10/x86_64"
+            ;;
+        "aarch64")
+            arch_name="aarch64_generic"
+            target_core_url="https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/targets/rockchip/armv8/kmods/6.6.86-1-a8e18e0ecc66cc99303d258424ec0db8"
+            extras_url="https://opkg.cooluc.com/openwrt-24.10/aarch64_generic"
+            ;;
+        *)
+            if [[ "$LANG_CHOICE" == "zh" ]]; then
+                color_output "\e[31m仅支持 x86_64 和 aarch64 架构，当前架构为：$arch\e[0m"
+            else
+                color_output "\e[31mOnly x86_64 and aarch64 are supported, current arch: $arch\e[0m"
+            fi
+            read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回菜单..." || echo "Press Enter to return to menu...")"
+            show_menu
+            return
+            ;;
+    esac
+
+    # 镜像站选择
+    case "$source_choice" in
+        1) base_url="https://mirrors.aliyun.com/openwrt/releases/24.10.0/packages/$arch_name" ;;
+        2) base_url="https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.0/packages/$arch_name" ;;
+        3) base_url="https://mirrors.ustc.edu.cn/openwrt/releases/24.10.0/packages/$arch_name" ;;
+        4) base_url="https://mirrors.xjtu.edu.cn/openwrt/releases/24.10.0/packages/$arch_name" ;;
+        5) base_url="https://mirrors.sustech.edu.cn/openwrt/releases/24.10.0/packages/$arch_name" ;;
+        6) base_url="https://downloads.openwrt.org/releases/24.10.0/packages/$arch_name" ;;
+        0) show_menu; return ;;
+        *) 
+            if [[ "$LANG_CHOICE" == "zh" ]]; then
+                color_output "\e[31m无效选项，返回菜单。\e[0m"
+            else
+                color_output "\e[31mInvalid option, returning to menu.\e[0m"
+            fi
+            show_menu; return 
+            ;;
+    esac
+
+    # 生成 distfeeds.conf 文件
+    cat <<EOF > /etc/opkg/distfeeds.conf
+src/gz openwrt_base $base_url/base
+src/gz openwrt_luci $base_url/luci
+src/gz openwrt_packages $base_url/packages
+src/gz openwrt_routing $base_url/routing
+src/gz openwrt_telephony $base_url/telephony
+src/gz openwrt_core $target_core_url
+src/gz openwrt_extras $extras_url
+EOF
+
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[32m软件源已成功切换并追加自定义源。\e[0m"
+        read -p "按 Enter 键返回菜单..."
+    else
+        color_output "\e[32mSoftware sources changed successfully with custom sources added.\e[0m"
+        read -p "Press Enter to return to menu..."
+    fi
+    show_menu
+}
+
+# 6. 一键部署
+install_apps() {
+    while true; do
+        clear
+        if [[ "$LANG_CHOICE" == "zh" ]]; then
+            color_output "\e[34m[一键部署]\e[0m"
+            color_output "\e[36m┏━━━━━━━━━━━━━━━ 部署选项 ━━━━━━━━━━━━━━━┓\e[0m"
+            color_output "\e[36m┃                                        ┃\e[0m"
+            color_output "\e[36m┃\e[0m  1. 部署 ShellClash                    \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  2. 部署 小雅 Alist                    \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  3. 部署 Subconverter                  \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  4. 部署 AdGuardhome                   \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  5. 部署 Gitea-PostgreSQL              \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  6. 部署 SunPanel导航页                \e[36m┃\e[0m"        
+            color_output "\e[36m┃\e[0m  0. 返回主菜单                         \e[36m┃\e[0m"
+            color_output "\e[36m┃                                        ┃\e[0m"
+            color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+            read -p "$(color_output "\e[33m请输入您的选择 [0-6]: \e[0m")" app_choice
+        else
+            color_output "\e[34m[One-click Deployment]\e[0m"
+            color_output "\e[36m┏━━━━━━━━━━━━━━━ DEPLOYMENT ━━━━━━━━━━━━━━━┓\e[0m"
+            color_output "\e[36m┃                                          ┃\e[0m"
+            color_output "\e[36m┃\e[0m  1. Deploy ShellClash                    \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  2. Deploy XiaoYa Alist                  \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  3. Deploy Subconverter                  \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  4. Deploy AdGuardhome                   \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  5. Deploy Gitea-PostgreSQL              \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  6. Deploy SunPanel                      \e[36m┃\e[0m"        
+            color_output "\e[36m┃\e[0m  0. Back to Main Menu                    \e[36m┃\e[0m"
+            color_output "\e[36m┃                                          ┃\e[0m"
+            color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+            read -p "$(color_output "\e[33mEnter your choice [0-6]: \e[0m")" app_choice
+        fi
+
+        case "$app_choice" in
+            1)
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[34m[部署 ShellClash]\e[0m"
+                    color_output "\e[36m请选择 ShellClash 的安装源：\e[0m"
+                    color_output "1. GitHub 源"
+                    color_output "2. jsDelivr CDN 源"
+                    color_output "0. 返回"
+                    read -p "请输入您的选择 [0-2]: " install_choice
+                else
+                    color_output "\e[34m[Deploy ShellClash]\e[0m"
+                    color_output "\e[36mSelect installation source:\e[0m"
+                    color_output "1. GitHub Source"
+                    color_output "2. jsDelivr CDN Source"
+                    color_output "0. Back"
+                    read -p "Enter your choice [0-2]: " install_choice
+                fi
+
+                case "$install_choice" in
+                    1) export url='https://raw.githubusercontent.com/juewuy/ShellCrash/master' ;;
+                    2) export url='https://fastly.jsdelivr.net/gh/juewuy/ShellCrash@master' ;;
+                    0) continue ;;
+                    *) 
+                        if [[ "$LANG_CHOICE" == "zh" ]]; then
+                            color_output "\e[31m无效选项\e[0m"
+                        else
+                            color_output "\e[31mInvalid option\e[0m"
+                        fi
+                        sleep 2
+                        continue 
+                        ;;
+                esac
+
+                if [ "$install_choice" != "0" ]; then
+                    sh -c "$(curl -kfsSl $url/install.sh)" && source /etc/profile &> /dev/null
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[32mShellClash 已成功安装。\e[0m"
+                    else
+                        color_output "\e[32mShellClash installed successfully.\e[0m"
+                    fi
+                    read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键继续..." || echo "Press Enter to continue...")"
+                fi
+                ;;
+
+            2)
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[34m[部署小雅 Alist]\e[0m"
+                    color_output "\e[33m正在部署小雅 Alist...\e[0m"
+                else
+                    color_output "\e[34m[Deploy XiaoYa Alist]\e[0m"
+                    color_output "\e[33mDeploying XiaoYa Alist...\e[0m"
+                fi
+                bash -c "$(curl --insecure -fsSL https://ddsrem.com/xiaoya_install.sh)"
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[32m小雅 Alist 安装完成。\e[0m"
+                else
+                    color_output "\e[32mXiaoYa Alist installed successfully.\e[0m"
+                fi
+                read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键继续..." || echo "Press Enter to continue...")"
+                ;;
+            3)
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[34m[部署 Subconverter]\e[0m"
+                else
+                    color_output "\e[34m[Deploy Subconverter]\e[0m"
+                fi
+                
+                # 检查 Docker 是否已安装
+                if ! command -v docker &> /dev/null; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[33m未检测到 Docker，正在安装...\e[0m"
+                    else
+                        color_output "\e[33mDocker not found, installing...\e[0m"
+                    fi
+                    opkg update && opkg install docker
+                fi
+                
+                # 检查 Subconverter 是否已运行
+                if docker ps | grep -q "subconverter"; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[32mSubconverter 已经在运行\e[0m"
+                    else
+                        color_output "\e[32mSubconverter is already running\e[0m"
+                    fi
+                    
+                    # 获取本机 IP 地址
+                    local_ip=$(ip addr show br-lan | grep -w inet | awk '{print $2}' | cut -d/ -f1)
+                    
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[36m┏━━━━━━━━━━━━━━━ 配置模板 ━━━━━━━━━━━━━━━┓\e[0m"
+                        color_output "\e[36m┃                                        ┃\e[0m"
+                        color_output "\e[36m┃\e[0m  1. ACL4SSR_Online_Mini.ini            \e[36m┃\e[0m"
+                        color_output "\e[36m┃\e[0m  2. ACL4SSR_Online_Full.ini            \e[36m┃\e[0m"
+                        color_output "\e[36m┃\e[0m  3. ACL4SSR_Online.ini                 \e[36m┃\e[0m"
+                        color_output "\e[36m┃\e[0m  0. 返回上一级                         \e[36m┃\e[0m"
+                        color_output "\e[36m┃                                        ┃\e[0m"
+                        color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+                        read -p "$(color_output "\e[33m请输入选择 [0-3]: \e[0m")" template_choice
+                    else
+                        color_output "\e[36m┏━━━━━━━━━━━━━━━ CONFIG TEMPLATE ━━━━━━━━━━━━━━━┓\e[0m"
+                        color_output "\e[36m┃                                        ┃\e[0m"
+                        color_output "\e[36m┃\e[0m  1. ACL4SSR_Online_Mini.ini            \e[36m┃\e[0m"
+                        color_output "\e[36m┃\e[0m  2. ACL4SSR_Online_Full.ini            \e[36m┃\e[0m"
+                        color_output "\e[36m┃\e[0m  3. ACL4SSR_Online.ini                 \e[36m┃\e[0m"
+                        color_output "\e[36m┃\e[0m  0. Back                              \e[36m┃\e[0m"
+                        color_output "\e[36m┃                                        ┃\e[0m"
+                        color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+                        read -p "$(color_output "\e[33mEnter your choice [0-3]: \e[0m")" template_choice
+                    fi
+
+                    case "$template_choice" in
+                    1) config_url="https://git.kejizero.online/zhao/rule/raw/branch/main/mihomo/ACL4SSR_Online_Mini.ini" ;;
+                    2) config_url="https://git.kejizero.online/zhao/rule/raw/branch/main/mihomo/ACL4SSR_Online_Full.ini" ;;
+                    3) config_url="https://git.kejizero.online/zhao/rule/raw/branch/main/mihomo/ACL4SSR_Online.ini" ;;
+                    0) continue ;; # 返回上一级
+                    *) 
+                        if [[ "$LANG_CHOICE" == "zh" ]]; then
+                            color_output "\e[31m无效选择\e[0m"
+                        else
+                            color_output "\e[31mInvalid choice\e[0m"
+                        fi
+                        read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键继续..." || echo "Press Enter to continue...")"
+                        continue
+                     ;;
+                    esac
+                    
+                    # 获取订阅链接
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        read -p "请输入订阅链接: " sub_url
+                    else
+                        read -p "Enter subscription URL: " sub_url
+                    fi
+                    
+                    if [ -n "$sub_url" ]; then
+                        # 生成完整的转换链接
+                        convert_url="http://${local_ip}:25500/sub?target=clash&insert=true&new_name=true&scv=true&url=${sub_url}&config=${config_url}"
+                        
+                        if [[ "$LANG_CHOICE" == "zh" ]]; then
+                            color_output "\e[32m转换链接已生成：\e[0m"
+                        else
+                            color_output "\e[32mConversion URL generated:\e[0m"
+                        fi
+                        color_output "\e[33m${convert_url}\e[0m"
+                    else
+                        if [[ "$LANG_CHOICE" == "zh" ]]; then
+                            color_output "\e[31m订阅链接不能为空\e[0m"
+                        else
+                            color_output "\e[31mSubscription URL cannot be empty\e[0m"
+                        fi
+                    fi
+                else
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[33m正在部署 Subconverter...\e[0m"
+                    else
+                        color_output "\e[33mDeploying Subconverter...\e[0m"
+                    fi
+                    if docker run -d --restart=always -p 25500:25500 tindy2013/subconverter:latest; then
+                        if [[ "$LANG_CHOICE" == "zh" ]]; then
+                            color_output "\e[32mSubconverter 部署成功！\e[0m"
+                        else
+                            color_output "\e[32mSubconverter deployed successfully!\e[0m"
+                        fi
+                    else
+                        if [[ "$LANG_CHOICE" == "zh" ]]; then
+                            color_output "\e[31mSubconverter 部署失败\e[0m"
+                        else
+                            color_output "\e[31mSubconverter deployment failed\e[0m"
+                        fi
+                    fi
+                fi
+                read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回..." || echo "Press Enter to return...")"
+                ;;
+            4)
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[34m[部署 AdGuardHome]\e[0m"
+                else
+                    color_output "\e[34m[Deploy AdGuardHome]\e[0m"
+                fi
+                
+                # 检查 Docker 是否已安装
+                if ! command -v docker &> /dev/null; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[33m未检测到 Docker，正在安装...\e[0m"
+                    else
+                        color_output "\e[33mDocker not found, installing...\e[0m"
+                    fi
+                    opkg update && opkg install docker
+                fi
+                
+                # 获取本机 IP 地址
+                local_ip=$(ip addr show br-lan | grep -w inet | awk '{print $2}' | cut -d/ -f1)
+                
+                # 检查 AdGuardHome 是否已运行
+                if docker ps | grep -q "adguardhome"; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[32mAdGuardHome 已经在运行！\e[0m"
+                        color_output "\e[33m请使用浏览器访问：\e[0m"
+                    else
+                        color_output "\e[32mAdGuardHome is already running!\e[0m"
+                        color_output "\e[33mAccess it at:\e[0m"
+                    fi
+                    color_output "\e[32mhttp://${local_ip}:3000\e[0m"
+                else
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[33m正在部署 AdGuardHome...\e[0m"
+                    else
+                        color_output "\e[33mDeploying AdGuardHome...\e[0m"
+                    fi
+                    
+                    # 创建配置目录
+                    mkdir -p /root/adguardhome/work /root/adguardhome/conf
+                    
+                    # 部署 AdGuardHome
+                    if docker run -d \
+                        --name adguardhome \
+                        -v /root/adguardhome/work:/opt/adguardhome/work \
+                        -v /root/adguardhome/conf:/opt/adguardhome/conf \
+                        -p 3000:3000 \
+                        --restart always \
+                        adguard/adguardhome; then
+                        
+                        if [[ "$LANG_CHOICE" == "zh" ]]; then
+                            color_output "\e[32m\nAdGuardHome 部署成功！\e[0m"
+                            color_output "\e[33m请使用浏览器访问以下地址进行配置：\e[0m"
+                        else
+                            color_output "\e[32m\nAdGuardHome deployed successfully!\e[0m"
+                            color_output "\e[33mAccess the following URL to configure:\e[0m"
+                        fi
+                        color_output "\e[32mhttp://${local_ip}:3000\e[0m"
+                    else
+                        if [[ "$LANG_CHOICE" == "zh" ]]; then
+                            color_output "\e[31mAdGuardHome 部署失败\e[0m"
+                        else
+                            color_output "\e[31mAdGuardHome deployment failed\e[0m"
+                        fi
+                    fi
+                fi
+                read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回..." || echo "Press Enter to return...")"
+                ;;
+            5)
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[34m[部署 Gitea-PostgreSQL]\e[0m"
+                else
+                    color_output "\e[34m[Deploy Gitea-PostgreSQL]\e[0m"
+                fi
+
+                # 检查 Gitea 容器是否已存在
+                if docker ps -a | grep -q "gitea"; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[33mGitea-MySQL 已经部署过，跳过部署！\e[0m"
+                    else
+                        color_output "\e[33mGitea-MySQL already deployed, skipping!\e[0m"
+                    fi
+                    read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回..." || echo "Press Enter to return...")"
+                    continue
+                fi
+
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[33m正在部署 Gitea 和 PostgreSQL...\e[0m"
+                else
+                    color_output "\e[33mDeploying Gitea and PostgreSQL...\e[0m"
+                fi
+
+                # 创建目录
+                mkdir -p /opt/Gitea
+                mkdir -p /opt/MySQL
+
+                # 下载 Docker Compose 文件到 /opt/gitea
+                curl -L https://git.kejizero.online/zhao/docker-compose/raw/branch/main/Gitea -o /opt/Gitea/docker-compose.yml
+    
+                # 检查是否下载成功
+                if [ -f "/opt/Gitea/docker-compose.yml" ]; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[32mDocker Compose 文件下载成功！\e[0m"
+                    else
+                        color_output "\e[32mDocker Compose file downloaded successfully!\e[0m"
+                    fi
+                else
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[31mDocker Compose 文件下载失败！\e[0m"
+                    else
+                        color_output "\e[31mDocker Compose file download failed!\e[0m"
+                    fi
+                    read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回..." || echo "Press Enter to return...")"
+                    continue
+                fi
+
+                # 部署 Gitea 和 PostgreSQL
+                cd /opt/Gitea
+                docker-compose up -d
+    
+                if docker ps | grep -q "gitea"; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[32mGitea-PostgreSQL 部署成功！\e[0m"
+                    else
+                        color_output "\e[32mGitea-PostgreSQL deployed successfully!\e[0m"
+                    fi
+                else
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[31mGitea-PostgreSQL 部署失败！\e[0m"
+                    else
+                        color_output "\e[31mGitea-PostgreSQL deployment failed!\e[0m"
+                    fi
+                fi
+                read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回..." || echo "Press Enter to return...")"
+                ;;
+            6)
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[34m[部署 sun-panel]\e[0m"
+                else
+                    color_output "\e[34m[Deploy sun-panel]\e[0m"
+                fi
+
+                # 检查 SunPanel 容器是否已存在
+                if docker ps -a --filter "name=sun-panel" | grep -q "sun-panel"; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[33msun-panel 已经部署过，跳过部署！\e[0m"
+                    else
+                        color_output "\e[33msun-panel already deployed, skipping!\e[0m"
+                    fi
+                    read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回..." || echo "Press Enter to return...")"
+                    continue
+                fi
+
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[33m正在部署 SunPanel...\e[0m"
+                else
+                    color_output "\e[33mDeploying SunPanel...\e[0m"
+                fi
+
+                # 创建目录
+                mkdir -p /opt/sunpanel
+
+                # 下载 Docker Compose 文件到 /opt/sunpanel
+                curl -v -L https://git.kejizero.online/zhao/docker-compose/raw/branch/main/SunPanel -o /opt/sunpanel/docker-compose.yml
+
+                # 检查是否下载成功
+                if [ -f "/opt/sunpanel/docker-compose.yml" ]; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[32mDocker Compose 文件下载成功！\e[0m"
+                    else
+                        color_output "\e[32mDocker Compose file downloaded successfully!\e[0m"
+                    fi
+                else
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[31mDocker Compose 文件下载失败！\e[0m"
+                    else
+                        color_output "\e[31mDocker Compose file download failed!\e[0m"
+                    fi
+                    read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回..." || echo "Press Enter to return...")"
+                    continue
+                fi
+
+                # 部署 SunPanel
+                cd /opt/sunpanel
+                docker-compose up -d
+
+                if docker ps | grep -q "sun-panel"; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[32msun-panel 部署成功！\e[0m"
+                    else
+                        color_output "\e[32msun-panel deployed successfully!\e[0m"
+                    fi
+                else
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[31msun-panel 部署失败！\e[0m"
+                    else
+                        color_output "\e[31msun-panel deployment failed!\e[0m"
+                    fi
+                    docker logs $(docker ps -a -q --filter "name=sun-panel")  # 查看失败的容器日志
+                fi
+                read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回..." || echo "Press Enter to return...")"
+                ;;                                  
+            0)
+                show_menu
+                return
+                ;;
+            *)
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[31m无效选项，请重新选择\e[0m"
+                else
+                    color_output "\e[31mInvalid option, please try again\e[0m"
+                fi
+                sleep 2
+                ;;
+        esac
+    done
+}
+# 7. 加载驱动
+Load_driver() {
+    while true; do
+        clear
+        if [[ "$LANG_CHOICE" == "zh" ]]; then
+            color_output "\e[34m[一键加载驱动]\e[0m"
+            color_output "\e[36m┏━━━━━━━━━━━━━━━ 驱动分类 (按品牌) ━━━━━━━━━━━━━━━┓\e[0m"
+            color_output "\e[36m┃                                                 ┃\e[0m"
+            color_output "\e[36m┃\e[0m  1. 高通/Atheros (无线 Wi-Fi 芯片)              \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  2. 博通/Cypress (无线 Wi-Fi 芯片)              \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  3. 英特尔 (无线 Wi-Fi 芯片)                    \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  4. 联发科 (无线 Wi-Fi 芯片)                    \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  5. 瑞昱 (无线/有线网卡芯片)                    \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  6. USB/文件系统及其他通用驱动                  \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  0. 返回主菜单                                  \e[36m┃\e[0m"
+            color_output "\e[36m┃                                                 ┃\e[0m"
+            color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+            read -p "$(color_output "\e[33m请选择要安装的驱动分类 [0-6]: \e[0m")" driver_category_choice
+        else
+            color_output "\e[34m[One-click Driver Loading]\e[0m"
+            color_output "\e[36m┏━━━━━━━━━━━━━━━ DRIVER CATEGORIES (BY BRAND) ━━━━━━━━━━━┓\e[0m"
+            color_output "\e[36m┃                                                        ┃\e[0m"
+            color_output "\e[36m┃\e[0m  1. Qualcomm/Atheros (Wireless Wi-Fi Chips)            \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  2. Broadcom/Cypress (Wireless Wi-Fi Chips)            \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  3. Intel (Wireless Wi-Fi Chips)                       \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  4. MediaTek (Wireless Wi-Fi Chips)                    \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  5. Realtek (Wireless/Wired NIC Chips)                 \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  6. USB/File Systems & Other General Drivers           \e[36m┃\e[0m"
+            color_output "\e[36m┃\e[0m  0. Back to Main Menu                                  \e[36m┃\e[0m"
+            color_output "\e[36m┃                                                        ┃\e[0m"
+            color_output "\e[36m┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\e[0m"
+            read -p "$(color_output "\e[33mSelect driver category to install [0-6]: \e[0m")" driver_category_choice
+        fi
+
+        local drivers_to_install=()
+
+        case "$driver_category_choice" in
+            1) # 高通/Atheros (无线 Wi-Fi 芯片)
+                drivers_to_install=(
+                    ath10k-firmware-qca4019
+                    ath10k-firmware-qca6174
+                    ath10k-firmware-qca9377
+                    ath10k-firmware-qca9887
+                    ath10k-firmware-qca9888
+                    ath10k-firmware-qca988x
+                    ath10k-firmware-qca9984
+                    ath10k-firmware-qca99x0
+                    ath11k-firmware-ipq8074
+                    ath11k-firmware-qca6390
+                    ath11k-firmware-qcn9074
+                    ath11k-firmware-wcn6750
+                    ath11k-firmware-wcn6855
+                    ath12k-firmware-wcn7850
+                    ath6k-firmware
+                    ath9k-htc-firmware
+                    kmod-ath10k
+                    kmod-ath11k
+                    kmod-ath11k-pci
+                    kmod-ath12k
+                    kmod-ath5k
+                    kmod-ath6kl
+                    kmod-ath6kl-sdio
+                    kmod-ath6kl-usb
+                    kmod-ath9k-common
+                    kmod-alx
+                    kmod-atl1
+                    kmod-atl1c
+                    kmod-atl1e
+                    kmod-atl2
+                )
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[33m提示：此类别包含高通和Atheros无线芯片组的驱动和固件。请根据您的设备芯片型号选择。\e[0m"
+                else
+                    color_output "\e[33mNote: This category includes drivers and firmware for Qualcomm and Atheros wireless chipsets. Please choose based on your device's chip model.\e[0m"
+                fi
+                ;;
+            2) # 博通/Cypress (无线 Wi-Fi 芯片)
+                drivers_to_install=(
+                    brcmfmac-firmware-43430a0-sdio
+                    brcmfmac-firmware-43455-sdio
+                    brcmfmac-firmware-43602a1-pcie
+                    brcmfmac-firmware-4366b1-pcie
+                    brcmfmac-firmware-4366c0-pcie
+                    brcmfmac-firmware-usb
+                    brcmfmac-nvram-43430-sdio
+                    brcmfmac-nvram-43455-sdio
+                    brcmsmac-firmware
+                    cypress-firmware-43430-sdio
+                    cypress-firmware-43455-sdio
+                    cypress-firmware-4354-sdio
+                    cypress-firmware-4356-pcie
+                    cypress-firmware-4356-sdio
+                    cypress-firmware-4373-pcie
+                    cypress-firmware-4373-sdio
+                    kmod-b43
+                    kmod-b44
+                    kmod-bcma
+                    kmod-brcmfmac
+                    kmod-brcmutil
+                    kmod-be2net
+                    kmod-ssb
+                    kmod-tg3
+                )
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[33m提示：此类别包含博通和Cypress无线芯片组的驱动和固件。请根据您的设备芯片型号选择。\e[0m"
+                else
+                    color_output "\e[33mNote: This category includes drivers and firmware for Broadcom and Cypress wireless chipsets. Please choose based on your device's chip model.\e[0m"
+                fi
+                ;;
+            3) # 英特尔 (无线 Wi-Fi 芯片)
+                drivers_to_install=(
+                    iwlwifi-firmware-ax200
+                    iwlwifi-firmware-ax210
+                    iwlwifi-firmware-iwl1000
+                    iwlwifi-firmware-iwl100
+                    iwlwifi-firmware-iwl105
+                    iwlwifi-firmware-iwl135
+                    iwlwifi-firmware-iwl2000
+                    iwlwifi-firmware-iwl2030
+                    iwlwifi-firmware-iwl3160
+                    iwlwifi-firmware-iwl3168
+                    iwlwifi-firmware-iwl5000
+                    iwlwifi-firmware-iwl5150
+                    iwlwifi-firmware-iwl6000g2
+                    iwlwifi-firmware-iwl6000g2a
+                    iwlwifi-firmware-iwl6000g2b
+                    iwlwifi-firmware-iwl6050
+                    iwlwifi-firmware-iwl7260
+                    iwlwifi-firmware-iwl7265
+                    iwlwifi-firmware-iwl8260c
+                    iwlwifi-firmware-iwl8265
+                    iwlwifi-firmware-iwl9000
+                    iwlwifi-firmware-iwl9260
+                    kmod-iwlwifi
+                    kmod-e1000e
+                )
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[33m提示：此类别包含英特尔无线芯片组的驱动和固件。请根据您的设备芯片型号选择。\e[0m"
+                else
+                    color_output "\e[33mNote: This category includes drivers and firmware for Intel wireless chipsets. Please choose based on your device's chip model.\e[0m"
+                fi
+                ;;
+            4) # 联发科 (无线 Wi-Fi 芯片)
+                drivers_to_install=(
+                    mt7601u-firmware
+                    mt7622bt-firmware
+                    mt7921bt-firmware
+                    mt7922bt-firmware
+                    kmod-mt7601u
+                    kmod-mt7603
+                    kmod-mt7615-common
+                    kmod-mt7615e
+                    kmod-mt7615-firmware
+                    kmod-mt7622-firmware
+                    kmod-mt7663-firmware-ap
+                    kmod-mt7663-firmware-sta
+                    kmod-mt7663s
+                    kmod-mt7663u
+                    kmod-mt76-core
+                    kmod-mt76x0e
+                    kmod-mt76x2-common
+                    kmod-mt7915e
+                    kmod-mt7925e
+                    kmod-mt7925-firmware
+                    kmod-rt2800-lib
+                    kmod-rt2800-pci
+                    kmod-rt2800-usb
+                    kmod-rt2x00-lib
+                    kmod-rt2x00-pci
+                    kmod-rt2x00-usb
+                )
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[33m提示：此类别包含联发科无线芯片组的驱动和固件。Ralink旧型号也在此处。\e[0m"
+                else
+                    color_output "\e[33mNote: This category includes drivers and firmware for MediaTek wireless chipsets. Older Ralink models are also here.\e[0m"
+                fi
+                ;;
+            5) # 瑞昱 (无线/有线网卡芯片)
+                drivers_to_install=(
+                    r8152-firmware
+                    r8169-firmware
+                    rtl8188eu-firmware
+                    rtl8192ce-firmware
+                    rtl8192cu-firmware
+                    rtl8192eu-firmware
+                    rtl8192se-firmware
+                    rtl8723au-firmware
+                    rtl8723bu-firmware
+                    rtl8821ae-firmware
+                    rtl8821ce-firmware
+                    rtl8822be-firmware
+                    rtl8822ce-firmware
+                    kmod-r8169
+                    kmod-rtl8192c-common
+                    kmod-rtl8192ce
+                    kmod-rtl8192cu
+                    kmod-rtl8192de
+                    kmod-rtl8192se
+                    kmod-rtl8723bs
+                    kmod-rtl8821ae
+                    kmod-rtl8xxxu
+                    kmod-rtlwifi
+                    kmod-rtlwifi-pci
+                    kmod-rtlwifi-usb
+                    kmod-rtw88
+                    kmod-rtw88-8723de
+                    kmod-rtw88-8821ce
+                    kmod-rtw88-8822be
+                    kmod-rtw88-8822ce
+                    kmod-phy-realtek
+                )
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[33m提示：此类别包含瑞昱无线和有线网卡芯片的驱动和固件。\e[0m"
+                else
+                    color_output "\e[33mNote: This category includes drivers and firmware for Realtek wireless and wired network card chipsets.\e[0m"
+                fi
+                ;;
+            6) # USB/文件系统及其他通用驱动 (非特定品牌)
+                drivers_to_install=(
+                    kmod-usb-core
+                    kmod-usb-ohci
+                    kmod-usb-uhci
+                    kmod-usb2
+                    kmod-usb3
+                    kmod-usb-net
+                    kmod-usb-net-cdc-ether
+                    kmod-usb-storage
+                    kmod-fs-ext4
+                    kmod-fs-ntfs
+                    kmod-fs-vfat
+                    kmod-fs-exfat
+                    kmod-fs-cifs
+                    kmod-mac80211
+                    kmod-phy-broadcom
+                    kmod-phylib-broadcom
+                    kmod-phy-marvell-10g
+                    kmod-phy-microchip
+                    kmod-phy-smsc
+                    kmod-sfp
+                    kmod-swconfig
+                    kmod-thermal
+                    kmod-mdio-gpio
+                    kmod-mii
+                    kmod-phy-airoha-en8811h
+                    kmod-phy-aquantia
+                    kmod-phy-at803x
+                )
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[33m提示：此类别包含USB、文件系统以及其他不属于特定网络芯片品牌的通用驱动和固件。\e[0m"
+                else
+                    color_output "\e[33mNote: This category includes USB, file system, and other general drivers/firmware not tied to specific network chip brands.\e[0m"
+                fi
+                ;;
+            0) # 返回主菜单
+                show_menu
+                return
+                ;;
+            *) # 无效选项
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[31m无效选项，请重新输入。\e[0m"
+                else
+                    color_output "\e[31mInvalid option, please try again.\e[0m"
+                fi
+                sleep 2
+                continue
+                ;;
+        esac
+
+        if [ ${#drivers_to_install[@]} -eq 0 ]; then
+            if [[ "$LANG_CHOICE" == "zh" ]]; then
+                color_output "\e[31m未选择任何驱动进行安装。\e[0m"
+            else
+                color_output "\e[31mNo drivers selected for installation.\e[0m"
+            fi
+            read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回..." || echo "Press Enter to return...")"
+            continue # 返回驱动分类菜单
+        fi
+
+        if [[ "$LANG_CHOICE" == "zh" ]]; then
+            color_output "\e[33m即将安装以下驱动：\e[0m"
+            for d in "${drivers_to_install[@]}"; do
+                color_output "  - $d"
+            done
+            read -p "确定要开始安装吗？(y/n): " confirm_install
+        else
+            color_output "\e[33mAbout to install the following drivers:\e[0m"
+            for d in "${drivers_to_install[@]}"; do
+                color_output "  - $d"
+            done
+            read -p "Are you sure you want to start installation? (y/n): " confirm_install
+        fi
+
+        if [[ "$confirm_install" == "y" || "$confirm_install" == "Y" ]]; then
+            if [[ "$LANG_CHOICE" == "zh" ]]; then
+                color_output "\e[33m正在更新软件包列表并安装驱动...\e[0m"
+            else
+                color_output "\e[33mUpdating package list and installing drivers...\e[0m"
+            fi
+            opkg update
+
+            local all_success=true
+            for driver in "${drivers_to_install[@]}"; do
+                if opkg install "$driver"; then
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[32m驱动 $driver 已成功安装。\e[0m"
+                    else
+                        color_output "\e[32mDriver $driver installed successfully.\e[0m"
+                    fi
+                else
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[31m驱动 $driver 安装失败或已存在。请检查驱动名称和您的ZeroWrt版本。\e[0m"
+                    else
+                        color_output "\e[31mDriver $driver installation failed or already exists. Please check the driver name and your ZeroWrt version.\e[0m"
+                    fi
+                    all_success=false
+                fi
+            done
+
+            if $all_success; then
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[32m所选驱动已全部安装完成。\e[0m"
+                else
+                    color_output "\e[32mAll selected drivers installed successfully.\e[0m"
+                fi
+            else
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[31m部分驱动安装失败，请查看上方日志。\e[0m"
+                else
+                    color_output "\e[31mSome drivers failed to install, please check the log above.\e[0m"
+                fi
+            fi
+            
+            if [[ "$LANG_CHOICE" == "zh" ]]; then
+                color_output "\e[33m部分驱动可能需要重启后才能完全生效。\e[0m"
+                read -p "是否立即重启？(y/n): " reboot_confirm
+            else
+                color_output "\e[33mSome drivers may require a reboot to take full effect.\e[0m"
+                read -p "Reboot now? (y/n): " reboot_confirm
+            fi
+
+            if [[ "$reboot_confirm" == "y" || "$reboot_confirm" == "Y" ]]; then
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[33m设备将在 5 秒钟后重启...\e[0m"
+                else
+                    color_output "\e[33mDevice will reboot in 5 seconds...\e[0m"
+                fi
+                sleep 5
+                reboot
+            fi
+        else
+            if [[ "$LANG_CHOICE" == "zh" ]]; then
+                color_output "\e[32m驱动安装操作已取消。\e[0m"
+            else
+                color_output "\e[32mDriver installation operation cancelled.\e[0m"
+            fi
+        fi
+        read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回菜单..." || echo "Press Enter to return to menu...")"
+        show_menu
+    done
+}
+
+# 8. IPv6 配置向导
+ipv6_wizard() {
+    echo
+    echo
+    echo
+    color_output "\e[34m[IPv6 配置向导]\e[0m" "\e[34m[IPv6 Configuration Wizard]\e[0m"
+    
+    # 检查当前状态
+    local current_ra=$(uci -q get dhcp.lan.ra)
+    local current_dhcpv6=$(uci -q get dhcp.lan.dhcpv6)
+    local current_ndp=$(uci -q get dhcp.lan.ndp)
+    local current_filter_aaaa=$(uci -q get dhcp.@dnsmasq[0].filter_aaaa)
+    
+    if [ "$current_ra" = "server" ] && [ "$current_dhcpv6" = "server" ]; then
+        status_text=$([[ "$LANG_CHOICE" == "zh" ]] && echo "已开启" || echo "Enabled")
+        status_color="\e[32m"
+    else
+        status_text=$([[ "$LANG_CHOICE" == "zh" ]] && echo "已关闭" || echo "Disabled")
+        status_color="\e[31m"
+    fi
+    
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "当前 IPv6 状态:"; else echo "Current IPv6 Status:"; fi) $status_color$status_text\e[0m"
+    
+    # 检查是否为 PPPoE 模式
+    local wan_proto=$(uci -q get network.wan.proto)
+    if [ "$wan_proto" != "pppoe" ]; then
+        color_output "\e[33m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "注意: 当前上网方式为 $wan_proto，建议使用 PPPoE 模式获取 IPv6"; else echo "Note: Current connection type is $wan_proto, PPPoE is recommended for IPv6"; fi)\e[0m"
+    fi
+    
+    echo
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请选择操作："; else echo "Select operation:"; fi)\e[0m"
+    color_output "1. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "开启 IPv6 功能"; else echo "Enable IPv6"; fi)"
+    color_output "2. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "关闭 IPv6 功能"; else echo "Disable IPv6"; fi)"
+    color_output "3. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "高级 IPv6 设置"; else echo "Advanced IPv6 Settings"; fi)"
+    color_output "0. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "返回IPv6 配置向导"; else echo "Back to Wizard"; fi)"
+    
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入选择 [0-3]: "; else echo "Enter your choice [0-3]: "; fi)" ipv6_choice
+    
+    case "$ipv6_choice" in
+        1)
+            # 开启 IPv6
+            enable_ipv6
+            ;;
+        2)
+            # 关闭 IPv6
+            disable_ipv6
+            ;;
+        3)
+            # 高级设置
+            advanced_ipv6_settings
+            ;;
+        0)
+            show_menu
+            return
+            ;;
+        *)
+            color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效选择"; else echo "Invalid choice"; fi)\e[0m"
+            sleep 1
+            ipv6_wizard
+            return
+            ;;
+    esac
+    
+    ipv6_wizard
+}
+
+# 启用 IPv6 功能
+enable_ipv6() {
+    # RA 服务设置为服务模式
+    uci set dhcp.lan.ra='server'
+    # DHCPv6 服务设置为服务模式
+    uci set dhcp.lan.dhcpv6='server'
+    # IPv6 分配长度设置为64
+    uci set dhcp.lan.ndp='64'
+    # 取消过滤 IPv6 AAAA 记录
+    uci set dhcp.@dnsmasq[0].filter_aaaa='0'
+    # 保存设置
+    uci commit dhcp
+    
+    # 重启相关服务
+    /etc/init.d/odhcpd restart >/dev/null 2>&1
+    /etc/init.d/dnsmasq restart >/dev/null 2>&1
+    
+    color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then 
+        echo "IPv6 已开启！"
+        echo "- RA 服务: 服务模式"
+        echo "- DHCPv6 服务: 服务模式"
+        echo "- IPv6 分配长度: 64"
+        echo "- IPv6 AAAA 记录过滤: 已关闭"
+    else
+        echo "IPv6 enabled!"
+        echo "- RA Service: server"
+        echo "- DHCPv6 Service: server"
+        echo "- IPv6 Prefix Length: 64"
+        echo "- IPv6 AAAA Filtering: disabled"
+    fi)\e[0m"
+}
+
+# 禁用 IPv6 功能
+disable_ipv6() {
+    # RA 服务设置为已禁用
+    uci set dhcp.lan.ra='disabled'
+    # DHCPv6 服务设置为已禁用
+    uci set dhcp.lan.dhcpv6='disabled'
+    # IPv6 分配长度设置为已禁用
+    uci set dhcp.lan.ndp='disabled'
+    # 开启过滤 IPv6 AAAA 记录
+    uci set dhcp.@dnsmasq[0].filter_aaaa='1'
+    # 保存设置
+    uci commit dhcp
+    
+    # 重启相关服务
+    /etc/init.d/odhcpd restart >/dev/null 2>&1
+    /etc/init.d/dnsmasq restart >/dev/null 2>&1
+    
+    color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then 
+        echo "IPv6 已关闭！"
+        echo "- RA 服务: 已禁用"
+        echo "- DHCPv6 服务: 已禁用"
+        echo "- IPv6 分配长度: 已禁用"
+        echo "- IPv6 AAAA 记录过滤: 已开启"
+    else
+        echo "IPv6 disabled!"
+        echo "- RA Service: disabled"
+        echo "- DHCPv6 Service: disabled"
+        echo "- IPv6 Prefix Length: disabled"
+        echo "- IPv6 AAAA Filtering: enabled"
+    fi)\e[0m"
+}
+
+# 高级 IPv6 设置
+advanced_ipv6_settings() {
+    echo
+    color_output "\e[34m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "[高级 IPv6 设置]"; else echo "[Advanced IPv6 Settings]"; fi)\e[0m"
+    
+    # 获取当前设置
+    local current_ra=$(uci -q get dhcp.lan.ra)
+    local current_dhcpv6=$(uci -q get dhcp.lan.dhcpv6)
+    local current_ndp=$(uci -q get dhcp.lan.ndp)
+    local current_filter_aaaa=$(uci -q get dhcp.@dnsmasq[0].filter_aaaa)
+    
+    # 显示当前设置
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "当前设置："; else echo "Current settings:"; fi)\e[0m"
+    color_output "1. RA: $current_ra"
+    color_output "2. DHCPv6: $current_dhcpv6"
+    color_output "3. NDP: $current_ndp"
+    color_output "4. Filter AAAA: $current_filter_aaaa"
+    
+    echo
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请选择要修改的选项："; else echo "Select option to modify:"; fi)\e[0m"
+    color_output "1. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "配置 RA 服务"; else echo "Configure RA service"; fi)"
+    color_output "2. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "配置 DHCPv6 服务"; else echo "Configure DHCPv6 service"; fi)"
+    color_output "3. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "配置 IPv6 前缀长度"; else echo "Configure IPv6 prefix length"; fi)"
+    color_output "4. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "配置 AAAA 记录过滤"; else echo "Configure AAAA record filtering"; fi)"
+    color_output "0. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "返回"; else echo "Back"; fi)"
+    
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入选择 [0-4]: "; else echo "Enter your choice [0-4]: "; fi)" advanced_choice
+    
+    case "$advanced_choice" in
+        1)
+            configure_ra_service
+            ;;
+        2)
+            configure_dhcpv6_service
+            ;;
+        3)
+            configure_ndp
+            ;;
+        4)
+            configure_aaaa_filter
+            ;;
+        0)
+            return
+            ;;
+        *)
+            color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效选择"; else echo "Invalid choice"; fi)\e[0m"
+            ;;
+    esac
+    
+    # 保存并应用更改
+    uci commit dhcp
+    /etc/init.d/odhcpd restart >/dev/null 2>&1
+    /etc/init.d/dnsmasq restart >/dev/null 2>&1
+    
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "按 Enter 键继续..."; else echo "Press Enter to continue..."; fi)"
+    advanced_ipv6_settings
+}
+
+# 配置 RA 服务
+configure_ra_service() {
+    echo
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "RA 服务选项："; else echo "RA Service Options:"; fi)\e[0m"
+    color_output "1. server - $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "作为 RA 服务器"; else echo "Act as RA server"; fi)"
+    color_output "2. relay - $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "作为 RA 中继"; else echo "Act as RA relay"; fi)"
+    color_output "3. disabled - $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "禁用 RA 服务"; else echo "Disable RA service"; fi)"
+    color_output "0. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "取消"; else echo "Cancel"; fi)"
+    
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请选择 RA 服务模式: "; else echo "Select RA service mode: "; fi)" ra_mode
+    
+    case "$ra_mode" in
+        1)
+            uci set dhcp.lan.ra='server'
+            color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "RA 服务已设置为服务器模式"; else echo "RA service set to server mode"; fi)\e[0m"
+            ;;
+        2)
+            uci set dhcp.lan.ra='relay'
+            color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "RA 服务已设置为中继模式"; else echo "RA service set to relay mode"; fi)\e[0m"
+            ;;
+        3)
+            uci set dhcp.lan.ra='disabled'
+            color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "RA 服务已禁用"; else echo "RA service disabled"; fi)\e[0m"
+            ;;
+        0)
+            return
+            ;;
+        *)
+            color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效选择"; else echo "Invalid choice"; fi)\e[0m"
+            ;;
+    esac
+}
+
+# 配置 DHCPv6 服务
+configure_dhcpv6_service() {
+    echo
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "DHCPv6 服务选项："; else echo "DHCPv6 Service Options:"; fi)\e[0m"
+    color_output "1. server - $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "作为 DHCPv6 服务器"; else echo "Act as DHCPv6 server"; fi)"
+    color_output "2. relay - $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "作为 DHCPv6 中继"; else echo "Act as DHCPv6 relay"; fi)"
+    color_output "3. disabled - $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "禁用 DHCPv6 服务"; else echo "Disable DHCPv6 service"; fi)"
+    color_output "0. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "取消"; else echo "Cancel"; fi)"
+    
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请选择 DHCPv6 服务模式: "; else echo "Select DHCPv6 service mode: "; fi)" dhcpv6_mode
+    
+    case "$dhcpv6_mode" in
+        1)
+            uci set dhcp.lan.dhcpv6='server'
+            color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "DHCPv6 服务已设置为服务器模式"; else echo "DHCPv6 service set to server mode"; fi)\e[0m"
+            ;;
+        2)
+            uci set dhcp.lan.dhcpv6='relay'
+            color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "DHCPv6 服务已设置为中继模式"; else echo "DHCPv6 service set to relay mode"; fi)\e[0m"
+            ;;
+        3)
+            uci set dhcp.lan.dhcpv6='disabled'
+            color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "DHCPv6 服务已禁用"; else echo "DHCPv6 service disabled"; fi)\e[0m"
+            ;;
+        0)
+            return
+            ;;
+        *)
+            color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效选择"; else echo "Invalid choice"; fi)\e[0m"
+            ;;
+    esac
+}
+
+# 配置 NDP
+configure_ndp() {
+    echo
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入 IPv6 前缀长度 (默认 64): "; else echo "Enter IPv6 prefix length (default 64): "; fi)" prefix_length
+    
+    if [[ -z "$prefix_length" ]]; then
+        prefix_length="64"
+    fi
+    
+    if [[ "$prefix_length" =~ ^[0-9]+$ ]] && [ "$prefix_length" -ge 48 ] && [ "$prefix_length" -le 128 ]; then
+        uci set dhcp.lan.ndp="$prefix_length"
+        color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "IPv6 前缀长度已设置为 $prefix_length"; else echo "IPv6 prefix length set to $prefix_length"; fi)\e[0m"
+    else
+        color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效的前缀长度 (48-128)"; else echo "Invalid prefix length (48-128)"; fi)\e[0m"
+    fi
+}
+
+# 配置 AAAA 记录过滤
+configure_aaaa_filter() {
+    echo
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "AAAA 记录过滤选项："; else echo "AAAA Record Filtering Options:"; fi)\e[0m"
+    color_output "1. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "启用 AAAA 记录过滤"; else echo "Enable AAAA record filtering"; fi)"
+    color_output "2. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "禁用 AAAA 记录过滤"; else echo "Disable AAAA record filtering"; fi)"
+    color_output "0. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "取消"; else echo "Cancel"; fi)"
+    
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请选择: "; else echo "Select option: "; fi)" aaaa_choice
+    
+    case "$aaaa_choice" in
+        1)
+            uci set dhcp.@dnsmasq[0].filter_aaaa='1'
+            color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "AAAA 记录过滤已启用"; else echo "AAAA record filtering enabled"; fi)\e[0m"
+            ;;
+        2)
+            uci set dhcp.@dnsmasq[0].filter_aaaa='0'
+            color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "AAAA 记录过滤已禁用"; else echo "AAAA record filtering disabled"; fi)\e[0m"
+            ;;
+        0)
+            return
+            ;;
+        *)
+            color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效选择"; else echo "Invalid choice"; fi)\e[0m"
+            ;;
+    esac
+}
+
+# 9. 网络模式配置向导
+network_mode_wizard() {
+    echo
+    color_output "\e[34m[网络模式配置向导]\e[0m" "\e[34m[Network Mode Configuration Wizard]\e[0m"
+    
+    # 获取当前WAN口配置
+    local current_proto=$(uci -q get network.wan.proto)
+    local current_username=$(uci -q get network.wan.username)
+    local current_ipaddr=$(uci -q get network.lan.ipaddr)
+    
+    # 显示当前配置
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "当前网络配置："; else echo "Current network configuration:"; fi)\e[0m"
+    color_output "1. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "连接模式:"; else echo "Connection mode:"; fi) $current_proto"
+    
+    if [ "$current_proto" == "pppoe" ]; then
+        color_output "2. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "PPPoE账号:"; else echo "PPPoE username:"; fi) $current_username"
+    fi
+    
+    color_output "3. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "LAN IP地址:"; else echo "LAN IP address:"; fi) $current_ipaddr"
+    
+    echo
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请选择操作："; else echo "Select operation:"; fi)\e[0m"
+    color_output "1. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "配置PPPoE拨号"; else echo "Configure PPPoE"; fi)"
+    color_output "2. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "配置DHCP客户端"; else echo "Configure DHCP client"; fi)"
+    color_output "3. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "配置静态IP"; else echo "Configure static IP"; fi)"
+    color_output "4. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "高级网络设置"; else echo "Advanced network settings"; fi)"
+    color_output "0. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "返回主菜单"; else echo "Back to Main Menu"; fi)"
+    
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入选择 [0-4]: "; else echo "Enter your choice [0-4]: "; fi)" mode_choice
+    
+    case "$mode_choice" in
+        1)
+            configure_pppoe
+            ;;
+        2)
+            configure_dhcp_client
+            ;;
+        3)
+            configure_static_ip
+            ;;
+        4)
+            advanced_network_settings
+            ;;
+        0)
+            show_menu
+            return
+            ;;
+        *)
+            color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效选择"; else echo "Invalid choice"; fi)\e[0m"
+            ;;
+    esac
+    
+    # 应用网络配置
+    uci commit network
+    /etc/init.d/network restart
+    
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "按Enter键返回网络向导..."; else echo "Press Enter to return to network wizard..."; fi)"
+    network_mode_wizard
+}
+
+# 配置PPPoE拨号
+configure_pppoe() {
+    echo
+    color_output "\e[34m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "[PPPoE配置]"; else echo "[PPPoE Configuration]"; fi)\e[0m"
+    
+    # 获取当前PPPoE配置
+    local current_username=$(uci -q get network.wan.username)
+    local current_password=$(uci -q get network.wan.password)
+    
+    # 显示当前配置（隐藏密码）
+    if [ -n "$current_username" ]; then
+        color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "当前PPPoE账号:"; else echo "Current PPPoE username:"; fi) $current_username\e[0m"
+        color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "当前PPPoE密码:"; else echo "Current PPPoE password:"; fi) ********\e[0m"
+    else
+        color_output "\e[33m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "未配置PPPoE"; else echo "PPPoE not configured"; fi)\e[0m"
+    fi
+    
+    echo
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入PPPoE账号(留空保持不变): "; else echo "Enter PPPoE username (leave blank to keep current): "; fi)" pppoe_username
+    read -s -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入PPPoE密码(留空保持不变): "; else echo "Enter PPPoE password (leave blank to keep current): "; fi)" pppoe_password
+    echo
+    
+    # 设置PPPoE配置
+    uci set network.wan.proto='pppoe'
+    [ -n "$pppoe_username" ] && uci set network.wan.username="$pppoe_username"
+    [ -n "$pppoe_password" ] && uci set network.wan.password="$pppoe_password"
+    
+    # 设置MTU和MRU（优化PPPoE连接）
+    uci set network.wan.mtu='1492'
+    uci set network.wan.mru='1492'
+    
+    color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "PPPoE配置已更新！"; else echo "PPPoE configuration updated!"; fi)\e[0m"
+    color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "连接模式已设置为PPPoE"; else echo "Connection mode set to PPPoE"; fi)\e[0m"
+}
+
+# 配置DHCP客户端
+configure_dhcp_client() {
+    echo
+    color_output "\e[34m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "[DHCP客户端配置]"; else echo "[DHCP Client Configuration]"; fi)\e[0m"
+    
+    # 设置DHCP客户端
+    uci set network.wan.proto='dhcp'
+    
+    # 清除PPPoE配置（如果存在）
+    uci delete network.wan.username >/dev/null 2>&1
+    uci delete network.wan.password >/dev/null 2>&1
+    
+    color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "DHCP客户端配置已更新！"; else echo "DHCP client configuration updated!"; fi)\e[0m"
+    color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "连接模式已设置为DHCP客户端"; else echo "Connection mode set to DHCP client"; fi)\e[0m"
+}
+
+# 配置静态IP
+configure_static_ip() {
+    echo
+    color_output "\e[34m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "[静态IP配置]"; else echo "[Static IP Configuration]"; fi)\e[0m"
+    
+    # 获取当前配置
+    local current_ip=$(uci -q get network.wan.ipaddr)
+    local current_netmask=$(uci -q get network.wan.netmask)
+    local current_gateway=$(uci -q get network.wan.gateway)
+    local current_dns=$(uci -q get network.wan.dns)
+    
+    # 显示当前配置
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "当前静态IP配置："; else echo "Current static IP configuration:"; fi)\e[0m"
+    color_output "1. IP地址: ${current_ip:-未设置}"
+    color_output "2. 子网掩码: ${current_netmask:-未设置}"
+    color_output "3. 网关: ${current_gateway:-未设置}"
+    color_output "4. DNS服务器: ${current_dns:-未设置}"
+    
+    echo
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入IP地址: "; else echo "Enter IP address: "; fi)" static_ip
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入子网掩码(默认255.255.255.0): "; else echo "Enter netmask (default 255.255.255.0): "; fi)" static_netmask
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入网关: "; else echo "Enter gateway: "; fi)" static_gateway
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入DNS服务器(多个用空格分隔): "; else echo "Enter DNS servers (separate with spaces): "; fi)" static_dns
+    
+    # 设置默认值
+    [ -z "$static_netmask" ] && static_netmask="255.255.255.0"
+    
+    # 验证输入
+    if ! [[ $static_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || 
+       ! [[ $static_netmask =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || 
+       ! [[ $static_gateway =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+        color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效的IP地址、子网掩码或网关"; else echo "Invalid IP address, netmask or gateway"; fi)\e[0m"
+        return
+    fi
+    
+    # 设置静态IP配置
+    uci set network.wan.proto='static'
+    uci set network.wan.ipaddr="$static_ip"
+    uci set network.wan.netmask="$static_netmask"
+    uci set network.wan.gateway="$static_gateway"
+    [ -n "$static_dns" ] && uci set network.wan.dns="$static_dns"
+    
+    color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "静态IP配置已更新！"; else echo "Static IP configuration updated!"; fi)\e[0m"
+}
+
+# 高级网络设置
+advanced_network_settings() {
+    echo
+    color_output "\e[34m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "[高级网络设置]"; else echo "[Advanced Network Settings]"; fi)\e[0m"
+    
+    # 获取当前MTU和DNS设置
+    local current_mtu=$(uci -q get network.wan.mtu)
+    local current_dns=$(uci -q get network.wan.dns)
+    local current_hostname=$(uci -q get system.@system[0].hostname)
+    
+    # 显示当前设置
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "当前高级设置："; else echo "Current advanced settings:"; fi)\e[0m"
+    color_output "1. MTU: ${current_mtu:-默认}"
+    color_output "2. DNS服务器: ${current_dns:-默认}"
+    color_output "3. 主机名: ${current_hostname:-默认}"
+    
+    echo
+    color_output "\e[36m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请选择要配置的选项："; else echo "Select option to configure:"; fi)\e[0m"
+    color_output "1. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "配置MTU"; else echo "Configure MTU"; fi)"
+    color_output "2. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "配置自定义DNS"; else echo "Configure custom DNS"; fi)"
+    color_output "3. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "配置主机名"; else echo "Configure hostname"; fi)"
+    color_output "0. $(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "返回"; else echo "Back"; fi)"
+    
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入选择 [0-3]: "; else echo "Enter your choice [0-3]: "; fi)" advanced_choice
+    
+    case "$advanced_choice" in
+        1)
+            configure_mtu
+            ;;
+        2)
+            configure_custom_dns
+            ;;
+        3)
+            configure_hostname
+            ;;
+        0)
+        	  network_mode_wizard
+            return
+            ;;
+        *)
+            color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效选择"; else echo "Invalid choice"; fi)\e[0m"
+            ;;
+    esac
+    
+    # 保存并应用更改
+    uci commit network
+    uci commit system
+    
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "按Enter键继续..."; else echo "Press Enter to continue..."; fi)"
+    advanced_network_settings
+}
+
+# 配置MTU
+configure_mtu() {
+    echo
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入MTU值(默认1500，PPPoE建议1492): "; else echo "Enter MTU value (default 1500, PPPoE recommends 1492): "; fi)" mtu_value
+    
+    if [[ "$mtu_value" =~ ^[0-9]+$ ]] && [ "$mtu_value" -ge 576 ] && [ "$mtu_value" -le 1500 ]; then
+        uci set network.wan.mtu="$mtu_value"
+        color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "MTU已设置为$mtu_value"; else echo "MTU set to $mtu_value"; fi)\e[0m"
+    else
+        color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效的MTU值(576-1500)"; else echo "Invalid MTU value (576-1500)"; fi)\e[0m"
+    fi
+}
+
+# 配置自定义DNS
+configure_custom_dns() {
+    echo
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入DNS服务器(多个用空格分隔): "; else echo "Enter DNS servers (separate with spaces): "; fi)" dns_servers
+    
+    if [[ $dns_servers =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}(\s+([0-9]{1,3}\.){3}[0-9]{1,3})*$ ]]; then
+        uci set network.wan.dns="$dns_servers"
+        color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "DNS服务器已更新"; else echo "DNS servers updated"; fi)\e[0m"
+    else
+        color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "无效的DNS格式"; else echo "Invalid DNS format"; fi)\e[0m"
+    fi
+}
+
+# 配置主机名
+configure_hostname() {
+    echo
+    read -p "$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "请输入主机名: "; else echo "Enter hostname: "; fi)" new_hostname
+    
+    if [ -n "$new_hostname" ]; then
+        uci set system.@system[0].hostname="$new_hostname"
+        color_output "\e[32m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "主机名已设置为$new_hostname"; else echo "Hostname set to $new_hostname"; fi)\e[0m"
+    else
+        color_output "\e[31m$(if [[ "$LANG_CHOICE" == "zh" ]]; then echo "主机名不能为空"; else echo "Hostname cannot be empty"; fi)\e[0m"
+    fi
+}
+
+# 10. iStoreOS 风格化
+istore_style() {
+    clear
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[34m[开始安装 iStoreOS 风格化]\e[0m"
+    else
+        color_output "\e[34m[Installing iStoreOS Styling]\e[0m"
+    fi
+
+    # 安装 iStore 商店
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[34m[1/3] 正在安装 iStore 商店...\e[0m"
+    else
+        color_output "\e[34m[1/3] Installing iStore App Store...\e[0m"
+    fi
+    wget -qO install.sh https://git.kejizero.online/zhao/iStoreOS/raw/branch/main/install.sh && chmod +x install.sh && ./install.sh
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[32miStore 商店安装完成\e[0m"
+    else
+        color_output "\e[32miStore App Store installed\e[0m"
+    fi
+    
+    # 安装网络向导和首页
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[34m[2/3] 正在安装网络向导和首页...\e[0m"
+    else
+        color_output "\e[34m[2/3] Installing QuickStart and Homepage...\e[0m"
+    fi
+    is-opkg install luci-i18n-quickstart-zh-cn
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[32m网络向导和首页安装完成\e[0m"
+        color_output "\e[32m所有组件安装完成！\e[0m"
+    else
+        color_output "\e[32mQuickStart and Homepage installed\e[0m"
+        color_output "\e[32mAll components installed successfully!\e[0m"
+    fi
+
+    # 风格化
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[34m[3/3] 正在风格化...\e[0m"
+    else
+        color_output "\e[34m[3/3] Stylizing...\e[0m"
+    fi
+    curl -o /www/luci-static/argon/iconfont.ttf https://script.kejizero.online/Customize/argon/iconfont.ttf
+    curl -o /www/luci-static/argon/iconfont.woff https://script.kejizero.online/Customize/argon/iconfont.woff
+    curl -o /www/luci-static/argon/iconfont.woff2 https://script.kejizero.online/Customize/argon/iconfont.woff2
+    chmod -R 777 /www/luci-static/argon/iconfont.ttf
+    chmod -R 777 /www/luci-static/argon/iconfont.woff
+    chmod -R 777 /www/luci-static/argon/iconfont.woff2
+    curl -s https://script.kejizero.online/Customize/argon/easeicon.css >> /www/luci-static/argon/css/cascade.css
+    sed -i 's|https://www.istoreos.com/|https://www.kejizero.online/|' /www/luci-static/quickstart/index.js
+    sed -i 's/iStoreOS/探索无限/' /www/luci-static/quickstart/index.js
+    read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回主菜单..." || echo "Press Enter to return to main menu...")"
+    show_menu
+}
+
+# 11. 系统信息查询
+system_info() {
+    while true; do
+        clear
+        color_output "\e[38;5;39m+==== 系统信息查询 ====+\e[0m"
+        echo ""
+        color_output "\e[38;5;39m1)\e[0m \e[1;97m主机信息\e[0m"
+        color_output "\e[38;5;39m2)\e[0m \e[1;97m内存信息\e[0m"
+        color_output "\e[38;5;39m3)\e[0m \e[1;97m磁盘信息\e[0m"
+        color_output "\e[38;5;39m4)\e[0m \e[1;97m网络信息\e[0m"
+        color_output "\e[38;5;39m6)\e[0m \e[1;97m显示全部信息\e[0m"
+        color_output "\e[38;5;39m0)\e[0m \e[1;97m返回主菜单\e[0m"
+        echo ""
+        read -p "请选择要查看的信息 [0-6]: " choice
+
+        case $choice in
+            1) show_host_info ;;
+            2) show_memory_info ;;
+            3) show_disk_info ;;
+            4) show_network_info ;;
+            5) show_all_info ;;
+            0) # 返回主菜单
+            	 clear
+                show_menu
+                return
+                ;;
+            *) # 无效选项
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[31m无效选项，请重新输入。\e[0m"
+                else
+                    color_output "\e[31mInvalid option, please try again.\e[0m"
+                fi
+                sleep 2
+                continue
+                ;;
+        esac
+    done
+}
+
+# 显示主机信息
+show_host_info() {
+    clear
+    color_output "\e[38;5;39m+---- [ 系统信息 ] ----+\e[0m"
+    
+    local hostname=$(cat /proc/sys/kernel/hostname 2>/dev/null || echo "Unknown")
+    local os_version=$(cat /etc/openwrt_release | grep DISTRIB_DESCRIPTION | cut -d "'" -f 2)
+    local kernel_version=$(uname -r)
+    local uptime=$(cat /proc/uptime | awk '{printf "%d天%d小时%d分钟", $1/86400, ($1%86400)/3600, ($1%3600)/60}')
+    local cpu_load=$(cat /proc/loadavg | awk '{print $1", "$2", "$3}')
+    
+    color_output "\e[38;5;39m|\e[0m \e[1;97m主机名\e[0m    : \e[38;5;220m$hostname\e[0m"
+    color_output "\e[38;5;39m|\e[0m \e[1;97m系统版本\e[0m  : \e[38;5;220m$os_version\e[0m"
+    color_output "\e[38;5;39m|\e[0m \e[1;97m内核版本\e[0m  : \e[38;5;220m$kernel_version\e[0m"
+    color_output "\e[38;5;39m|\e[0m \e[1;97m运行时间\e[0m  : \e[38;5;220m$uptime\e[0m"
+    
+    if command -v lscpu &> /dev/null; then
+        local cpu_arch=$(lscpu | grep 'Architecture' | awk '{print $2}')
+        local cpu_model=$(lscpu | grep 'Model name' | cut -d ':' -f 2 | sed 's/^[ \t]*//' | tr -s ' ')
+        local cpu_cores=$(lscpu | grep 'CPU(s):' | head -n 1 | awk '{print $2}')
+        local cpu_threads=$(lscpu | grep 'Thread(s) per core' | awk '{print $4}')
+        local cpu_max_mhz=$(lscpu | grep 'CPU max MHz' | awk '{print $4}')
+        
+        color_output "\e[38;5;39m|\e[0m \e[1;97mCPU架构\e[0m   : \e[38;5;220m$cpu_arch\e[0m"
+        color_output "\e[38;5;39m|\e[0m \e[1;97mCPU型号\e[0m   : \e[38;5;220m$cpu_model\e[0m"
+        color_output "\e[38;5;39m|\e[0m \e[1;97mCPU核心\e[0m   : \e[38;5;220m$cpu_cores 核心 $cpu_threads 线程\e[0m"
+        [ -n "$cpu_max_mhz" ] && color_output "\e[38;5;39m|\e[0m \e[1;97m最大频率\e[0m   : \e[38;5;220m$cpu_max_mhz MHz\e[0m"
+    else
+        color_output "\e[38;5;39m|\e[0m \e[1;97mCPU信息\e[0m   : \e[38;5;220m$(cat /proc/cpuinfo | grep 'model name' | head -n 1 | cut -d ':' -f 2 | sed 's/^[ \t]*//')\e[0m"
+    fi
+    
+    color_output "\e[38;5;39m|\e[0m \e[1;97mCPU负载\e[0m   : \e[38;5;220m$cpu_load\e[0m"
+    color_output "\e[38;5;39m+-------------------+\e[0m"
+    read -p "按 Enter 键继续..."
+}
+
+# 显示内存信息
+show_memory_info() {
+    clear
+    color_output "\e[38;5;39m+---- [ 内存信息 ] ----+\e[0m"
+    free -m | grep -v "Swap" | while read line; do
+        color_output "\e[38;5;39m|\e[0m \e[38;5;220m$line\e[0m"
+    done
+    color_output "\e[38;5;39m+-------------------+\e[0m"
+    read -p "按 Enter 键继续..."
+}
+
+# 显示磁盘信息
+show_disk_info() {
+    clear
+    color_output "\e[38;5;39m+---- [ 磁盘信息 ] ----+\e[0m"
+    df -h | grep -v "tmpfs" | while read line; do
+        color_output "\e[38;5;39m|\e[0m \e[38;5;220m$line\e[0m"
+    done
+    color_output "\e[38;5;39m+-------------------+\e[0m"
+    read -p "按 Enter 键继续..."
+}
+
+# 显示网络信息
+show_network_info() {
+    clear
+    color_output "\e[38;5;39m+---- [ 网络信息 ] ----+\e[0m"
+    
+    local lan_ip=$(uci get network.lan.ipaddr 2>/dev/null || ip addr show br-lan | grep -w inet | awk '{print $2}' | cut -d/ -f1)
+    local gateway=$(ip route | grep default | awk '{print $3}')
+    local dns_servers=$(cat /tmp/resolv.conf.auto 2>/dev/null | grep nameserver | awk '{print $2}' | tr '\n' ' ' || echo "Unknown")
+    
+    color_output "\e[38;5;39m|\e[0m \e[1;97mIP地址\e[0m    : \e[38;5;220m$lan_ip\e[0m"
+    color_output "\e[38;5;39m|\e[0m \e[1;97m网关\e[0m      : \e[38;5;220m$gateway\e[0m"
+    color_output "\e[38;5;39m|\e[0m \e[1;97mDNS\e[0m       : \e[38;5;220m$dns_servers\e[0m"
+    
+    if command -v ethtool &> /dev/null; then
+        color_output "\e[38;5;39m+---- [ 网卡状态 ] ----+\e[0m"
+        ip -o link show | awk -F': ' '{print $2}' | grep -v "lo" | while read iface; do
+            if [[ "$iface" != *"@"* ]]; then
+                local mac=$(ip link show $iface 2>/dev/null | grep -oE 'link/ether ([0-9a-fA-F:]{17})' | awk '{print $2}')
+                local link=$(ethtool $iface 2>/dev/null | grep -i "Link detected" | awk '{print $3}')
+                local speed=$(ethtool $iface 2>/dev/null | grep -i speed | awk '{print $2}')
+                local duplex=$(ethtool $iface 2>/dev/null | grep -i duplex | awk '{print $2}')
+                
+                color_output "\e[38;5;39m|\e[0m \e[1;97m接口\e[0m      : \e[38;5;220m$iface\e[0m"
+                [ -n "$mac" ] && color_output "\e[38;5;39m|\e[0m   \e[1;97mMAC\e[0m     : \e[38;5;220m$mac\e[0m"
+                [ -n "$link" ] && color_output "\e[38;5;39m|\e[0m   \e[1;97m状态\e[0m    : \e[38;5;220m$link\e[0m"
+                [ -n "$speed" ] && [ "$speed" != "Unknown!" ] && color_output "\e[38;5;39m|\e[0m   \e[1;97m速度\e[0m    : \e[38;5;220m$speed\e[0m"
+                [ -n "$duplex" ] && [ "$duplex" != "Unknown!" ] && color_output "\e[38;5;39m|\e[0m   \e[1;97m双工\e[0m    : \e[38;5;220m$duplex\e[0m"
+            fi
+        done
+    fi
+    color_output "\e[38;5;39m+-------------------+\e[0m"
+    read -p "按 Enter 键继续..."
+}
+
+# 显示所有信息
+show_all_info() {
+    show_host_info
+    show_memory_info
+    show_disk_info
+    show_network_info
+}
+
+# 12. 检测更新
+check_update() {
+    if [[ "$LANG_CHOICE" == "zh" ]]; then
+        color_output "\e[34m[检测更新]\e[0m"
+        color_output "正在检查更新..."
+    else
+        color_output "\e[34m[Check for Updates]\e[0m"
+        color_output "Checking for updates..."
+    fi
+    
+    # 检查 wget 是否安装
+    if ! command -v wget >/dev/null 2>&1; then
+        if [[ "$LANG_CHOICE" == "zh" ]]; then
+            color_output "\e[33m正在安装 wget...\e[0m"
+        else
+            color_output "\e[33mInstalling wget...\e[0m"
+        fi
+        opkg update && opkg install wget
+    fi
+    
+    # 创建临时目录
+    local temp_dir="/tmp/zerowrt_update"
+    mkdir -p "$temp_dir"
+    
+    # 下载远程版本文件
+    if ! wget -q "https://git.kejizero.online/zhao/files/raw/branch/main/bin/version.txt" -O "$temp_dir/version.txt"; then
+        if [[ "$LANG_CHOICE" == "zh" ]]; then
+            color_output "\e[31m无法连接到更新服务器。\e[0m"
+        else
+            color_output "\e[31mFailed to connect to update server.\e[0m"
+        fi
+        rm -rf "$temp_dir"
+        read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回菜单..." || echo "Press Enter to return to menu...")"
+        show_menu
+        return
+    fi
+    
+    # 获取本地版本和远程版本
+    local_version=$(cat /root/version.txt 2>/dev/null || echo "0")
+    remote_version=$(cat "$temp_dir/version.txt" 2>/dev/null || echo "0")
+    
+    # 比较版本
+    if [ "$local_version" != "$remote_version" ]; then
+        if [[ "$LANG_CHOICE" == "zh" ]]; then
+            color_output "\e[33m发现新版本：$remote_version\e[0m"
+            color_output "\e[33m当前版本：$local_version\e[0m"
+            read -p "是否更新到最新版本？(y/n): " confirm
+        else
+            color_output "\e[33mNew version available: $remote_version\e[0m"
+            color_output "\e[33mCurrent version: $local_version\e[0m"
+            read -p "Update to the latest version? (y/n): " confirm
+        fi
+        if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+            if [[ "$LANG_CHOICE" == "zh" ]]; then
+                color_output "开始下载更新..."
+            else
+                color_output "Downloading update..."
+            fi
+            
+            # 下载新版本到临时文件
+            if wget -q "https://git.kejizero.online/zhao/files/raw/branch/main/bin/ZeroWrt" -O "$temp_dir/ZeroWrt.new"; then
+                # 检查文件是否为有效的 shell 脚本
+                if head -n1 "$temp_dir/ZeroWrt.new" | grep -q "^#!/bin/bash"; then
+                    # 备份当前版本
+                    cp /bin/ZeroWrt /bin/ZeroWrt.bak 2>/dev/null
+                    
+                    # 安装新版本
+                    mv "$temp_dir/ZeroWrt.new" /bin/ZeroWrt
+                    chmod +x /bin/ZeroWrt
+                    
+                    # 更新版本文件
+                    echo "$remote_version" > /root/version.txt
+                    
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[32m更新成功！\e[0m"
+                        color_output "\e[32m已备份原版本为 /bin/ZeroWrt.bak\e[0m"
+                        color_output "\e[32m请重新运行脚本以应用更新。\e[0m"
+                    else
+                        color_output "\e[32mUpdate successful!\e[0m"
+                        color_output "\e[32mOriginal version backed up as /bin/ZeroWrt.bak\e[0m"
+                        color_output "\e[32mPlease rerun the script to apply updates.\e[0m"
+                    fi
+                    
+                    # 清理并退出
+                    rm -rf "$temp_dir"
+                    exit 0
+                else
+                    if [[ "$LANG_CHOICE" == "zh" ]]; then
+                        color_output "\e[31m下载的文件格式不正确。\e[0m"
+                    else
+                        color_output "\e[31mDownloaded file is not a valid script.\e[0m"
+                    fi
+                fi
+            else
+                if [[ "$LANG_CHOICE" == "zh" ]]; then
+                    color_output "\e[31m更新下载失败。\e[0m"
+                else
+                    color_output "\e[31mUpdate download failed.\e[0m"
+                fi
+            fi
+        else
+            if [[ "$LANG_CHOICE" == "zh" ]]; then
+                color_output "\e[32m已取消更新。\e[0m"
+            else
+                color_output "\e[32mUpdate cancelled.\e[0m"
+            fi
+        fi
+    else
+        if [[ "$LANG_CHOICE" == "zh" ]]; then
+            color_output "\e[32m当前已是最新版本：$local_version\e[0m"
+        else
+            color_output "\e[32mAlready up to date: $local_version\e[0m"
+        fi
+    fi
+    
+    # 清理临时文件
+    rm -rf "$temp_dir"
+    read -p "$([[ "$LANG_CHOICE" == "zh" ]] && echo "按 Enter 键返回菜单..." || echo "Press Enter to return to menu...")"
+    show_menu
+} 
+
+# 主程序
+select_language
+show_agreement
+print_header
+show_menu

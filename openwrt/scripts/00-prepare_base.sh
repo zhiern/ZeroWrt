@@ -1,20 +1,6 @@
-#!/bin/bash
+#!/bin/bash -e
 
-# =====================
-# 配置参数
-# =====================
-# 脚本URL
-export mirror=http://127.0.0.1:8080
-
-# 私有Gitea
-export gitea=git.kejizero.online/zhao
-
-# GitHub镜像
-export github="github.com"
-
-# 下载进度条
-# CURL_BAR="--progress-bar"
-
+### 基础部分 ###
 # 使用 O2 级别的优化
 sed -i 's/Os/O2/g' include/target.mk
 
@@ -52,6 +38,19 @@ sed -i 's/cheaper = 1/cheaper = 2/g' feeds/packages/net/uwsgi/files-luci-support
 sed -i 's/option timeout 30/option timeout 60/g' package/system/rpcd/files/rpcd.config
 sed -i 's#20) \* 1000#60) \* 1000#g' feeds/luci/modules/luci-base/htdocs/luci-static/resources/rpc.js
 
+# 更换为 ImmortalWrt Uboot 以及 Target
+rm -rf target/linux/rockchip
+cp -rf ../immortalwrt/target/linux/rockchip target/linux/rockchip
+pushd target/linux/rockchip/patches-6.6/
+    curl -Os $mirror/openwrt/patch/rockchip/014-rockchip-add-pwm-fan-controller-for-nanopi-r2s-r4s.patch
+    curl -Os $mirror/openwrt/patch/rockchip/702-general-rk3328-dtsi-trb-ent-quirk.patch
+    curl -Os $mirror/openwrt/patch/rockchip/703-rk3399-enable-dwc3-xhci-usb-trb-quirk.patch
+popd
+rm -rf package/boot/{rkbin,uboot-rockchip,arm-trusted-firmware-rockchip}
+cp -rf ../immortalwrt/package/boot/uboot-rockchip package/boot/uboot-rockchip
+cp -rf ../immortalwrt/package/boot/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip
+sed -i '/REQUIRE_IMAGE_METADATA/d' target/linux/rockchip/armv8/base-files/lib/upgrade/platform.sh
+
 # 修改默认ip
 sed -i "s/192.168.1.1/10.0.0.1/g" package/base-files/files/bin/config_generate
 
@@ -63,6 +62,10 @@ curl -s $mirror/Customize/base-files/banner > package/base-files/files/etc/banne
 
 # make olddefconfig
 curl -sL $mirror/openwrt/patch/kernel-6.6/kernel/0003-include-kernel-defaults.mk.patch | patch -p1
+
+# module
+curl -s $mirror/openwrt/patch/kernel-6.6/kernel/0001-linux-module-video.patch > package/0001-linux-module-video.patch
+git apply package/0001-linux-module-video.patch
 
 # bbr
 pushd target/linux/generic/backport-6.6
@@ -174,16 +177,16 @@ curl -s $mirror/openwrt/patch/firewall4/nftables/0002-nftables-add-brcm-fullcone
 curl -s $mirror/openwrt/patch/firewall4/nftables/0003-drop-rej-file.patch > package/network/utils/nftables/patches/0003-drop-rej-file.patch
 
 # FullCone module
-git clone https://$gitea/nft-fullcone package/new/nft-fullcone
+git clone https://$github/oppen321/nft-fullcone package/new/nft-fullcone
 
 # IPv6 NAT
-git clone https://$gitea/package_new_nat6 package/new/nat6
+git clone https://$github/oppen321/package_new_nat6 package/new/nat6
 
 # natflow
-git clone https://$gitea/package_new_natflow package/new/natflow
+git clone https://$github/oppen321/package_new_natflow package/new/natflow
 
 # sfe
-git clone https://$gitea/shortcut-fe package/new/shortcut-fe
+git clone https://github.com/oppen321/shortcut-fe package/new/shortcut-fe
 
 # Patch Luci add nft_fullcone/bcm_fullcone & shortcut-fe & natflow & ipv6-nat & custom nft command option
 pushd feeds/luci
@@ -211,21 +214,22 @@ popd
 curl -s $mirror/openwrt/patch/kernel-6.6/igc-fix/996-intel-igc-i225-i226-disable-eee.patch > target/linux/x86/patches-6.6/996-intel-igc-i225-i226-disable-eee.patch
 
 # OTHERS
-curl -s $mirror/openwrt/patch/other/691-net-ipv6-fix-UDPv6-GSO-segmentation-with-NAT.patch > target/linux/generic/pending-6.6/691-net-ipv6-fix-UDPv6-GSO-segmentation-with-NAT.patch
+curl -s $mirroropenwrt/patch/other/691-net-ipv6-fix-UDPv6-GSO-segmentation-with-NAT.patch > target/linux/generic/pending-6.6/691-net-ipv6-fix-UDPv6-GSO-segmentation-with-NAT.patch
 
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
-git clone https://$gitea/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
+git clone https://$github/oppen321/luci-app-dockerman -b main feeds/luci/applications/luci-app-dockerman
     rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
-    git clone https://$gitea/packages_utils_docker feeds/packages/utils/docker
-    git clone https://$gitea/packages_utils_dockerd feeds/packages/utils/dockerd
-    git clone https://$gitea/packages_utils_containerd feeds/packages/utils/containerd
-    git clone https://$gitea/packages_utils_runc feeds/packages/utils/runc
+    git clone $gitea/zhao/packages_utils_docker feeds/packages/utils/docker
+    git clone $gitea/zhao/packages_utils_dockerd feeds/packages/utils/dockerd
+    git clone $gitea/zhao/packages_utils_containerd feeds/packages/utils/containerd
+    git clone $gitea/zhao/packages_utils_runc feeds/packages/utils/runc
     sed -i '/cgroupfs-mount/d' feeds/packages/utils/dockerd/Config.in
 sed -i '/sysctl.d/d' feeds/packages/utils/dockerd/Makefile
 pushd feeds/packages
     curl -s $mirror/openwrt/patch/docker/0001-dockerd-fix-bridge-network.patch | patch -p1
     curl -s $mirror/openwrt/patch/docker/0002-docker-add-buildkit-experimental-support.patch | patch -p1
+    curl -s $mirror/openwrt/patch/docker/0003-dockerd-disable-ip6tables-for-bridge-network-by-defa.patch | patch -p1
 popd
 
 # TTYD
@@ -236,8 +240,8 @@ sed -i 's/procd_set_param stderr 1/procd_set_param stderr 0/g' feeds/packages/ut
 
 # UPnP
 rm -rf feeds/{packages/net/miniupnpd,luci/applications/luci-app-upnp}
-git clone https://$gitea/miniupnpd feeds/packages/net/miniupnpd -b v2.3.7
-git clone https://$gitea/luci-app-upnp feeds/luci/applications/luci-app-upnp -b master
+git clone $gitea/zhao/miniupnpd feeds/packages/net/miniupnpd -b v2.3.7
+git clone $gitea/zhao/luci-app-upnp feeds/luci/applications/luci-app-upnp -b master
 
 # profile
 sed -i 's#\\u@\\h:\\w\\\$#\\[\\e[32;1m\\][\\u@\\h\\[\\e[0m\\] \\[\\033[01;34m\\]\\W\\[\\033[00m\\]\\[\\e[32;1m\\]]\\[\\e[0m\\]\\\$#g' package/base-files/files/etc/profile
@@ -263,11 +267,7 @@ mkdir -p root
 curl -so files/root/version.txt $mirror/openwrt/files/root/version.txt
 curl -so files/bin/ZeroWrt $mirror/openwrt/files/bin/ZeroWrt
 chmod +x files/bin/ZeroWrt
-chmod +x files/root/version.txt 
-
-# key-build.pub
-curl -so files/root/key-build.pub $mirror/openwrt/files/root/key-build.pub
-chmod +x files/root/key-build.pub
+chmod +x files/root/version.txt
 
 # NTP
 sed -i 's/0.openwrt.pool.ntp.org/ntp1.aliyun.com/g' package/base-files/files/bin/config_generate
@@ -292,187 +292,3 @@ function addLinks() {
 document.addEventListener("DOMContentLoaded", addLinks);
 </script>
 EOF
-
-# 加入作者信息
-sed -i "s/DISTRIB_DESCRIPTION='*.*'/DISTRIB_DESCRIPTION='ZeroWrt-$(date +%Y%m%d)'/g"  package/base-files/files/etc/openwrt_release
-sed -i "s/DISTRIB_REVISION='*.*'/DISTRIB_REVISION=' By OPPEN321'/g" package/base-files/files/etc/openwrt_release
-sed -i "s|^OPENWRT_RELEASE=\".*\"|OPENWRT_RELEASE=\"ZeroWrt 标准版 @R$(date +%Y%m%d) BY OPPEN321\"|" package/base-files/files/usr/lib/os-release
-
-# CURRENT_DATE
-sed -i "/BUILD_DATE/d" package/base-files/files/usr/lib/os-release
-sed -i "/BUILD_ID/aBUILD_DATE=\"$CURRENT_DATE\"" package/base-files/files/usr/lib/os-release
-
-# golang 1.24
-rm -rf feeds/packages/lang/golang
-git clone https://$gitea/packages_lang_golang -b 25.x feeds/packages/lang/golang
-
-# luci-app-webdav
-git clone https://$github/sbwml/luci-app-webdav package/new/luci-app-webdav
-
-# ddns - fix boot
-sed -i '/boot()/,+2d' feeds/packages/net/ddns-scripts/files/etc/init.d/ddns
-
-# frpc
-sed -i 's/procd_set_param stdout $stdout/procd_set_param stdout 0/g' feeds/packages/net/frp/files/frpc.init
-sed -i 's/procd_set_param stderr $stderr/procd_set_param stderr 0/g' feeds/packages/net/frp/files/frpc.init
-sed -i 's/stdout stderr //g' feeds/packages/net/frp/files/frpc.init
-sed -i '/stdout:bool/d;/stderr:bool/d' feeds/packages/net/frp/files/frpc.init
-sed -i '/stdout/d;/stderr/d' feeds/packages/net/frp/files/frpc.config
-sed -i 's/env conf_inc/env conf_inc enable/g' feeds/packages/net/frp/files/frpc.init
-sed -i "s/'conf_inc:list(string)'/& \\\\/" feeds/packages/net/frp/files/frpc.init
-sed -i "/conf_inc:list/a\\\t\t\'enable:bool:0\'" feeds/packages/net/frp/files/frpc.init
-sed -i '/procd_open_instance/i\\t\[ "$enable" -ne 1 \] \&\& return 1\n' feeds/packages/net/frp/files/frpc.init
-curl -s $mirror/Customize/frpc/001-luci-app-frpc-hide-token.patch | patch -p1
-curl -s $mirror/Customize/frpc/002-luci-app-frpc-add-enable-flag.patch | patch -p1
-
-# natmap
-sed -i 's/log_stdout:bool:1/log_stdout:bool:0/g;s/log_stderr:bool:1/log_stderr:bool:0/g' feeds/packages/net/natmap/files/natmap.init
-pushd feeds/luci
-    curl -s $mirror/Customize/natmap/0001-luci-app-natmap-add-default-STUN-server-lists.patch | patch -p1
-popd
-
-# samba4 - bump version
-rm -rf feeds/packages/net/samba4
-git clone https://$github/sbwml/feeds_packages_net_samba4 feeds/packages/net/samba4
-# liburing - 2.7 (samba-4.21.0)
-rm -rf feeds/packages/libs/liburing
-git clone https://$github/sbwml/feeds_packages_libs_liburing feeds/packages/libs/liburing
-# enable multi-channel
-sed -i '/workgroup/a \\n\t## enable multi-channel' feeds/packages/net/samba4/files/smb.conf.template
-sed -i '/enable multi-channel/a \\tserver multi channel support = yes' feeds/packages/net/samba4/files/smb.conf.template
-# default config
-sed -i 's/#aio read size = 0/aio read size = 0/g' feeds/packages/net/samba4/files/smb.conf.template
-sed -i 's/#aio write size = 0/aio write size = 0/g' feeds/packages/net/samba4/files/smb.conf.template
-sed -i 's/invalid users = root/#invalid users = root/g' feeds/packages/net/samba4/files/smb.conf.template
-sed -i 's/bind interfaces only = yes/bind interfaces only = no/g' feeds/packages/net/samba4/files/smb.conf.template
-sed -i 's/#create mask/create mask/g' feeds/packages/net/samba4/files/smb.conf.template
-sed -i 's/#directory mask/directory mask/g' feeds/packages/net/samba4/files/smb.conf.template
-sed -i 's/0666/0644/g;s/0744/0755/g;s/0777/0755/g' feeds/luci/applications/luci-app-samba4/htdocs/luci-static/resources/view/samba4.js
-sed -i 's/0666/0644/g;s/0777/0755/g' feeds/packages/net/samba4/files/samba.config
-sed -i 's/0666/0644/g;s/0777/0755/g' feeds/packages/net/samba4/files/smb.conf.template
-
-# aria2 & ariaNG
-rm -rf feeds/packages/net/ariang
-rm -rf feeds/luci/applications/luci-app-aria2
-git clone https://$github/sbwml/ariang-nginx package/new/ariang-nginx
-rm -rf feeds/packages/net/aria2
-git clone https://$github/sbwml/feeds_packages_net_aria2 -b 22.03 feeds/packages/net/aria2
-
-# SSRP & Passwall
-rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box}
-git clone -b openwrt-24.10 https://$gitea/openwrt_helloworld package/new/helloworld
-
-# alist
-rm -rf feeds/packages/net/alist feeds/luci/applications/luci-app-alist
-git clone https://$github/sbwml/openwrt-alist package/new/alist
-
-# openlist
-git clone https://$github/sbwml/luci-app-openlist package/new/openlist
-
-# luci-app-sqm
-rm -rf feeds/luci/applications/luci-app-sqm
-git clone https://$gitea/luci-app-sqm feeds/luci/applications/luci-app-sqm
-
-# netdata
-sed -i 's/syslog/none/g' feeds/packages/admin/netdata/files/netdata.conf
-
-# Mosdns
-git clone https://$github/sbwml/luci-app-mosdns -b v5 package/new/mosdns
-
-# OpenAppFilter
-git clone https://$github/destan19/OpenAppFilter package/new/OpenAppFilter
-
-# adguardhome
-git clone https://$gitea/luci-app-adguardhome package/new/luci-app-adguardhome
-
-# nlbwmon
-sed -i 's/services/network/g' feeds/luci/applications/luci-app-nlbwmon/root/usr/share/luci/menu.d/luci-app-nlbwmon.json
-sed -i 's/services/network/g' feeds/luci/applications/luci-app-nlbwmon/htdocs/luci-static/resources/view/nlbw/config.js
-
-# mentohust
-git clone https://$github/sbwml/luci-app-mentohust package/new/mentohust
-
-# argon
-git clone https://$github/jerrykuku/luci-theme-argon.git package/new/luci-theme-argon
-curl -s $mirror/Customize/argon/bg1.jpg > package/new/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
-
-# argon-config
-git clone https://$github/jerrykuku/luci-app-argon-config.git package/new/luci-app-argon-config
-sed -i "s/bing/none/g" package/new/luci-app-argon-config/root/etc/config/argon
-
-# 主题设置
-sed -i 's|<a class="luci-link" href="https://github.com/openwrt/luci" target="_blank">Powered by <%= ver.luciname %> (<%= ver.luciversion %>)</a>|<a class="luci-link" href="https://www.kejizero.online" target="_blank">探索无限</a>|g' package/new/luci-theme-argon/luasrc/view/themes/argon/footer.htm
-sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">ArgonTheme <%# vPKG_VERSION %></a>|<a href="https://github.com/zhiern/OpenWRT" target="_blank">ZeroWrt</a> |g' package/new/luci-theme-argon/luasrc/view/themes/argon/footer.htm
-sed -i 's|<a class="luci-link" href="https://github.com/openwrt/luci" target="_blank">Powered by <%= ver.luciname %> (<%= ver.luciversion %>)</a>|<a class="luci-link" href="https://www.kejizero.online" target="_blank">探索无限</a>|g' package/new/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
-sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">ArgonTheme <%# vPKG_VERSION %></a>|<a href="https://github.com/zhiern/OpenWRT" target="_blank">ZeroWrt</a> |g' package/new/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
-
-# lucky
-git clone https://$github/gdy666/luci-app-lucky.git package/new/lucky
-
-# pkgs
-git clone https://$gitea/openwrt-package package/new/openwrt-package
-
-# autocore-arm
-git clone https://$gitea/autocore-arm package/new/autocore-arm
-
-sed -i 's/O2/O2 -march=x86-64-v2/g' include/target.mk
-
-# libsodium
-sed -i 's,no-mips16 no-lto,no-mips16,g' feeds/packages/libs/libsodium/Makefile
-
-echo '#!/bin/sh
-# Put your custom commands here that should be executed once
-# the system init finished. By default this file does nothing.
-
-if ! grep "Default string" /tmp/sysinfo/model > /dev/null; then
-    echo should be fine
-else
-    echo "Generic PC" > /tmp/sysinfo/model
-fi
-
-status=$(cat /sys/devices/system/cpu/intel_pstate/status)
-
-if [ "$status" = "passive" ]; then
-    echo "active" | tee /sys/devices/system/cpu/intel_pstate/status
-fi
-
-exit 0
-'> ./package/base-files/files/etc/rc.local
-
-# 默认设置
-git clone --depth=1 -b openwrt-24.10 https://$github/zhiern/default-settings package/new/default-settings
-
-# distfeeds.conf
-mkdir -p files/etc/opkg
-cat > files/etc/opkg/distfeeds.conf <<EOF
-src/gz openwrt_base https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/packages/x86_64/base
-src/gz openwrt_luci https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/packages/x86_64/luci
-src/gz openwrt_packages https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/packages/x86_64/packages
-src/gz openwrt_routing https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/packages/x86_64/routing
-src/gz openwrt_telephony https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/packages/x86_64/telephony
-EOF
-
-# Vermagic
-# curl -s https://downloads.openwrt.org/releases/24.10.1/targets/x86/64/openwrt-24.10.1-x86-64.manifest \
-# | grep "^kernel -" \
-# | awk '{print $3}' \
-# | sed -n 's/.*~\([a-f0-9]\+\)-r[0-9]\+/\1/p' > vermagic
-# sed -i 's#grep '\''=\[ym\]'\'' \$(LINUX_DIR)/\.config\.set | LC_ALL=C sort | \$(MKHASH) md5 > \$(LINUX_DIR)/\.vermagic#cp \$(TOPDIR)/vermagic \$(LINUX_DIR)/.vermagic#g' include/kernel-defaults.mk
-
-# Toolchain Cache
-#if [ "$BUILD_FAST" = "y" ]; then
-#    TOOLCHAIN_URL=https://github.com/oppen321/openwrt_caches/releases/download/OpenWrt_Toolchain_Cache
-#    curl -L -k ${TOOLCHAIN_URL}/toolchain_gcc13_x86_64.tar.zst -o toolchain.tar.zst $CURL_BAR
-#    tar -I "zstd" -xf toolchain.tar.zst
-#    rm -f toolchain.tar.zst
-#    mkdir bin
-#    find ./staging_dir/ -name '*' -exec touch {} \; >/dev/null 2>&1
-#    find ./tmp/ -name '*' -exec touch {} \; >/dev/null 2>&1
-#fi
-
-# init openwrt config
-rm -rf tmp/*
-     
-# install feeds
-./scripts/feeds update -a
-./scripts/feeds install -a

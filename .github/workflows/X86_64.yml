@@ -51,6 +51,16 @@ jobs:
         echo -e "\n\e[1;32mKernel:\e[0m"
         uname -a
         echo
+
+    - name: Install Caddy Server
+      run: |
+        sudo curl -sL -o /usr/bin/caddy https://github.com/zhiern/OpenWRT/releases/download/Caddy/caddy
+        sudo chmod 755 /usr/bin/caddy
+        echo ":8080 {" > caddyfile
+        echo "    root * $(pwd)/OpenWRT" >> caddyfile
+        echo "    file_server browse" >> caddyfile
+        echo "}" >> caddyfile
+        sudo /usr/bin/caddy start --config caddyfile --adapter caddyfile
         
     - name: Free disk space
       uses: zhiern/actions@free-disk
