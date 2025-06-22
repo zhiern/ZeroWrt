@@ -174,16 +174,16 @@ curl -s $mirror/openwrt/patch/firewall4/nftables/0002-nftables-add-brcm-fullcone
 curl -s $mirror/openwrt/patch/firewall4/nftables/0003-drop-rej-file.patch > package/network/utils/nftables/patches/0003-drop-rej-file.patch
 
 # FullCone module
-git clone $gitea/nft-fullcone package/new/nft-fullcone
+git clone https://$gitea/nft-fullcone package/new/nft-fullcone
 
 # IPv6 NAT
-git clone $gitea/package_new_nat6 package/new/nat6
+git clone https://$gitea/package_new_nat6 package/new/nat6
 
 # natflow
-git clone $gitea/package_new_natflow package/new/natflow
+git clone https://$gitea/package_new_natflow package/new/natflow
 
 # sfe
-git clone $gitea/shortcut-fe package/new/shortcut-fe
+git clone https://$gitea/shortcut-fe package/new/shortcut-fe
 
 # Patch Luci add nft_fullcone/bcm_fullcone & shortcut-fe & natflow & ipv6-nat & custom nft command option
 pushd feeds/luci
@@ -215,12 +215,12 @@ curl -s $mirror/openwrt/patch/other/691-net-ipv6-fix-UDPv6-GSO-segmentation-with
 
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
-git clone $gitea/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
+git clone https://$gitea/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
     rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
-    git clone $gitea/packages_utils_docker feeds/packages/utils/docker
-    git clone $gitea/packages_utils_dockerd feeds/packages/utils/dockerd
-    git clone $gitea/packages_utils_containerd feeds/packages/utils/containerd
-    git clone $gitea/packages_utils_runc feeds/packages/utils/runc
+    git clone https://$gitea/packages_utils_docker feeds/packages/utils/docker
+    git clone https://$gitea/packages_utils_dockerd feeds/packages/utils/dockerd
+    git clone https://$gitea/packages_utils_containerd feeds/packages/utils/containerd
+    git clone https://$gitea/packages_utils_runc feeds/packages/utils/runc
     sed -i '/cgroupfs-mount/d' feeds/packages/utils/dockerd/Config.in
 sed -i '/sysctl.d/d' feeds/packages/utils/dockerd/Makefile
 pushd feeds/packages
@@ -236,8 +236,8 @@ sed -i 's/procd_set_param stderr 1/procd_set_param stderr 0/g' feeds/packages/ut
 
 # UPnP
 rm -rf feeds/{packages/net/miniupnpd,luci/applications/luci-app-upnp}
-git clone $gitea/miniupnpd feeds/packages/net/miniupnpd -b v2.3.7
-git clone $gitea/luci-app-upnp feeds/luci/applications/luci-app-upnp -b master
+git clone https://$gitea/miniupnpd feeds/packages/net/miniupnpd -b v2.3.7
+git clone https://$gitea/luci-app-upnp feeds/luci/applications/luci-app-upnp -b master
 
 # profile
 sed -i 's#\\u@\\h:\\w\\\$#\\[\\e[32;1m\\][\\u@\\h\\[\\e[0m\\] \\[\\033[01;34m\\]\\W\\[\\033[00m\\]\\[\\e[32;1m\\]]\\[\\e[0m\\]\\\$#g' package/base-files/files/etc/profile
@@ -304,7 +304,7 @@ sed -i "/BUILD_ID/aBUILD_DATE=\"$CURRENT_DATE\"" package/base-files/files/usr/li
 
 # golang 1.24
 rm -rf feeds/packages/lang/golang
-git clone $gitea/packages_lang_golang -b 24.x feeds/packages/lang/golang
+git clone https://$gitea/packages_lang_golang -b 25.x feeds/packages/lang/golang
 
 # luci-app-webdav
 git clone https://$github/sbwml/luci-app-webdav package/new/luci-app-webdav
@@ -360,7 +360,7 @@ git clone https://$github/sbwml/feeds_packages_net_aria2 -b 22.03 feeds/packages
 
 # SSRP & Passwall
 rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box}
-git clone -b openwrt-24.10 $gitea/openwrt_helloworld package/new/helloworld
+git clone -b openwrt-24.10 https://$gitea/openwrt_helloworld package/new/helloworld
 
 # alist
 rm -rf feeds/packages/net/alist feeds/luci/applications/luci-app-alist
@@ -371,7 +371,7 @@ git clone https://$github/sbwml/luci-app-openlist package/new/openlist
 
 # luci-app-sqm
 rm -rf feeds/luci/applications/luci-app-sqm
-git clone $gitea/luci-app-sqm feeds/luci/applications/luci-app-sqm
+git clone https://$gitea/luci-app-sqm feeds/luci/applications/luci-app-sqm
 
 # netdata
 sed -i 's/syslog/none/g' feeds/packages/admin/netdata/files/netdata.conf
@@ -383,7 +383,7 @@ git clone https://$github/sbwml/luci-app-mosdns -b v5 package/new/mosdns
 git clone https://$github/destan19/OpenAppFilter package/new/OpenAppFilter
 
 # adguardhome
-git clone $gitea/luci-app-adguardhome package/new/luci-app-adguardhome
+git clone https://$gitea/luci-app-adguardhome package/new/luci-app-adguardhome
 
 # nlbwmon
 sed -i 's/services/network/g' feeds/luci/applications/luci-app-nlbwmon/root/usr/share/luci/menu.d/luci-app-nlbwmon.json
@@ -410,10 +410,10 @@ sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank
 git clone https://$github/gdy666/luci-app-lucky.git package/new/lucky
 
 # pkgs
-git clone $gitea/openwrt-package package/new/openwrt-package
+git clone https://$gitea/openwrt-package package/new/openwrt-package
 
 # autocore-arm
-git clone $gitea/autocore-arm package/new/autocore-arm
+git clone https://$gitea/autocore-arm package/new/autocore-arm
 
 sed -i 's/O2/O2 -march=x86-64-v2/g' include/target.mk
 
