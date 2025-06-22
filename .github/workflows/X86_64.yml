@@ -32,6 +32,11 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps: 
+    - name: Checkout
+      uses: actions/checkout@main
+      with:
+        path: OpenWRT 
+        
     - name: Setup variables
       run: |
         sudo timedatectl set-timezone 'Asia/Shanghai'
