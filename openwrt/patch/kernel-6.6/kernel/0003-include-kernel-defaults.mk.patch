@@ -1,0 +1,24 @@
+From 915be67b44c9d3ec1cb475305a7ec81a70708a00 Mon Sep 17 00:00:00 2001
+From: OPPEN321 <zj18139624826@gmail.com>
+Date: Sun, 23 Mar 2025 23:55:15 +0800
+Subject: [PATCH] oldconfig
+
+Signed-off-by: OPPEN321 <zj18139624826@gmail.com>
+---
+ include/kernel-defaults.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/kernel-defaults.mk b/include/kernel-defaults.mk
+index cbe415abe6..3d2ad830df 100644
+--- a/include/kernel-defaults.mk
++++ b/include/kernel-defaults.mk
+@@ -136,6 +136,7 @@ endef
+ 
+ define Kernel/CompileModules/Default
+ 	rm -f $(LINUX_DIR)/vmlinux $(LINUX_DIR)/System.map
++	+$(KERNEL_MAKE) olddefconfig
+ 	+$(KERNEL_MAKE) $(if $(KERNELNAME),$(KERNELNAME),all) modules
+ 	# If .config did not change, use the previous timestamp to avoid package rebuilds
+ 	cmp -s $(LINUX_DIR)/.config $(LINUX_DIR)/.config.modules.save && \
+-- 
+2.43.0
