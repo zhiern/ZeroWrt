@@ -35,7 +35,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@main
       with:
-        path: OpenWRT 
+        path: ZeroWrt-Action
         
     - name: Setup variables
       run: |
