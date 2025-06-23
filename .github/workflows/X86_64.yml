@@ -62,7 +62,7 @@ jobs:
         sudo curl -sL -o /usr/bin/caddy https://github.com/zhiern/OpenWRT/releases/download/Caddy/caddy
         sudo chmod 755 /usr/bin/caddy
         echo ":8080 {" > caddyfile
-        echo "    root * $(pwd)/ZeroWrt-Action" >> caddyfile
+        echo "    root * $(pwd)" >> caddyfile
         echo "    file_server browse" >> caddyfile
         echo "}" >> caddyfile
         sudo /usr/bin/caddy start --config caddyfile --adapter caddyfile
