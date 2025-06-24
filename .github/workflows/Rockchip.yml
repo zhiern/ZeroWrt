@@ -52,6 +52,16 @@ jobs:
         echo -e "\n\e[1;32mKernel:\e[0m"
         uname -a
         echo
+
+    - name: Install Caddy Server
+      run: |
+        sudo curl -sL -o /usr/bin/caddy https://github.com/zhiern/OpenWRT/releases/download/Caddy/caddy
+        sudo chmod 755 /usr/bin/caddy
+        echo ":8080 {" > caddyfile
+        echo "    root * $(pwd)" >> caddyfile
+        echo "    file_server browse" >> caddyfile
+        echo "}" >> caddyfile
+        sudo /usr/bin/caddy start --config caddyfile --adapter caddyfile
         
     - name: Free disk space
       uses: zhiern/actions@free-disk
@@ -160,7 +170,7 @@ jobs:
       run: |
         cd $OPENWRT_PATH
         mkdir -p ota
-        OTA_URL="https://github.com/zhiern/OpenWRT/releases/download"
+        OTA_URL="https://github.com/zhiern/ZeroWrt-Action/releases/download"
         SHA256_armsom_sige3=$(sha256sum bin/targets/rockchip/armv8*/openwrt-rockchip-armv8-armsom_sige3-squashfs-sysupgrade.img.gz | awk '{print $1}')
         SHA256_armsom_sige7=$(sha256sum bin/targets/rockchip/armv8*/openwrt-rockchip-armv8-armsom_sige7-squashfs-sysupgrade.img.gz | awk '{print $1}')
         SHA256_t4=$(sha256sum bin/targets/rockchip/armv8*/openwrt-rockchip-armv8-friendlyarm_nanopc-t4-squashfs-sysupgrade.img.gz | awk '{print $1}')
