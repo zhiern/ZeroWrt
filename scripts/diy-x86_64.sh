@@ -363,6 +363,9 @@ git clone -b openwrt-24.10 https://$gitea/openwrt_helloworld package/new/hellowo
 rm -rf feeds/packages/net/alist feeds/luci/applications/luci-app-alist
 git clone https://$github/sbwml/openwrt-alist package/new/alist
 
+# QModem
+git clone https://github.com/FUjr/QModem package/new/QModem
+
 # openlist
 git clone https://$github/sbwml/luci-app-openlist package/new/openlist
 
