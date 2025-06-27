@@ -288,8 +288,8 @@ chmod +x files/bin/ZeroWrt
 chmod +x files/root/version.txt
 
 # key-build.pub
-curl -so files/root/key-build.pub $mirror/doc/files/root/key-build.pub
-chmod +x files/root/key-build.pub
+curl -so files/root/my-private.key.pub https://raw.githubusercontent.com/zhiern/ipkg-make-index/refs/heads/main/my-private.key.pub
+chmod +x files/root/my-private.key.pub
 
 # NTP
 sed -i 's/0.openwrt.pool.ntp.org/ntp1.aliyun.com/g' package/base-files/files/bin/config_generate
