@@ -260,7 +260,12 @@ mkdir -p root
 curl -so files/root/version.txt $mirror/doc/files/root/version.txt
 curl -so files/bin/ZeroWrt $mirror/doc/files/bin/ZeroWrt
 chmod +x files/bin/ZeroWrt
-chmod +x files/root/version.txt 
+chmod +x files/root/version.txt
+
+# caddy Menu
+mkdir -p files/usr/bin
+curl -so files/usr/bin/caddy https://git.kejizero.online/zhao/luci-app-caddy/releases/download/caddy/caddy-amd64
+chmod +x files/usr/bin/caddy
 
 # key-build.pub
 curl -so files/root/my-private.key.pub https://raw.githubusercontent.com/zhiern/ipkg-make-index/refs/heads/main/my-private.key.pub
@@ -373,6 +378,9 @@ git clone https://$gitea/luci-app-sqm feeds/luci/applications/luci-app-sqm
 
 # netdata
 sed -i 's/syslog/none/g' feeds/packages/admin/netdata/files/netdata.conf
+
+# caddy
+git clone https://git.kejizero.online/zhao/luci-app-caddy package/new/caddy
 
 # Mosdns
 git clone https://$github/sbwml/luci-app-mosdns -b v5 package/new/mosdns
