@@ -288,7 +288,7 @@ chmod +x files/bin/ZeroWrt
 chmod +x files/root/version.txt
 
 # caddy Menu
-mkdir -p files/usr/binAdd commentMore actions
+mkdir -p files/usr/bin
 curl -so files/usr/bin/caddy https://git.kejizero.online/zhao/luci-app-caddy/releases/download/caddy/caddy-arm64
 chmod +x files/usr/bin/caddy
 
