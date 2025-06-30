@@ -365,6 +365,7 @@ git clone https://$github/sbwml/openwrt-alist package/new/alist
 
 # openlist
 git clone https://$github/sbwml/luci-app-openlist package/new/openlist
+sed -i 's/\"services\"/\"nas\"/g' package/new/openlist/luci-app-openlist/root/usr/share/luci/menu.d/luci-app-openlist.json
 
 # luci-app-sqm
 rm -rf feeds/luci/applications/luci-app-sqm
