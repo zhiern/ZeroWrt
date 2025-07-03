@@ -183,7 +183,7 @@ git clone https://$gitea/package_new_nat6 package/new/nat6
 git clone https://$gitea/package_new_natflow package/new/natflow
 
 # sfe
-git clone https://$gitea/shortcut-fe package/new/shortcut-fe
+git clone https://$github/zhiern/shortcut-fe package/new/shortcut-fe
 
 # Patch Luci add nft_fullcone/bcm_fullcone & shortcut-fe & natflow & ipv6-nat & custom nft command option
 pushd feeds/luci
@@ -258,7 +258,7 @@ chmod +x files/root/version.txt
 
 # caddy Menu
 mkdir -p files/usr/bin
-curl -so files/usr/bin/caddy https://git.kejizero.online/zhao/luci-app-caddy/releases/download/caddy/caddy-amd64
+curl -so files/usr/bin/caddy https://$gitea/luci-app-caddy/releases/download/caddy/caddy-amd64
 chmod +x files/usr/bin/caddy
 
 # key-build.pub
