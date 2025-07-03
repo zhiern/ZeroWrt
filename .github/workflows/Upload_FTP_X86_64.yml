@@ -38,5 +38,5 @@ jobs:
           username: ${{ secrets.ftp_username }}
           password: ${{ secrets.ftp_password }}
           server-dir: ${{ secrets.file_path }}/x86_64/
-          local-dir: ${{ env.FIRMWARE_PATH }}/*
+          local-dir: ${{ env.FIRMWARE_PATH }}/
           dangerous-clean-slate: true
