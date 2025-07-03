@@ -83,7 +83,7 @@ jobs:
       run: |
         df -hT $GITHUB_WORKSPACE
         git clone $REPO_URL -b $REPO_BRANCH openwrt
-        curl -o ./openwrt/feeds.conf.default https://script.kejizero.online/Customize/feeds/feeds.conf.default
+        curl -o ./openwrt/feeds.conf.default https://raw.githubusercontent.com/zhiern/ZeroWrt-Action/refs/heads/openwrt-24.10/Customize/feeds/feeds.conf.default
         cd openwrt
         echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
         COMMIT_AUTHOR=$(git show -s --date=short --format="作者: %an")
