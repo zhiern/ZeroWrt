@@ -281,11 +281,6 @@ curl -so files/bin/ZeroWrt $mirror/doc/files/bin/ZeroWrt
 chmod +x files/bin/ZeroWrt
 chmod +x files/root/version.txt
 
-# caddy Menu
-mkdir -p files/usr/bin
-curl -so files/usr/bin/caddy https://$gitea/luci-app-caddy/releases/download/caddy/caddy-amd64
-chmod +x files/usr/bin/caddy
-
 # key-build.pub
 curl -so files/root/my-private.key.pub https://raw.githubusercontent.com/zhiern/ipkg-make-index/refs/heads/main/my-private.key.pub
 chmod +x files/root/my-private.key.pub
