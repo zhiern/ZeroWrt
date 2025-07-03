@@ -395,13 +395,13 @@ change_source() {
     case "$arch" in
         "x86_64")
             arch_name="x86_64"
-            target_core_url="https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/targets/x86/64/kmods/6.6.86-1-af351158cfb5febf5155a3aa53785982"
-            extras_url="https://opkg.cooluc.com/openwrt-24.10/x86_64"
+            target_core_url="https://core.kejizero.online/x86_64/$(grep Version /usr/lib/opkg/info/kernel.control | awk '{print $2}')"
+            extras_url="https://opkg.kejizero.online/openwrt-24.10/x86_64"
             ;;
         "aarch64")
             arch_name="aarch64_generic"
-            target_core_url="https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/24.10.1/targets/rockchip/armv8/kmods/6.6.86-1-a8e18e0ecc66cc99303d258424ec0db8"
-            extras_url="https://opkg.cooluc.com/openwrt-24.10/aarch64_generic"
+            target_core_url="https://core.kejizero.online/aarch64_generic/$(grep Version /usr/lib/opkg/info/kernel.control | awk '{print $2}')"
+            extras_url="https://opkg.kejizero.online/openwrt-24.10/aarch64_generic"
             ;;
         *)
             if [[ "$LANG_CHOICE" == "zh" ]]; then
