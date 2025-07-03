@@ -32,7 +32,7 @@ jobs:
         run: ls -lh ${{ env.FIRMWARE_PATH }}
 
       - name: Upload FTP
-        uses: sbwml/FTP-Deploy-Action@master
+        uses: zhiern/FTP-Deploy-Action@master
         with:
           server: ${{ secrets.ftp_address }}
           username: ${{ secrets.ftp_username }}
