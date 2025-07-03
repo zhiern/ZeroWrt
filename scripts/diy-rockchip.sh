@@ -203,7 +203,7 @@ git clone https://$gitea/package_new_nat6 package/new/nat6
 git clone https://$gitea/package_new_natflow package/new/natflow
 
 # sfe
-git clone https://$gitea/shortcut-fe package/new/shortcut-fe
+git clone https://$github/zhiern/shortcut-fe package/new/shortcut-fe
 
 # Patch Luci add nft_fullcone/bcm_fullcone & shortcut-fe & natflow & ipv6-nat & custom nft command option
 pushd feeds/luci
@@ -233,17 +233,11 @@ curl -s $mirror/doc/patch/kernel-6.6/igc-fix/996-intel-igc-i225-i226-disable-eee
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
 git clone https://$gitea/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
-    rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
-    git clone https://$gitea/packages_utils_docker feeds/packages/utils/docker
-    git clone https://$gitea/packages_utils_dockerd feeds/packages/utils/dockerd
-    git clone https://$gitea/packages_utils_containerd feeds/packages/utils/containerd
-    git clone https://$gitea/packages_utils_runc feeds/packages/utils/runc
-    sed -i '/cgroupfs-mount/d' feeds/packages/utils/dockerd/Config.in
-sed -i '/sysctl.d/d' feeds/packages/utils/dockerd/Makefile
-pushd feeds/packages
-    curl -s $mirror/doc/patch/docker/0001-dockerd-fix-bridge-network.patch | patch -p1
-    curl -s $mirror/doc/patch/docker/0002-docker-add-buildkit-experimental-support.patch | patch -p1
-popd
+rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
+git clone https://$gitea/packages_utils_docker feeds/packages/utils/docker
+git clone https://$gitea/packages_utils_dockerd feeds/packages/utils/dockerd
+git clone https://$gitea/packages_utils_containerd feeds/packages/utils/containerd
+git clone https://$gitea/packages_utils_runc feeds/packages/utils/runc
 
 # TTYD
 sed -i 's/services/system/g' feeds/luci/applications/luci-app-ttyd/root/usr/share/luci/menu.d/luci-app-ttyd.json
@@ -289,7 +283,7 @@ chmod +x files/root/version.txt
 
 # caddy Menu
 mkdir -p files/usr/bin
-curl -so files/usr/bin/caddy https://git.kejizero.online/zhao/luci-app-caddy/releases/download/caddy/caddy-arm64
+curl -so files/usr/bin/caddy https://$gitea/luci-app-caddy/releases/download/caddy/caddy-amd64
 chmod +x files/usr/bin/caddy
 
 # key-build.pub
