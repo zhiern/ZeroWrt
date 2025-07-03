@@ -83,7 +83,7 @@ jobs:
         cd openwrt
         rm -rf ./target/linux/rockchip
         cp -rf ../immortalwrt/target/linux/rockchip ./target/linux/rockchip
-        curl -o feeds.conf.default https://script.kejizero.online/Customize/feeds/feeds.conf.default
+        curl -o feeds.conf.default https://raw.githubusercontent.com/zhiern/ZeroWrt-Action/refs/heads/openwrt-24.10/Customize/feeds/feeds.conf.default
         rm -rf package/boot/{rkbin,uboot-rockchip,arm-trusted-firmware-rockchip}
         cp -rf ../immortalwrt/package/boot/uboot-rockchip ./package/boot/uboot-rockchip
         cp -rf ../immortalwrt/package/boot/arm-trusted-firmware-rockchip ./package/boot/arm-trusted-firmware-rockchip
@@ -389,3 +389,13 @@ jobs:
           - ${{ env.COMMIT_DATE }}
           - ${{ env.COMMIT_MESSAGE }}
           - ${{ env.COMMIT_HASH }}
+
+    - name: Upload FTP
+      uses: zhiern/FTP-Deploy-Action@master
+      with:
+        server: ${{ secrets.ftp_address }}
+        username: ${{ secrets.ftp_username }}
+        password: ${{ secrets.ftp_password }}
+        server-dir: ${{ secrets.file_path }}/rockchip/
+        local-dir: ${{ env.FIRMWARE_PATH }}/
+        dangerous-clean-slate: true
