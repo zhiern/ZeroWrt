@@ -15,7 +15,7 @@ jobs:
 
       - name: 下载 Release 文件
         run: |
-          TAG="X86_64"
+          TAG="Rockchip"
           REPO="zhiern/ZeroWrt-Action"
           API_URL="https://api.github.com/repos/${REPO}/releases/tags/${TAG}"
 
