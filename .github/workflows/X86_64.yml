@@ -232,5 +232,5 @@ jobs:
         username: ${{ secrets.ftp_username }}
         password: ${{ secrets.ftp_password }}
         server-dir: ${{ secrets.file_path }}/x86_64/
-        local-dir: ${{ env.OPENWRT_PATH }}/ota/
+        local-dir: openwrt/ota/
         dangerous-clean-slate: true
