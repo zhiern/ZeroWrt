@@ -192,7 +192,7 @@ jobs:
         SHA256_radxa_rock_5b=$(sha256sum bin/targets/rockchip/armv8*/openwrt-rockchip-armv8-radxa_rock-5b-squashfs-sysupgrade.img.gz | awk '{print $1}')
         SHA256_xunlong_orangepi_5_plus=$(sha256sum bin/targets/rockchip/armv8*/openwrt-rockchip-armv8-xunlong_orangepi-5-plus-squashfs-sysupgrade.img.gz | awk '{print $1}')
         SHA256_xunlong_orangepi_5=$(sha256sum bin/targets/rockchip/armv8*/openwrt-rockchip-armv8-xunlong_orangepi-5-squashfs-sysupgrade.img.gz | awk '{print $1}')
-        cat > ota/rk.json <<EOF
+        cat > ota/ota.json <<EOF
         {
           "armsom,sige3": [
             {
@@ -389,3 +389,13 @@ jobs:
           - ${{ env.COMMIT_DATE }}
           - ${{ env.COMMIT_MESSAGE }}
           - ${{ env.COMMIT_HASH }}
+
+    - name: Upload OTA File
+      uses: zhiern/FTP-Deploy-Action@master
+      with:
+        server: ${{ secrets.ftp_address }}
+        username: ${{ secrets.ftp_username }}
+        password: ${{ secrets.ftp_password }}
+        server-dir: ${{ secrets.file_path }}/rockchip/
+        local-dir: ${{ env.OPENWRT_PATH }}/ota/
+        dangerous-clean-slate: true
