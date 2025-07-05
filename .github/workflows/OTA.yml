@@ -1,0 +1,29 @@
+name: 📤 Upload OTA JSON to FTP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload-ota:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up workspace
+        run: |
+          mkdir -p openwrt/ota
+
+      - name: Download ota.json
+        run: |
+          curl -L -o openwrt/ota/ota.json https://github.com/zhiern/ZeroWrt-Action/releases/download/X86_64/ota.json
+          echo "Downloaded ota.json:"
+          cat openwrt/ota/ota.json
+
+      - name: Upload OTA File to FTP
+        uses: zhiern/FTP-Deploy-Action@master
+        with:
+          server: ${{ secrets.ftp_address }}
+          username: ${{ secrets.ftp_username }}
+          password: ${{ secrets.ftp_password }}
+          server-dir: ${{ secrets.file_path }}/x86_64/
+          local-dir: openwrt/ota/
+          dangerous-clean-slate: true
