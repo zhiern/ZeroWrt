@@ -167,7 +167,7 @@ jobs:
         mkdir -p ota
         OTA_URL="https://github.com/zhiern/ZeroWrt–Action/releases/download"
         SHA256=$(sha256sum bin/targets/x86/64*/openwrt-x86-64-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
-        cat > ota/x86.json <<EOF
+        cat > ota/ota.json <<EOF
         {
           "x86_64": [
             {
@@ -225,12 +225,12 @@ jobs:
           - ${{ env.COMMIT_MESSAGE }}
           - ${{ env.COMMIT_HASH }}
 
-    - name: Upload FTP
+    - name: Upload OTA File
       uses: zhiern/FTP-Deploy-Action@master
       with:
         server: ${{ secrets.ftp_address }}
         username: ${{ secrets.ftp_username }}
         password: ${{ secrets.ftp_password }}
         server-dir: ${{ secrets.file_path }}/x86_64/
-        local-dir: ${{ env.FIRMWARE_PATH }}/
+        local-dir: ${{ env.OPENWRT_PATH }}/ota/
         dangerous-clean-slate: true
