@@ -6,17 +6,24 @@ on:
 jobs:
   upload-ota:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - rockchip
+          - x86_64
 
     steps:
       - name: Set up workspace
         run: |
+          sudo timedatectl set-timezone 'Asia/Shanghai'
           mkdir -p openwrt/ota
 
       - name: Download ota.json
         run: |
-          curl -L -o openwrt/ota/ota.json https://github.com/zhiern/ZeroWrt-Action/releases/download/X86_64/ota.json
-          echo "Downloaded ota.json:"
-          cat openwrt/ota/ota.json
+          if [ "${{ matrix.target }}" = "rockchip" ]; then
+            curl -L -o openwrt/ota/ota.json https://github.com/zhiern/ZeroWrt-Action/releases/download/Rockchip/ota.json
+          elif [ "${{ matrix.target }}" = "x86_64" ]; then
+            curl -L -o openwrt/ota/ota.json https://github.com/zhiern/ZeroWrt-Action/releases/download/X86_64/ota.json
 
       - name: Upload OTA File to FTP
         uses: zhiern/FTP-Deploy-Action@master
@@ -24,6 +31,6 @@ jobs:
           server: ${{ secrets.ftp_address }}
           username: ${{ secrets.ftp_username }}
           password: ${{ secrets.ftp_password }}
-          server-dir: ${{ secrets.file_path }}/x86_64/
+          server-dir: ${{ secrets.file_path }}/${{ matrix.target }}/
           local-dir: openwrt/ota/
           dangerous-clean-slate: true
