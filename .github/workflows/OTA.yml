@@ -24,7 +24,8 @@ jobs:
             curl -L -o openwrt/ota/ota.json https://github.com/zhiern/ZeroWrt-Action/releases/download/Rockchip/ota.json
           elif [ "${{ matrix.target }}" = "x86_64" ]; then
             curl -L -o openwrt/ota/ota.json https://github.com/zhiern/ZeroWrt-Action/releases/download/X86_64/ota.json
-
+          fi
+        
       - name: Upload OTA File to FTP
         uses: zhiern/FTP-Deploy-Action@master
         with:
