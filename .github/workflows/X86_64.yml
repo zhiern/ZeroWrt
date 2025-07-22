@@ -59,7 +59,7 @@ jobs:
 
     - name: Install Caddy Server
       run: |
-        sudo curl -sL -o /usr/bin/caddy https://github.com/zhiern/OpenWRT/releases/download/Caddy/caddy
+        sudo curl -sL -o /usr/bin/caddy https://github.com/zhiern/ZeroWrt-Action/releases/download/Caddy/caddy
         sudo chmod 755 /usr/bin/caddy
         echo ":8080 {" > caddyfile
         echo "    root * $(pwd)" >> caddyfile
