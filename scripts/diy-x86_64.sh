@@ -293,9 +293,12 @@ sed -i "s|^OPENWRT_RELEASE=\".*\"|OPENWRT_RELEASE=\"ZeroWrt 标准版 @R$(date +
 sed -i "/BUILD_DATE/d" package/base-files/files/usr/lib/os-release
 sed -i "/BUILD_ID/aBUILD_DATE=\"$CURRENT_DATE\"" package/base-files/files/usr/lib/os-release
 
-# golang 1.24
+# golang 1.25
 rm -rf feeds/packages/lang/golang
 git clone https://$gitea/packages_lang_golang -b 25.x feeds/packages/lang/golang
+
+# rust
+git clone https://$github/zhiern/packages_lang_rust -b 1.85.0 feeds/packages/lang/rust
 
 # luci-app-webdav
 git clone https://$github/sbwml/luci-app-webdav package/new/luci-app-webdav
