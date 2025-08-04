@@ -1,15 +1,5 @@
 #!/bin/bash -e
 
-# Rockchip - rkbin & u-boot
-rm -rf package/boot/rkbin package/boot/uboot-rockchip package/boot/arm-trusted-firmware-rockchip
-if [ "$platform" = "rk3399" ]; then
-    git clone https://$github/sbwml/package_boot_uboot-rockchip package/boot/uboot-rockchip -b v2023.04
-    git clone https://$github/sbwml/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b 0419
-else
-    git clone https://$github/sbwml/package_boot_uboot-rockchip package/boot/uboot-rockchip
-    git clone https://$github/sbwml/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip
-fi
-
 # patch source
 curl -s $mirror/openwrt/patch/generic-24.10/0001-tools-add-upx-tools.patch | patch -p1
 curl -s $mirror/openwrt/patch/generic-24.10/0002-rootfs-add-upx-compression-support.patch | patch -p1
@@ -71,8 +61,6 @@ git clone https://$github/sbwml/package_kernel_r8127 package/kernel/r8127
 if [ "$platform" = "x86_64" ]; then
     curl -s $mirror/openwrt/patch/target-modify_for_x86_64.patch | patch -p1
 elif [ "$platform" = "armv8" ]; then
-    curl -s $mirror/openwrt/patch/target-modify_for_armsr.patch | patch -p1
-else
     curl -s $mirror/openwrt/patch/target-modify_for_rockchip.patch | patch -p1
 fi
 
@@ -107,6 +95,7 @@ fi
 # fstools
 rm -rf package/system/fstools
 git clone https://$github/sbwml/package_system_fstools -b openwrt-24.10 package/system/fstools
+
 # util-linux
 rm -rf package/utils/util-linux
 git clone https://$github/sbwml/package_utils_util-linux -b openwrt-24.10 package/utils/util-linux
@@ -115,7 +104,7 @@ git clone https://$github/sbwml/package_utils_util-linux -b openwrt-24.10 packag
 git clone https://$gitea/sbwml/shortcut-fe package/new/shortcut-fe
 
 # Patch FireWall 4
-if [ "$version" = "dev" ] || [ "$version" = "rc2" ]; then
+if [ "$version" = "dev" ] || [ "$version" = "v24" ]; then
     # firewall4
     sed -i 's|$(PROJECT_GIT)/project|https://github.com/openwrt|g' package/network/config/firewall4/Makefile
     mkdir -p package/network/config/firewall4/patches
@@ -245,7 +234,7 @@ git clone https://$github/sbwml/feeds_packages_net_curl feeds/packages/net/curl
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
 git clone https://$gitea/sbwml/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
-if [ "$version" = "dev" ] || [ "$version" = "rc2" ]; then
+if [ "$version" = "dev" ] || [ "$version" = "v24" ]; then
     rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
     git clone https://$github/sbwml/packages_utils_docker feeds/packages/utils/docker
     git clone https://$github/sbwml/packages_utils_dockerd feeds/packages/utils/dockerd
@@ -258,10 +247,12 @@ fi
 pushd feeds/packages
     curl -s $mirror/openwrt/patch/cgroupfs-mount/0001-fix-cgroupfs-mount.patch | patch -p1
 popd
+
 # mount cgroup v2 hierarchy to /sys/fs/cgroup/cgroup2
 mkdir -p feeds/packages/utils/cgroupfs-mount/patches
 curl -s $mirror/openwrt/patch/cgroupfs-mount/900-mount-cgroup-v2-hierarchy-to-sys-fs-cgroup-cgroup2.patch > feeds/packages/utils/cgroupfs-mount/patches/900-mount-cgroup-v2-hierarchy-to-sys-fs-cgroup-cgroup2.patch
 curl -s $mirror/openwrt/patch/cgroupfs-mount/901-fix-cgroupfs-umount.patch > feeds/packages/utils/cgroupfs-mount/patches/901-fix-cgroupfs-umount.patch
+
 # docker systemd support
 curl -s $mirror/openwrt/patch/cgroupfs-mount/902-mount-sys-fs-cgroup-systemd-for-docker-systemd-suppo.patch > feeds/packages/utils/cgroupfs-mount/patches/902-mount-sys-fs-cgroup-systemd-for-docker-systemd-suppo.patch
 
@@ -300,6 +291,7 @@ curl -s $mirror/openwrt/patch/opkg/901-libopkg-opkg_install-copy-conffiles-to-th
 # uwsgi - fix timeout
 sed -i '$a cgi-timeout = 600' feeds/packages/net/uwsgi/files-luci-support/luci-*.ini
 sed -i '/limit-as/c\limit-as = 5000' feeds/packages/net/uwsgi/files-luci-support/luci-webui.ini
+
 # disable error log
 sed -i "s/procd_set_param stderr 1/procd_set_param stderr 0/g" feeds/packages/net/uwsgi/files/uwsgi.init
 
@@ -325,9 +317,6 @@ popd
 
 # Luci diagnostics.js
 sed -i "s/openwrt.org/www.qq.com/g" feeds/luci/modules/luci-mod-network/htdocs/luci-static/resources/view/network/diagnostics.js
-
-# luci - disable wireless WPA3
-[ "$platform" = "bcm53xx" ] && sed -i -e '/if (has_ap_sae || has_sta_sae) {/{N;N;N;N;d;}' feeds/luci/modules/luci-mod-network/htdocs/luci-static/resources/view/network/wireless.js
 
 # luci-compat - remove extra line breaks from description
 sed -i '/<br \/>/d' feeds/luci/modules/luci-compat/luasrc/view/cbi/full_valuefooter.htm
@@ -365,10 +354,6 @@ mkdir -p files/etc/sysctl.d
 curl -so files/etc/sysctl.d/10-default.conf $mirror/openwrt/files/etc/sysctl.d/10-default.conf
 curl -so files/etc/sysctl.d/15-vm-swappiness.conf $mirror/openwrt/files/etc/sysctl.d/15-vm-swappiness.conf
 curl -so files/etc/sysctl.d/16-udp-buffer-size.conf $mirror/openwrt/files/etc/sysctl.d/16-udp-buffer-size.conf
-if [ "$platform" = "bcm53xx" ]; then
-    mkdir -p files/etc/hotplug.d/block
-    curl -so files/etc/hotplug.d/block/20-usbreset $mirror/openwrt/files/etc/hotplug.d/block/20-usbreset
-fi
 
 # NTP
 sed -i 's/0.openwrt.pool.ntp.org/ntp1.aliyun.com/g' package/base-files/files/bin/config_generate
