@@ -1,4 +1,4 @@
-name: Build releases
+name: 💻 固件编译
 
 on:
   workflow_dispatch:
