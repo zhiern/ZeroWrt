@@ -1,0 +1,98 @@
+From d9d6811c8a137ab028f4cdb0b3bd579aa561dc69 Mon Sep 17 00:00:00 2001
+From: OPPEN321 <zj18139624826@gmail.com>
+Date: Tue, 25 Mar 2025 01:00:44 +0800
+Subject: [PATCH] video.mk: add custom modifications
+
+Signed-off-by: OPPEN321 <zj18139624826@gmail.com>
+---
+ package/kernel/linux/modules/video.mk | 61 +++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+
+diff --git a/package/kernel/linux/modules/video.mk b/package/kernel/linux/modules/video.mk
+index 9bb030b..de80220 100644
+--- a/package/kernel/linux/modules/video.mk
++++ b/package/kernel/linux/modules/video.mk
+@@ -267,6 +267,23 @@ endef
+ 
+ $(eval $(call KernelPackage,fb-tft-ili9486))
+ 
++define KernelPackage/multimedia-input
++  SUBMENU:=$(VIDEO_MENU)
++  TITLE:=Multimedia input support
++  DEPENDS:=+kmod-input-core
++  KCONFIG:=CONFIG_RC_CORE \
++	CONFIG_LIRC=y \
++	CONFIG_RC_DECODERS=y \
++	CONFIG_RC_DEVICES=y
++  FILES:=$(LINUX_DIR)/drivers/media/rc/rc-core.ko
++  AUTOLOAD:=$(call AutoProbe,rc-core)
++endef
++
++define KernelPackage/multimedia-input/description
++  Enable multimedia input.
++endef
++
++$(eval $(call KernelPackage,multimedia-input))
+ 
+ define KernelPackage/drm
+   SUBMENU:=$(VIDEO_MENU)
+@@ -598,6 +615,36 @@ define KernelPackage/drm-panel-mipi-dbi/description
+ endef
+ 
+ $(eval $(call KernelPackage,drm-panel-mipi-dbi))
++define KernelPackage/drm-lima
++  SUBMENU:=$(VIDEO_MENU)
++  TITLE:=DRM support for ARM Mali 400/450 GPU
++  DEPENDS:=@(TARGET_rockchip||TARGET_sunxi) +kmod-drm-sched
++  KCONFIG:=CONFIG_DRM_LIMA
++  FILES:=$(LINUX_DIR)/drivers/gpu/drm/lima/lima.ko
++  AUTOLOAD:=$(call AutoProbe,lima)
++endef
++
++define KernelPackage/drm-lima/description
++  DRM driver for ARM Mali 400/450 GPUs
++endef
++
++$(eval $(call KernelPackage,drm-lima))
++
++define KernelPackage/drm-panfrost
++  SUBMENU:=$(VIDEO_MENU)
++  TITLE:=DRM support for ARM Mali Midgard/Bifrost GPUs
++  DEPENDS:=@(TARGET_rockchip||TARGET_sunxi) +kmod-drm-sched
++  KCONFIG:=CONFIG_DRM_PANFROST
++  FILES:=$(LINUX_DIR)/drivers/gpu/drm/panfrost/panfrost.ko
++  AUTOLOAD:=$(call AutoProbe,panfrost)
++endef
++
++define KernelPackage/drm-panfrost/description
++  DRM driver for ARM Mali Midgard (T6xx, T7xx, T8xx) and
++  Bifrost (G3x, G5x, G7x) GPUs
++endef
++
++$(eval $(call KernelPackage,drm-panfrost))
+ 
+ define KernelPackage/drm-radeon
+   SUBMENU:=$(VIDEO_MENU)
+@@ -616,6 +663,20 @@ endef
+ 
+ $(eval $(call KernelPackage,drm-radeon))
+ 
++define KernelPackage/drm-sched
++  SUBMENU:=$(VIDEO_MENU)
++  TITLE:=DRM helper for ARM GPUs
++  DEPENDS:=+kmod-drm
++  HIDDEN:=1
++  KCONFIG:=CONFIG_DRM_SCHED
++  FILES:= \
++	$(LINUX_DIR)/drivers/gpu/drm/drm_shmem_helper.ko@gt5.17 \
++	$(LINUX_DIR)/drivers/gpu/drm/scheduler/gpu-sched.ko
++  AUTOLOAD:=$(call AutoProbe,lima vgem)
++endef
++
++$(eval $(call KernelPackage,drm-sched))
++
+ #
+ # Video Capture
+ #
+-- 
+2.43.0

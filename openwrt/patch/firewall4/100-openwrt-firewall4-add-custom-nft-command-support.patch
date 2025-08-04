@@ -1,0 +1,23 @@
+From 16eb81b40f5b5f6a6200ec584d9aa6aacdbafa54 Mon Sep 17 00:00:00 2001
+From: sbwml <admin@cooluc.com>
+Date: Thu, 14 Mar 2024 12:16:11 +0800
+Subject: [PATCH] firewall4: add custom nft command support
+
+Signed-off-by: sbwml <admin@cooluc.com>
+---
+ package/network/config/firewall4/Makefile     |  1 +
+ 1 files changed, 1 insertions(+)
+ create mode 100644 package/network/config/firewall4/patches/100-fw4-add-custom-nft-command-support.patch
+
+diff --git a/package/network/config/firewall4/Makefile b/package/network/config/firewall4/Makefile
+index 8764f5a..0cde6a6 100644
+--- a/package/network/config/firewall4/Makefile
++++ b/package/network/config/firewall4/Makefile
+@@ -38,6 +38,7 @@ endef
+ define Package/firewall4/conffiles
+ /etc/config/firewall
+ /etc/nftables.d/
++/etc/firewall4.user
+ endef
+ 
+
