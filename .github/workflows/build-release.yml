@@ -9,11 +9,7 @@ on:
         default: 'x86_64'
         type: choice
         options:
-          - 'armv8'
-          - 'nanopi-r4s'
-          - 'nanopi-r5s'
-          - 'nanopi-r76s'
-          - 'netgear_r8500'
+          - 'rockchip'
           - 'x86_64'
       version:
         description: 'Select the build version'
@@ -64,7 +60,7 @@ jobs:
         git config --global user.name 'actions'
         git config --global user.email 'action@github.com'
         echo build_dir="/builder" >> "$GITHUB_ENV"
-        [ "${{ github.event.inputs.version }}" = release ] && echo build_version="rc2" >> "$GITHUB_ENV" || echo build_version="dev" >> "$GITHUB_ENV"
+        [ "${{ github.event.inputs.version }}" = release ] && echo build_version="v24" >> "$GITHUB_ENV" || echo build_version="dev" >> "$GITHUB_ENV"
 
     - name: Show system
       run: |
@@ -85,7 +81,7 @@ jobs:
         sudo curl -sL -o /usr/bin/caddy https://github.com/sbwml/r4s_build_script/releases/download/caddy/caddy
         sudo chmod 755 /usr/bin/caddy
         echo ":8080 {" > caddyfile
-        echo "    root * $(pwd)/r4s_build_script" >> caddyfile
+        echo "    root * $(pwd)/ZeroWrt" >> caddyfile
         echo "    file_server browse" >> caddyfile
         echo "}" >> caddyfile
         sudo /usr/bin/caddy start --config caddyfile --adapter caddyfile
@@ -102,14 +98,14 @@ jobs:
       uses: sbwml/actions@install-llvm
 
     - name: Restore Cached
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device != 'armv8' && github.event.inputs.device != 'nanopi-r4s' }}
+      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'rockchip' }}
       uses: actions/cache/restore@v4
       with:
         path: /builder/.ccache
         key: openwrt-24.10-${{ github.event.inputs.device }}-ccache
 
     - name: Restore Cached (releases)
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'armv8' || github.event.inputs.device == 'nanopi-r4s' }}
+      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'rockchip' }}
       continue-on-error: true
       working-directory: /builder
       run: |
@@ -150,7 +146,7 @@ jobs:
         make V=s
 
     - name: Delete Cached
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device != 'armv8' && github.event.inputs.device != 'nanopi-r4s' }}
+      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'rockchip' }}
       continue-on-error: true
       working-directory: /builder
       env:
@@ -160,7 +156,7 @@ jobs:
         gh cache delete openwrt-24.10-${{ github.event.inputs.device }}-ccache || true
 
     - name: Save Cached
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device != 'armv8' && github.event.inputs.device != 'nanopi-r4s' }}
+      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'rockchip' }}
       continue-on-error: true
       uses: actions/cache/save@v4
       with:
@@ -168,8 +164,7 @@ jobs:
         key: openwrt-24.10-${{ github.event.inputs.device }}-ccache
 
     - name: Create ccache tar files
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'armv8' || github.event.inputs.device == 'nanopi-r4s' }}
-      continue-on-error: true
+      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'rockchip' }}
       working-directory: /builder
       run: |
         mkdir -p ccache
@@ -241,7 +236,7 @@ jobs:
         name: ${{ env.latest_release }}
         allowUpdates: true
         tag: ${{ env.latest_release }}
-        commit: master
+        commit: main
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.build_dir }}/rom/*
