@@ -78,7 +78,7 @@ curl -s $mirror/openwrt/patch/dpdk/numactl/Makefile > package/new/numactl/Makefi
 # IF USE GLIBC
 if [ "$ENABLE_GLIBC" = "y" ]; then
     # musl-libc
-    git clone https://$gitea/sbwml/package_libs_musl-libc package/libs/musl-libc
+    git clone https://$gitea/zhao/package_libs_musl-libc package/libs/musl-libc
     # glibc-common
     curl -s $mirror/openwrt/patch/glibc/glibc-common.patch | patch -p1
     # glibc-common - locale data
@@ -132,7 +132,7 @@ if [ "$version" = "dev" ] || [ "$version" = "v24" ]; then
 fi
 
 # FullCone module
-git clone https://$gitea/sbwml/nft-fullcone package/new/nft-fullcone
+git clone https://$gitea/zhao/nft-fullcone package/new/nft-fullcone
 
 # IPv6 NAT
 git clone https://$github/sbwml/packages_new_nat6 package/new/nat6
@@ -233,7 +233,7 @@ git clone https://$github/sbwml/feeds_packages_net_curl feeds/packages/net/curl
 
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
-git clone https://$gitea/sbwml/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
+git clone https://$github/zhiern/luci-app-dockerman -b main feeds/luci/applications/luci-app-dockerman
 if [ "$version" = "dev" ] || [ "$version" = "v24" ]; then
     rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
     git clone https://$github/sbwml/packages_utils_docker feeds/packages/utils/docker
