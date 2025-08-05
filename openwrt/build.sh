@@ -187,7 +187,7 @@ rm -rf openwrt master
 
 # openwrt - releases
 [ "$(whoami)" = "runner" ] && group "source code"
-git clone --depth=1 https://$code_mirror/openwrt/openwrt -b $branch
+git clone --depth=1 https://"$git_name":"$git_password"@$code_mirror/openwrt/openwrt -b $branch
 
 # immortalwrt master
 git clone https://$github/immortalwrt/packages master/immortalwrt_packages --depth=1
