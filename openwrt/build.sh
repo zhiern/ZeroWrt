@@ -68,7 +68,7 @@ if [ -z "$1" ] || ! echo "$SUPPORTED_BOARDS" | grep -qw "$2"; then
     echo -e "Usage:\n"
 
     for board in $SUPPORTED_BOARDS; do
-        echo -e "$board releases: ${GREEN_COLOR}bash build.sh v24.10.2 $board${RES}"
+        echo -e "$board releases: ${GREEN_COLOR}bash build.sh v24 $board${RES}"
         echo -e "$board snapshots: ${GREEN_COLOR}bash build.sh openwrt-24.10 $board${RES}"
     done
     echo
