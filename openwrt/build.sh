@@ -31,10 +31,6 @@ fi
 #        OpenWrt Build Script       #
 #####################################
 
-# IP Location
-ip_info=`curl -sk https://ip.cooluc.com`;
-[ -n "$ip_info" ] && export isCN=`echo $ip_info | grep -Po 'country_code\":"\K[^"]+'` || export isCN=US
-
 # script url
 export mirror=https://init.kejizero.online
 
@@ -47,14 +43,7 @@ fi
 export gitea="git.kejizero.com"
 
 # github mirror
-if [ "$isCN" = "CN" ]; then
-    # There is currently no stable gh proxy
-    export github="github.com"
-    code_mirror="git.kejizero.com"
-else
-    export github="github.com"
-    code_mirror="github.com"
-fi
+export github="github.com"
 
 # Check root
 if [ "$(id -u)" = "0" ]; then
@@ -187,7 +176,7 @@ rm -rf openwrt master
 
 # openwrt - releases
 [ "$(whoami)" = "runner" ] && group "source code"
-git clone --depth=1 https://"$git_name":"$git_password"@$code_mirror/openwrt/openwrt -b $branch
+git clone --depth=1 https://$github/openwrt/openwrt -b $branch
 
 # immortalwrt master
 git clone https://$github/immortalwrt/packages master/immortalwrt_packages --depth=1
@@ -221,10 +210,10 @@ else
     telephony=";$branch"
 fi
 cat > feeds.conf <<EOF
-src-git packages https://$code_mirror/openwrt/packages.git$packages
-src-git luci https://$code_mirror/openwrt/luci.git$luci
-src-git routing https://$code_mirror/openwrt/routing.git$routing
-src-git telephony https://$code_mirror/openwrt/telephony.git$telephony
+src-git packages https://$github/openwrt/packages.git$packages
+src-git luci https://$github/openwrt/luci.git$luci
+src-git routing https://$github/openwrt/routing.git$routing
+src-git telephony https://$github/openwrt/telephony.git$telephony
 EOF
 
 # Init feeds
