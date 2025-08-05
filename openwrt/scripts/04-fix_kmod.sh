@@ -79,7 +79,7 @@ if [ "$KERNEL_CLANG_LTO" = "y" ]; then
     curl -s $mirror/openwrt/patch/packages-patches/clang/netatop/900-fix-build-with-clang.patch > feeds/packages/admin/netatop/patches/900-fix-build-with-clang.patch
     # dmx_usb_module
     rm -rf feeds/packages/libs/dmx_usb_module
-    git clone https://$gitea/sbwml/feeds_packages_libs_dmx_usb_module feeds/packages/libs/dmx_usb_module
+    git clone https://$gitea/zhao/feeds_packages_libs_dmx_usb_module feeds/packages/libs/dmx_usb_module
     # macremapper
     curl -s $mirror/openwrt/patch/packages-patches/clang/macremapper/100-macremapper-fix-clang-build.patch | patch -p1
     # coova-chilli module
