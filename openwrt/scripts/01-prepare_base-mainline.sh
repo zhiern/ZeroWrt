@@ -14,6 +14,12 @@ else
     git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
 fi
 
+# make olddefconfig
+curl -sL $mirror/doc/patch/kernel-6.6/kernel/0003-include-kernel-defaults.mk.patch | patch -p1
+
+# banner
+curl -s $mirror/Customize/base-files/banner > package/base-files/files/etc/banner
+
 # kernel - 6.12
 curl -s $mirror/tags/kernel-6.6 > include/kernel-6.6
 
