@@ -156,6 +156,9 @@ sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank
 # lucky
 git clone https://$github/gdy666/luci-app-lucky.git package/new/lucky
 
+# adguardhome
+git clone https://$gitea/luci-app-adguardhome package/new/luci-app-adguardhome
+
 # luci-compat - fix translation
 sed -i 's/<%:Up%>/<%:Move up%>/g' feeds/luci/modules/luci-compat/luasrc/view/cbi/tblsection.htm
 sed -i 's/<%:Down%>/<%:Move down%>/g' feeds/luci/modules/luci-compat/luasrc/view/cbi/tblsection.htm
