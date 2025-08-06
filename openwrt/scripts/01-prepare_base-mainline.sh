@@ -9,9 +9,24 @@ git clone https://$github/sbwml/autocore-arm -b openwrt-24.10 package/system/aut
 rm -rf target/linux/rockchip
 if [ "$(whoami)" = "zhao" ]; then
     git clone $gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
-    $gitea/zhao/target_linux_rockchip
 else
     git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
+fi
+
+# x86 - target
+rm -rf target/linux/x86
+if [ "$(whoami)" = "zhao" ]; then
+    git clone $gitea/zhao/target_linux_x86 target/linux/x86 -b openwrt-24.10
+else
+    git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_x86 target/linux/x86 -b openwrt-24.10
+fi
+
+# generic - target
+rm -rf target/linux/generic
+if [ "$(whoami)" = "zhao" ]; then
+    git clone $gitea/zhao/target_linux_generic target/linux/generic -b openwrt-24.10
+else
+    git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_generic target/linux/generic -b openwrt-24.10
 fi
 
 # make olddefconfig
