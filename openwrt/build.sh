@@ -40,7 +40,7 @@ if [ "$(whoami)" = "runner" ] && [ "$git_name" != "zhao" ]; then
 fi
 
 # private gitea
-export gitea="git.kejizero.com"
+export gitea="git.kejizero.online"
 
 # github mirror
 export github="github.com"
