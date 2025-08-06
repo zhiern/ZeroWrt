@@ -13,6 +13,30 @@ sed -i 's,-SNAPSHOT,,g' package/base-files/image-config.in
 sed -i '/CONFIG_BUILDBOT/d' include/feeds.mk
 sed -i 's/;)\s*\\/; \\/' include/feeds.mk
 
+# rockchip - target
+rm -rf target/linux/rockchip
+if [ "$(whoami)" = "zhao" ]; then
+    git clone $gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
+else
+    git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
+fi
+
+# x86 - target
+rm -rf target/linux/x86
+if [ "$(whoami)" = "zhao" ]; then
+    git clone $gitea/zhao/target_linux_x86 target/linux/x86 -b openwrt-24.10
+else
+    git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_x86 target/linux/x86 -b openwrt-24.10
+fi
+
+# generic - target
+rm -rf target/linux/generic
+if [ "$(whoami)" = "zhao" ]; then
+    git clone $gitea/zhao/target_linux_generic target/linux/generic -b openwrt-24.10
+else
+    git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_generic target/linux/generic -b openwrt-24.10
+fi
+
 # nginx - latest version
 rm -rf feeds/packages/net/nginx
 git clone https://$github/oppen321/feeds_packages_net_nginx -b openwrt-24.10 feeds/packages/net/nginx
