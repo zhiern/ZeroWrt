@@ -136,11 +136,11 @@ git clone https://$github/sbwml/openwrt_pkgs package/new/custom --depth=1
 # argon
 rm -rf feeds/luci/themes/luci-theme-argon
 git clone https://$github/jerrykuku/luci-theme-argon.git package/new/luci-theme-argon
-curl -s $mirror/openwrt/argon/bg1.jpg > package/new/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
-curl -s $mirror/openwrt/argon/iconfont.ttf > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.ttf
-curl -s $mirror/openwrt/argon/iconfont.woff > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.woff
-curl -s $mirror/openwrt/argon/iconfont.woff2 > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.woff2
-curl -s $mirror/openwrt/argon/cascade.css > package/new/luci-theme-argon/htdocs/luci-static/argon/css/cascade.css
+curl -s $mirror/openwrt/doc/argon/bg1.jpg > package/new/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
+curl -s $mirror/openwrt/doc/argon/iconfont.ttf > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.ttf
+curl -s $mirror/openwrt/doc/argon/iconfont.woff > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.woff
+curl -s $mirror/openwrt/doc/argon/iconfont.woff2 > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.woff2
+curl -s $mirror/openwrt/doc/argon/cascade.css > package/new/luci-theme-argon/htdocs/luci-static/argon/css/cascade.css
 
 # argon-config
 rm -rf feeds/luci/applications/luci-app-argon-config
