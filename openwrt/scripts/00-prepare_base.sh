@@ -122,10 +122,10 @@ src/gz openwrt_telephony https://mirrors.tuna.tsinghua.edu.cn/openwrt/releases/2
 EOF
 
 # Make olddefconfig
-curl -sL $mirror/doc/patch/kernel-6.6/kernel/0003-include-kernel-defaults.mk.patch | patch -p1
+curl -sL $mirror/openwrt/patch/kernel-6.6/kernel/0003-include-kernel-defaults.mk.patch | patch -p1
 
 # module
-curl -s $mirror/doc/patch/kernel-6.6/kernel/0001-linux-module-video.patch > package/0001-linux-module-video.patch
+curl -s $mirror/openwrt/patch/kernel-6.6/kernel/0001-linux-module-video.patch > package/0001-linux-module-video.patch
 git apply package/0001-linux-module-video.patch
 
 # BBRv3
