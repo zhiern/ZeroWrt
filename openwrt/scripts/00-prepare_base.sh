@@ -188,10 +188,10 @@ curl -s $mirror/openwrt/patch/firewall4/nftables/0003-drop-rej-file.patch > pack
 git clone https://$gitea/zhao/nft-fullcone package/new/nft-fullcone
 
 # IPv6 NAT
-git clone https://$gitea/zhao/package_new_nat6 package/new/nat6
+git clone https://$github/sbwml/packages_new_nat6 package/new/nat6
 
 # natflow
-git clone https://$gitea/zhao/package_new_natflow package/new/natflow
+git clone https://$github/sbwml/package_new_natflow package/new/natflow
 
 # Shortcut Forwarding Engine
 git clone https://$gitea/zhao/shortcut-fe package/new/shortcut-fe
@@ -221,6 +221,18 @@ popd
 # igc-fix
 curl -s $mirror/doc/patch/kernel-6.6/igc-fix/996-intel-igc-i225-i226-disable-eee.patch > target/linux/x86/patches-6.6/996-intel-igc-i225-i226-disable-eee.patch
 
+# nghttp3
+rm -rf feeds/packages/libs/nghttp3
+git clone https://$github/sbwml/package_libs_nghttp3 package/libs/nghttp3
+
+# ngtcp2
+rm -rf feeds/packages/libs/ngtcp2
+git clone https://$github/sbwml/package_libs_ngtcp2 package/libs/ngtcp2
+
+# curl - fix passwall `time_pretransfer` check
+rm -rf feeds/packages/net/curl
+git clone https://$github/sbwml/feeds_packages_net_curl feeds/packages/net/curl
+
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
 git clone https://$gitea/zhao/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockermann
@@ -231,6 +243,21 @@ if [ "$version" = "dev" ] || [ "$version" = "v24" ]; then
     git clone https://$github/sbwml/packages_utils_containerd feeds/packages/utils/containerd
     git clone https://$github/sbwml/packages_utils_runc feeds/packages/utils/runc
 fi
+
+# cgroupfs-mount
+# fix unmount hierarchical mount
+pushd feeds/packages
+    curl -s $mirror/openwrt/patch/cgroupfs-mount/0001-fix-cgroupfs-mount.patch | patch -p1
+popd
+# mount cgroup v2 hierarchy to /sys/fs/cgroup/cgroup2
+mkdir -p feeds/packages/utils/cgroupfs-mount/patches
+curl -s $mirror/openwrt/patch/cgroupfs-mount/900-mount-cgroup-v2-hierarchy-to-sys-fs-cgroup-cgroup2.patch > feeds/packages/utils/cgroupfs-mount/patches/900-mount-cgroup-v2-hierarchy-to-sys-fs-cgroup-cgroup2.patch
+curl -s $mirror/openwrt/patch/cgroupfs-mount/901-fix-cgroupfs-umount.patch > feeds/packages/utils/cgroupfs-mount/patches/901-fix-cgroupfs-umount.patch
+# docker systemd support
+curl -s $mirror/openwrt/patch/cgroupfs-mount/902-mount-sys-fs-cgroup-systemd-for-docker-systemd-suppo.patch > feeds/packages/utils/cgroupfs-mount/patches/902-mount-sys-fs-cgroup-systemd-for-docker-systemd-suppo.patch
+
+# procps-ng - top
+sed -i 's/enable-skill/enable-skill --disable-modern-top/g' feeds/packages/utils/procps-ng/Makefile
 
 # TTYD
 sed -i 's/services/system/g' feeds/luci/applications/luci-app-ttyd/root/usr/share/luci/menu.d/luci-app-ttyd.json
