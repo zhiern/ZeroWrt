@@ -37,7 +37,7 @@ fi
 curl -sL $mirror/patch/kernel-6.6/kernel/0003-include-kernel-defaults.mk.patch | patch -p1
 
 # banner
-curl -s $mirror/Customize/base-files/banner > package/base-files/files/etc/banner
+# curl -s $mirror/base-files/banner > package/base-files/files/etc/banner
 
 # kernel - 6.12
 curl -s $mirror/tags/kernel-6.6 > include/kernel-6.6
