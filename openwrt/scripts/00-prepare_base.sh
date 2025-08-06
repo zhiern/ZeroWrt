@@ -79,7 +79,7 @@ fi
 sed -i 's/OpenWrt/ZeroWrt/' package/base-files/files/bin/config_generate
 
 # Banner
-curl -s $mirror/Customize/base-files/banner > package/base-files/files/etc/banner
+curl -s $mirror/openwrt/doc/base-files/banner > package/base-files/files/etc/banner
 
 # Distfeeds.conf
 mkdir -p files/etc/opkg
