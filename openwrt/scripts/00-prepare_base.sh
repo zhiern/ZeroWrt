@@ -45,6 +45,23 @@ curl -s $mirror/openwrt/patch/dpdk/dpdk/patches/010-dpdk_arm_build_platform_fix.
 curl -s $mirror/openwrt/patch/dpdk/dpdk/patches/201-r8125-add-r8125-ethernet-poll-mode-driver.patch > package/new/dpdk/patches/201-r8125-add-r8125-ethernet-poll-mode-driver.patch
 curl -s $mirror/openwrt/patch/dpdk/numactl/Makefile > package/new/numactl/Makefile
 
+# IF USE GLIBC
+if [ "$ENABLE_GLIBC" = "y" ]; then
+    # musl-libc
+    git clone https://$gitea/sbwml/package_libs_musl-libc package/libs/musl-libc
+    # glibc-common
+    curl -s $mirror/openwrt/patch/glibc/glibc-common.patch | patch -p1
+    # glibc-common - locale data
+    mkdir -p package/libs/toolchain/glibc-locale
+    curl -Lso package/libs/toolchain/glibc-locale/locale-archive https://github.com/sbwml/r4s_build_script/releases/download/locale/locale-archive
+    [ "$?" -ne 0 ] && echo -e "${RED_COLOR} Locale file download failed... ${RES}"
+    # GNU LANG
+    mkdir package/base-files/files/etc/profile.d
+    echo 'export LANG="en_US.UTF-8" I18NPATH="/usr/share/i18n"' > package/base-files/files/etc/profile.d/sys_locale.sh
+    # build - drop `--disable-profile`
+    sed -i "/disable-profile/d" toolchain/glibc/common.mk
+fi
+
 # nginx - latest version
 rm -rf feeds/packages/net/nginx
 git clone https://$github/oppen321/feeds_packages_net_nginx -b openwrt-24.10 feeds/packages/net/nginx
