@@ -17,8 +17,12 @@ sed -i 's/;)\s*\\/; \\/' include/feeds.mk
 rm -rf target/linux/rockchip
 if [ "$(whoami)" = "zhao" ]; then
     git clone $gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
+    git clone $gitea/zhao/arm-trusted-firmware-rockchip -b openwrt-24.10
+    git clone $gitea/zhao/uboot-rockchip -b openwrt-24.10
 else
     git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
+    git clone https://"$git_name":"$git_password"@$gitea/zhao/arm-trusted-firmware-rockchip -b openwrt-24.10
+    git clone https://"$git_name":"$git_password"@$gitea/zhao/uboot-rockchip -b openwrt-24.10
 fi
 
 # x86 - target
