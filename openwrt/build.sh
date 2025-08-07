@@ -130,7 +130,7 @@ case "$platform" in
         ;;
     rockchip)
         echo -e "${GREEN_COLOR}Model: rockchip${RES}"
-        [ "$1" = "rc2" ] && model="rockchip"
+        [ "$1" = "v24" ] && model="rockchip"
         ;;
 esac
 
