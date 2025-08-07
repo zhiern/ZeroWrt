@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-# kernel - 6.12
+# kernel - 6.6
 curl -s $mirror/tags/kernel-6.6 > include/kernel-6.6
 
 # 使用 O2 级别的优化
