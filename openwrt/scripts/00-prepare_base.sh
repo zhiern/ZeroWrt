@@ -21,9 +21,9 @@ if [ "$(whoami)" = "zhao" ]; then
     git clone https://$gitea/zhao/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b openwrt-24.10
     git clone https://$gitea/zhao/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
 else
-    git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
-    git clone https://"$git_name":"$git_password"@$gitea/zhao/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b openwrt-24.10
-    git clone https://"$git_name":"$git_password"@$gitea/zhao/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
+    git clone https://"$git_name":"$git_password"@$gitea/private/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
+    git clone https://"$git_name":"$git_password"@$gitea/private/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b openwrt-24.10
+    git clone https://"$git_name":"$git_password"@$gitea/private/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
 fi
 
 # x86 - target
@@ -31,7 +31,7 @@ rm -rf target/linux/x86
 if [ "$(whoami)" = "zhao" ]; then
     git clone https://$gitea/zhao/target_linux_x86 target/linux/x86 -b openwrt-24.10
 else
-    git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_x86 target/linux/x86 -b openwrt-24.10
+    git clone https://"$git_name":"$git_password"@$gitea/private/target_linux_x86 target/linux/x86 -b openwrt-24.10
 fi
 
 # generic - target
@@ -39,7 +39,7 @@ rm -rf target/linux/generic
 if [ "$(whoami)" = "zhao" ]; then
     git clone https://$gitea/zhao/target_linux_generic target/linux/generic -b openwrt-24.10
 else
-    git clone https://"$git_name":"$git_password"@$gitea/zhao/target_linux_generic target/linux/generic -b openwrt-24.10
+    git clone https://"$git_name":"$git_password"@$gitea/private/target_linux_generic target/linux/generic -b openwrt-24.10
 fi
 
 # DPDK & NUMACTL
