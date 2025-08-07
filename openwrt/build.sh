@@ -268,14 +268,11 @@ rm -f 0*-*.sh 10-custom.sh
 rm -rf ../master
 
 # Load devices Config
-case "$platform" in
-    x86_64)
-        curl -s $mirror/openwrt/24-config-musl-x86 > .config
-        ;;
-    rockchip)
-        curl -s $mirror/openwrt/24-config-musl-rockchip > .config
-        ;;
-esac
+if [ "$platform" = "x86_64" ]; then
+    curl -s $mirror/openwrt/24-config-musl-x86 > .config
+elif [ "$platform" = "rockchip" ]; then
+    curl -s $mirror/openwrt/24-config-musl-rockchip > .config
+fi
 
 # config-common
 curl -s $mirror/openwrt/24-config-common > .config
