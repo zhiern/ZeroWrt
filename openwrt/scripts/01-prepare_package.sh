@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 # autocore-arm
-git clone https://$gitea/autocore-arm package/new/autocore-arm
+git clone https://$gitea/zhao/autocore-arm package/new/autocore-arm
 
 # golang 1.25
 rm -rf feeds/packages/lang/golang
@@ -157,7 +157,7 @@ sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank
 git clone https://$github/gdy666/luci-app-lucky.git package/new/lucky
 
 # adguardhome
-git clone https://$gitea/luci-app-adguardhome package/new/luci-app-adguardhome
+git clone https://$gitea/zhao/luci-app-adguardhome package/new/luci-app-adguardhome
 
 # luci-compat - fix translation
 sed -i 's/<%:Up%>/<%:Move up%>/g' feeds/luci/modules/luci-compat/luasrc/view/cbi/tblsection.htm
