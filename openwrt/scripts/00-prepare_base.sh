@@ -276,7 +276,7 @@ pushd feeds/luci
 popd
 
 # igc-fix
-curl -s $mirror/doc/patch/kernel-6.6/igc-fix/996-intel-igc-i225-i226-disable-eee.patch > target/linux/x86/patches-6.6/996-intel-igc-i225-i226-disable-eee.patch
+curl -s $mirror/openwrt/patch/kernel-6.6/igc-fix/996-intel-igc-i225-i226-disable-eee.patch > target/linux/x86/patches-6.6/996-intel-igc-i225-i226-disable-eee.patch
 
 # nghttp3
 rm -rf feeds/packages/libs/nghttp3
