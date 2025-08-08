@@ -16,6 +16,36 @@ sed -i 's,-SNAPSHOT,,g' package/base-files/image-config.in
 sed -i '/CONFIG_BUILDBOT/d' include/feeds.mk
 sed -i 's/;)\s*\\/; \\/' include/feeds.mk
 
+### 获取额外的基础软件包 ###
+# rockchip - target
+rm -rf package/boot/{rkbin,uboot-rockchip,arm-trusted-firmware-rockchip}
+rm -rf target/linux/rockchip
+if [ "$(whoami)" = "zhao" ]; then
+    git clone https://$gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
+    git clone https://$gitea/zhao/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b openwrt-24.10
+    git clone https://$gitea/zhao/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
+else
+    git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
+    git clone https://"$git_name":"$git_password"@$gitea/$git_name/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b openwrt-24.10
+    git clone https://"$git_name":"$git_password"@$gitea/$git_name/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
+fi
+
+# x86 - target
+rm -rf target/linux/x86
+if [ "$(whoami)" = "zhao" ]; then
+    git clone https://$gitea/zhao/target_linux_x86 target/linux/x86 -b openwrt-24.10
+else
+    git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_x86 target/linux/x86 -b openwrt-24.10
+fi
+
+# generic - target
+rm -rf target/linux/generic
+if [ "$(whoami)" = "zhao" ]; then
+    git clone https://$gitea/zhao/target_linux_generic target/linux/generic -b openwrt-24.10
+else
+    git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_generic target/linux/generic -b openwrt-24.10
+fi
+
 ### FW4 ###
 sed -i 's|$(PROJECT_GIT)/project|https://github.com/openwrt|g' package/network/config/firewall4/Makefile
 mkdir -p package/network/config/firewall4/patches
@@ -146,36 +176,6 @@ curl -sL $mirror/openwrt/patch/kernel-6.6/kernel/0003-include-kernel-defaults.mk
 curl -s $mirror/openwrt/patch/kernel-6.6/igc-fix/996-intel-igc-i225-i226-disable-eee.patch > target/linux/x86/patches-6.6/996-intel-igc-i225-i226-disable-eee.patch
 # btf
 curl -s $mirror/openwrt/patch/kernel-6.6/btf/990-btf-silence-btf-module-warning-messages.patch > target/linux/generic/hack-6.6/990-btf-silence-btf-module-warning-messages.patch
-
-### 获取额外的基础软件包 ###
-# rockchip - target
-rm -rf package/boot/{rkbin,uboot-rockchip,arm-trusted-firmware-rockchip}
-rm -rf target/linux/rockchip
-if [ "$(whoami)" = "zhao" ]; then
-    git clone https://$gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
-    git clone https://$gitea/zhao/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b openwrt-24.10
-    git clone https://$gitea/zhao/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
-else
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b openwrt-24.10
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
-fi
-
-# x86 - target
-rm -rf target/linux/x86
-if [ "$(whoami)" = "zhao" ]; then
-    git clone https://$gitea/zhao/target_linux_x86 target/linux/x86 -b openwrt-24.10
-else
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_x86 target/linux/x86 -b openwrt-24.10
-fi
-
-# generic - target
-rm -rf target/linux/generic
-if [ "$(whoami)" = "zhao" ]; then
-    git clone https://$gitea/zhao/target_linux_generic target/linux/generic -b openwrt-24.10
-else
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_generic target/linux/generic -b openwrt-24.10
-fi
 
 ### 个性化修改 ###
 sed -i "s/192.168.1.1/$LAN/g" package/base-files/files/bin/config_generate
