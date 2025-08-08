@@ -126,3 +126,19 @@ CONFIG_PACKAGE_luci-proto-3g=y
 CONFIG_PACKAGE_luci-proto-modemmanager=y
 CONFIG_PACKAGE_luci-proto-ncm=y
 CONFIG_PACKAGE_luci-proto-qmi=y
+
+# Utilities
+CONFIG_PACKAGE_bash=y
+CONFIG_PACKAGE_bash-completion=y
+CONFIG_PACKAGE_fdisk=y
+CONFIG_PACKAGE_unzip=y
+CONFIG_PACKAGE_vim=y
+CONFIG_PACKAGE_nano=y
+CONFIG_PACKAGE_gdisk=y
+CONFIG_PACKAGE_lsblk=y
+
+### Version
+CONFIG_IMAGEOPT=y
+CONFIG_VERSIONOPT=y
+CONFIG_VERSION_FILENAMES=y
+CONFIG_PACKAGE_openssh-sftp-server=y
