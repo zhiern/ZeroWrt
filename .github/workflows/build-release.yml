@@ -31,12 +31,12 @@ on:
       root_password:
         description: 'Setting default root password (Optional, No password by default)'
         required: false
-        default: ''
+        default: 'password'
         type: string
       build_options:
         description: 'Build options (separate multiple options with spaces)'
         required: false
-        default: 'ENABLE_BPF=y ENABLE_LTO=y ENABLE_LRNG=y ENABLE_MOLD=y KERNEL_CLANG_LTO=y ENABLE_OTA=y'
+        default: 'ENABLE_BPF=y ENABLE_LTO=y ENABLE_OTA=y'
         type: string
 
 jobs:
