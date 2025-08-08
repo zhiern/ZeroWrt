@@ -36,7 +36,7 @@ git clone https://$gitea/zhao/luci-app-upnp feeds/luci/applications/luci-app-upn
 
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
-git clone https://$gitea/sbwml/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
+git clone https://$gitea/zhao/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
 if [ "$version" = "dev" ] || [ "$version" = "v24" ]; then
     rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
     git clone https://$github/sbwml/packages_utils_docker feeds/packages/utils/docker
@@ -182,14 +182,14 @@ sed -i 's,frp 客户端,Frp 客户端,g' feeds/luci/applications/luci-app-frpc/p
 
 # luci-app-sqm
 rm -rf feeds/luci/applications/luci-app-sqm
-git clone https://$gitea/sbwml/luci-app-sqm feeds/luci/applications/luci-app-sqm
+git clone https://$gitea/zhao/luci-app-sqm feeds/luci/applications/luci-app-sqm
 
 # unzip
 rm -rf feeds/packages/utils/unzip
 git clone https://$github/sbwml/feeds_packages_utils_unzip feeds/packages/utils/unzip
 
 # adguardhome
-git clone https://$gitea/luci-app-adguardhome package/new/luci-app-adguardhome
+git clone https://$gitea/zhao/luci-app-adguardhome package/new/luci-app-adguardhome
 
 # lucky
 git clone https://$github/gdy666/luci-app-lucky.git package/new/lucky
