@@ -26,7 +26,7 @@ if [ "$(whoami)" = "zhao" ]; then
 else
     git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
     git clone https://"$git_name":"$git_password"@$gitea/$git_name/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b openwrt-24.10
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name"/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
+    git clone https://"$git_name":"$git_password"@$gitea/$git_name/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
 fi
 
 # x86 - target
