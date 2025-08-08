@@ -159,6 +159,10 @@ git clone https://$github/gdy666/luci-app-lucky.git package/new/lucky
 # adguardhome
 git clone https://$gitea/zhao/luci-app-adguardhome package/new/luci-app-adguardhome
 
+# unzip
+rm -rf feeds/packages/utils/unzip
+git clone https://$github/sbwml/feeds_packages_utils_unzip feeds/packages/utils/unzip
+
 # luci-compat - fix translation
 sed -i 's/<%:Up%>/<%:Move up%>/g' feeds/luci/modules/luci-compat/luasrc/view/cbi/tblsection.htm
 sed -i 's/<%:Down%>/<%:Move down%>/g' feeds/luci/modules/luci-compat/luasrc/view/cbi/tblsection.htm
