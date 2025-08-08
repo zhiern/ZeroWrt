@@ -10,6 +10,13 @@ sed -i 's/Os/O2/g' include/target.mk
 sed -i 's,-mcpu=generic,-march=armv8-a+crc+crypto,g' include/target.mk
 sed -i 's,kmod-r8168,kmod-r8169,g' target/linux/rockchip/image/armv8.mk
 
+# dwarves 1.25
+rm -rf tools/dwarves
+git clone https://$github/sbwml/tools_dwarves tools/dwarves
+
+# attr no-mold
+[ "$ENABLE_MOLD" = "y" ] && sed -i '/PKG_BUILD_PARALLEL/aPKG_BUILD_FLAGS:=no-mold' feeds/packages/utils/attr/Makefile
+
 # 移除 SNAPSHOT 标签
 sed -i 's,-SNAPSHOT,,g' include/version.mk
 sed -i 's,-SNAPSHOT,,g' package/base-files/image-config.in
@@ -107,6 +114,29 @@ if [ -n "$ROOT_PASSWORD" ]; then
     default_password=$(openssl passwd -5 $ROOT_PASSWORD)
     sed -i "s|^root:[^:]*:|root:${default_password}:|" package/base-files/files/etc/shadow
 fi
+
+# Use nginx instead of uhttpd
+if [ "$ENABLE_UHTTPD" != "y" ]; then
+    sed -i 's/+uhttpd /+luci-nginx /g' feeds/luci/collections/luci/Makefile
+    sed -i 's/+uhttpd-mod-ubus //' feeds/luci/collections/luci/Makefile
+    sed -i 's/+uhttpd /+luci-nginx /g' feeds/luci/collections/luci-light/Makefile
+    sed -i "s/+luci /+luci-nginx /g" feeds/luci/collections/luci-ssl-openssl/Makefile
+    sed -i "s/+luci /+luci-nginx /g" feeds/luci/collections/luci-ssl/Makefile
+    if [ "$version" = "dev" ] || [ "$version" = "rc2" ]; then
+        sed -i 's/+uhttpd +uhttpd-mod-ubus /+luci-nginx /g' feeds/packages/net/wg-installer/Makefile
+        sed -i '/uhttpd-mod-ubus/d' feeds/luci/collections/luci-light/Makefile
+        sed -i 's/+luci-nginx \\$/+luci-nginx/' feeds/luci/collections/luci-light/Makefile
+    fi
+fi
+
+# Realtek driver - R8168 & R8125 & R8126 & R8152 & R8101 & r8127
+rm -rf package/kernel/{r8168,r8101,r8125,r8126,r8127}
+git clone https://$github/sbwml/package_kernel_r8168 package/kernel/r8168
+git clone https://$github/sbwml/package_kernel_r8152 package/kernel/r8152
+git clone https://$github/sbwml/package_kernel_r8101 package/kernel/r8101
+git clone https://$github/sbwml/package_kernel_r8125 package/kernel/r8125
+git clone https://$github/sbwml/package_kernel_r8126 package/kernel/r8126
+git clone https://$github/sbwml/package_kernel_r8127 package/kernel/r8127
 
 # 修改名称
 sed -i 's/OpenWrt/ZeroWrt/' package/base-files/files/bin/config_generate
