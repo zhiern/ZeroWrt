@@ -103,7 +103,7 @@ git clone https://$github/sbwml/package_new_natflow package/new/natflow
 git clone https://$gitea/zhao/shortcut-fe package/new/shortcut-fe
 
 # ARM64 型号名称
-curl -s $mirror/openwrt/patch/kernel-6.6/312-arm64-cpuinfo-Add-model-name-in-proc-cpuinfo-for-64bit-ta.patch > target/linux/generic/hack-6.6/312-arm64-cpuinfo-Add-model-name-in-proc-cpuinfo-for-64bit-ta.patch
+curl -s $mirror/openwrt/patch/arm64/kernel-6.6/312-arm64-cpuinfo-Add-model-name-in-proc-cpuinfo-for-64bit-ta.patch > target/linux/generic/hack-6.6/312-arm64-cpuinfo-Add-model-name-in-proc-cpuinfo-for-64bit-ta.patch
 
 # BBRv3
 pushd target/linux/generic/backport-6.6
