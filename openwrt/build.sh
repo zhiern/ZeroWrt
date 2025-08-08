@@ -230,6 +230,11 @@ scripts=(
 for script in "${scripts[@]}"; do
   curl -sO "$mirror/openwrt/scripts/$script"
 done
+if [ "$platform" = "rockchip" ]; then
+    curl -sO "$mirror/openwrt/scripts/05-rockchip_target_only.sh"
+elif [ "$platform" = "x86_64" ]; then
+    curl -sO "$mirror/openwrt/scripts/05-x86_64_target_only.sh"
+fi
 chmod 0755 *sh
 [ "$(whoami)" = "runner" ] && group "patching openwrt"
 bash 00-prepare_base.sh
@@ -237,7 +242,11 @@ bash 01-prepare_package.sh
 bash 02-prepare_adguard_core.sh
 bash 03-preset_mihimo_core.sh
 bash 04-convert_translation.sh
-bash 05-$platform_target_only.sh
+if [ "$platform" = "rockchip" ]; then
+    bash 05-rockchip_target_only.sh
+elif [ "$platform" = "x86_64" ]; then
+    bash 05-x86_64_target_only.sh
+fi
 [ -f "10-custom.sh" ] && bash 10-custom.sh
 find feeds -type f -name "*.orig" -exec rm -f {} \;
 [ "$(whoami)" = "runner" ] && endgroup
