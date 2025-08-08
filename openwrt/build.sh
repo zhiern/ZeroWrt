@@ -280,6 +280,10 @@ if [ "$ENABLE_LOCAL_KMOD" = "y" ]; then
     echo "CONFIG_TARGET_ROOTFS_LOCAL_PACKAGES=y" >> .config
 fi
 
+# gcc15 patches
+[ "$(whoami)" = "runner" ] && group "patching toolchain"
+curl -s $mirror/openwrt/patch/gcc/200-toolchain-gcc-add-support-for-GCC-15.patch | patch -p1
+
 # gcc config
 echo -e "\n# gcc ${gcc_version}" >> .config
 echo -e "CONFIG_DEVEL=y" >> .config
