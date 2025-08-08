@@ -275,7 +275,7 @@ elif [ "$platform" = "rockchip" ]; then
 fi
 
 # config-common
-curl -s $mirror/openwrt/24-config-common > .config >> .config
+curl -s $mirror/openwrt/24-config-common >> .config
 
 # ota
 [ "$ENABLE_OTA" = "y" ] && [ "$version" = "v24" ] && echo 'CONFIG_PACKAGE_luci-app-ota=y' >> .config
