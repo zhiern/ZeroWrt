@@ -106,6 +106,8 @@ if [ "$USE_GCC13" = y ]; then
     export USE_GCC13=y gcc_version=13
 elif [ "$USE_GCC14" = y ]; then
     export USE_GCC14=y gcc_version=14
+elif [ "$USE_GCC15" = y ]; then
+    export USE_GCC15=y gcc_version=15
 else
     export USE_GCC14=y gcc_version=14
 fi
