@@ -109,7 +109,6 @@ elif [ "$USE_GCC14" = y ]; then
 else
     export USE_GCC14=y gcc_version=14
 fi
-[ "$ENABLE_MOLD" = y ] && export ENABLE_MOLD=y
 
 # build.sh flags
 export \
