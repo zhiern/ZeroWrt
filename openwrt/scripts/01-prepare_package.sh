@@ -31,8 +31,8 @@ sed -i 's/stderr 1/stderr 0/g' feeds/packages/net/nlbwmon/files/nlbwmon.init
 
 # UPnP
 rm -rf feeds/{packages/net/miniupnpd,luci/applications/luci-app-upnp}
-git clone https://$gitea/sbwml/miniupnpd feeds/packages/net/miniupnpd -b v2.3.9
-git clone https://$gitea/sbwml/luci-app-upnp feeds/luci/applications/luci-app-upnp -b openwrt-24.10
+git clone https://$gitea/zhao/miniupnpd feeds/packages/net/miniupnpd -b v2.3.9
+git clone https://$gitea/zhao/luci-app-upnp feeds/luci/applications/luci-app-upnp -b openwrt-24.10
 
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
