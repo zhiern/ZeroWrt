@@ -106,8 +106,6 @@ if [ "$USE_GCC13" = y ]; then
     export USE_GCC13=y gcc_version=13
 elif [ "$USE_GCC14" = y ]; then
     export USE_GCC14=y gcc_version=14
-elif [ "$USE_GCC15" = y ]; then
-    export USE_GCC15=y gcc_version=15
 else
     export USE_GCC14=y gcc_version=14
 fi
@@ -116,10 +114,6 @@ fi
 # build.sh flags
 export \
     ENABLE_BPF=$ENABLE_BPF \
-    ENABLE_DPDK=$ENABLE_DPDK \
-    ENABLE_GLIBC=$ENABLE_GLIBC \
-    ENABLE_LRNG=$ENABLE_LRNG \
-    KERNEL_CLANG_LTO=$KERNEL_CLANG_LTO \
     ROOT_PASSWORD=$ROOT_PASSWORD
 
 # print version
@@ -160,16 +154,10 @@ print_status() {
     || echo -e "${GREEN_COLOR}Default Password:${RES} (${YELLOW_COLOR}No password${RES})"
 [ "$ENABLE_GLIBC" = "y" ] && echo -e "${GREEN_COLOR}Standard C Library:${RES} ${BLUE_COLOR}glibc${RES}" || echo -e "${GREEN_COLOR}Standard C Library:${RES} ${BLUE_COLOR}musl${RES}"
 print_status "ENABLE_OTA"        "$ENABLE_OTA"
-print_status "ENABLE_DPDK"       "$ENABLE_DPDK"
-print_status "ENABLE_MOLD"       "$ENABLE_MOLD"
 print_status "ENABLE_BPF"        "$ENABLE_BPF" "$GREEN_COLOR" "$RED_COLOR"
 print_status "ENABLE_LTO"        "$ENABLE_LTO" "$GREEN_COLOR" "$RED_COLOR"
-print_status "ENABLE_LRNG"       "$ENABLE_LRNG" "$GREEN_COLOR" "$RED_COLOR"
 print_status "ENABLE_LOCAL_KMOD" "$ENABLE_LOCAL_KMOD"
-print_status "BUILD_FAST"        "$BUILD_FAST"
-print_status "ENABLE_CCACHE"     "$ENABLE_CCACHE"
-print_status "MINIMAL_BUILD"     "$MINIMAL_BUILD"
-print_status "KERNEL_CLANG_LTO"  "$KERNEL_CLANG_LTO" "$GREEN_COLOR" "$YELLOW_COLOR" "\n"
+print_status "BUILD_FAST"        "$BUILD_FAST" "\n"
 
 # clean old files
 rm -rf openwrt master
@@ -177,10 +165,6 @@ rm -rf openwrt master
 # openwrt - releases
 [ "$(whoami)" = "runner" ] && group "source code"
 git clone --depth=1 https://$github/openwrt/openwrt -b $branch
-
-# immortalwrt master
-git clone https://$github/immortalwrt/packages master/immortalwrt_packages --depth=1
-[ "$(whoami)" = "runner" ] && endgroup
 
 if [ -d openwrt ]; then
     cd openwrt
@@ -209,7 +193,7 @@ else
     routing=";$branch"
     telephony=";$branch"
 fi
-cat > feeds.conf <<EOF
+cat > feeds.conf.default <<EOF
 src-git packages https://$github/openwrt/packages.git$packages
 src-git luci https://$github/openwrt/luci.git$luci
 src-git routing https://$github/openwrt/routing.git$routing
@@ -240,18 +224,12 @@ scripts=(
   02-prepare_adguard_core.sh
   03-preset_mihimo_core.sh
   04-convert_translation.sh
-  05-fix-source.sh
   10-custom.sh
   99_clean_build_cache.sh
 )
 for script in "${scripts[@]}"; do
   curl -sO "$mirror/openwrt/scripts/$script"
 done
-if [ -n "$git_password" ] && [ -n "$private_url" ]; then
-    curl -u openwrt:$git_password -sO "$private_url"
-else
-    curl -sO $mirror/openwrt/scripts/10-custom.sh
-fi
 chmod 0755 *sh
 [ "$(whoami)" = "runner" ] && group "patching openwrt"
 bash 00-prepare_base.sh
@@ -259,7 +237,6 @@ bash 01-prepare_package.sh
 bash 02-prepare_adguard_core.sh
 bash 03-preset_mihimo_core.sh
 bash 04-convert_translation.sh
-bash 05-fix-source.sh
 [ -f "10-custom.sh" ] && bash 10-custom.sh
 find feeds -type f -name "*.orig" -exec rm -f {} \;
 [ "$(whoami)" = "runner" ] && endgroup
@@ -287,50 +264,11 @@ curl -s $mirror/openwrt/24-config-common >> .config
 export ENABLE_LTO=$ENABLE_LTO
 [ "$ENABLE_LTO" = "y" ] && curl -s $mirror/openwrt/generic/config-lto >> .config
 
-# glibc
-[ "$ENABLE_GLIBC" = "y" ] && {
-    curl -s $mirror/openwrt/generic/config-glibc >> .config
-    sed -i '/NaiveProxy/d' .config
-}
-
-# DPDK
-[ "$ENABLE_DPDK" = "y" ] && {
-    echo 'CONFIG_PACKAGE_dpdk-tools=y' >> .config
-    echo 'CONFIG_PACKAGE_numactl=y' >> .config
-}
-
-# mold
-[ "$ENABLE_MOLD" = "y" ] && echo 'CONFIG_USE_MOLD=y' >> .config
-
-# kernel - CLANG + LTO; Allow CONFIG_KERNEL_CC=clang / clang-18 / clang-xx
-if [ "$KERNEL_CLANG_LTO" = "y" ]; then
-    echo '# Kernel - CLANG LTO' >> .config
-    if [ "$USE_GCC15" = "y" ] && [ "$ENABLE_CCACHE" = "y" ]; then
-        echo 'CONFIG_KERNEL_CC="ccache clang"' >> .config
-    else
-        echo 'CONFIG_KERNEL_CC="clang"' >> .config
-    fi
-    echo 'CONFIG_EXTRA_OPTIMIZATION=""' >> .config
-    echo '# CONFIG_PACKAGE_kselftests-bpf is not set' >> .config
-fi
-
-# kernel - enable LRNG
-if [ "$ENABLE_LRNG" = "y" ]; then
-    echo -e "\n# Kernel - LRNG" >> .config
-    echo "CONFIG_KERNEL_LRNG=y" >> .config
-    echo "# CONFIG_PACKAGE_urandom-seed is not set" >> .config
-    echo "# CONFIG_PACKAGE_urngd is not set" >> .config
-fi
-
 # local kmod
 if [ "$ENABLE_LOCAL_KMOD" = "y" ]; then
     echo -e "\n# local kmod" >> .config
     echo "CONFIG_TARGET_ROOTFS_LOCAL_PACKAGES=y" >> .config
 fi
-
-# gcc15 patches
-[ "$(whoami)" = "runner" ] && group "patching toolchain"
-curl -s $mirror/openwrt/patch/generic-24.10/202-toolchain-gcc-add-support-for-GCC-15.patch | patch -p1
 
 # gcc config
 echo -e "\n# gcc ${gcc_version}" >> .config
@@ -342,19 +280,8 @@ echo -e "CONFIG_GCC_USE_VERSION_${gcc_version}=y\n" >> .config
 # uhttpd
 [ "$ENABLE_UHTTPD" = "y" ] && sed -i '/nginx/d' .config && echo 'CONFIG_PACKAGE_ariang=y' >> .config
 
-# not all kmod
-[ "$NO_KMOD" = "y" ] && sed -i '/CONFIG_ALL_KMODS=y/d; /CONFIG_ALL_NONSHARED=y/d' .config
-
 # build wwan pkgs for openwrt_core
 [ "$OPENWRT_CORE" = "y" ] && curl -s $mirror/openwrt/generic/config-wwan >> .config
-
-# ccache
-if [ "$USE_GCC15" = "y" ] && [ "$ENABLE_CCACHE" = "y" ]; then
-    echo "CONFIG_CCACHE=y" >> .config
-    [ "$(whoami)" = "runner" ] && echo "CONFIG_CCACHE_DIR=\"/builder/.ccache\"" >> .config
-    [ "$(whoami)" = "zhao" ] && echo "CONFIG_CCACHE_DIR=\"/home/zhao/.ccache\"" >> .config
-    tools_suffix="_ccache"
-fi
 
 # Toolchain Cache
 if [ "$BUILD_FAST" = "y" ]; then
