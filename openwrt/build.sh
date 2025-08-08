@@ -284,17 +284,10 @@ echo -e "CONFIG_GCC_USE_VERSION_${gcc_version}=y\n" >> .config
 
 # Toolchain Cache
 if [ "$BUILD_FAST" = "y" ]; then
-    [ "$ENABLE_GLIBC" = "y" ] && LIBC=glibc || LIBC=musl
-    [ "$isCN" = "CN" ] && github_proxy="ghp.ci/" || github_proxy=""
     echo -e "\n${GREEN_COLOR}Download Toolchain ...${RES}"
-    PLATFORM_ID=""
     [ -f /etc/os-release ] && source /etc/os-release
-    if [ "$PLATFORM_ID" = "platform:el9" ]; then
-        TOOLCHAIN_URL="http://127.0.0.1:8080"
-    else
-        TOOLCHAIN_URL=https://"$github_proxy"github.com/sbwml/openwrt_caches/releases/download/openwrt-24.10
-    fi
-    curl -L ${TOOLCHAIN_URL}/toolchain_${LIBC}_${toolchain_arch}_gcc-${gcc_version}${tools_suffix}.tar.zst -o toolchain.tar.zst $CURL_BAR
+    TOOLCHAIN_URL=https://github.com/zhiern/openwrt_caches/releases/download/openwrt-24.10
+    curl -L ${TOOLCHAIN_URL}/toolchain_musl_${toolchain_arch}_gcc-${gcc_version}.tar.zst -o toolchain.tar.zst $CURL_BAR
     echo -e "\n${GREEN_COLOR}Process Toolchain ...${RES}"
     tar -I "zstd" -xf toolchain.tar.zst
     rm -f toolchain.tar.zst
@@ -316,8 +309,7 @@ if [ "$BUILD_TOOLCHAIN" = "y" ]; then
     echo -e "\r\n${GREEN_COLOR}Building Toolchain ...${RES}\r\n"
     make -j$cores toolchain/compile || make -j$cores toolchain/compile V=s || exit 1
     mkdir -p toolchain-cache
-    [ "$ENABLE_GLIBC" = "y" ] && LIBC=glibc || LIBC=musl
-    tar -I "zstd -19 -T$(nproc --all)" -cf toolchain-cache/toolchain_${LIBC}_${toolchain_arch}_gcc-${gcc_version}${tools_suffix}.tar.zst ./{build_dir,dl,staging_dir,tmp}
+    tar -I "zstd -19 -T$(nproc --all)" -cf toolchain-cache/toolchain_musl_${toolchain_arch}_gcc-${gcc_version}.tar.zst ./{build_dir,dl,staging_dir,tmp}
     echo -e "\n${GREEN_COLOR} Build success! ${RES}"
     exit 0
 else
@@ -347,17 +339,12 @@ if [ "$platform" = "x86_64" ]; then
     if [ "$NO_KMOD" != "y" ]; then
         cp -a bin/targets/x86/*/packages $kmodpkg_name
         rm -f $kmodpkg_name/Packages*
-        cp -a bin/packages/x86_64/base/rtl88*a-firmware*.ipk $kmodpkg_name/
         cp -a bin/packages/x86_64/base/natflow*.ipk $kmodpkg_name/
         [ "$OPENWRT_CORE" = "y" ] && {
             cp -a bin/packages/x86_64/base/*3ginfo*.ipk $kmodpkg_name/
             cp -a bin/packages/x86_64/base/*modemband*.ipk $kmodpkg_name/
             cp -a bin/packages/x86_64/base/*sms-tool*.ipk $kmodpkg_name/
             cp -a bin/packages/x86_64/base/*quectel*.ipk $kmodpkg_name/
-        }
-        [ "$ENABLE_DPDK" = "y" ] && {
-            cp -a bin/packages/x86_64/base/*dpdk*.ipk $kmodpkg_name/ || true
-            cp -a bin/packages/x86_64/base/*numa*.ipk $kmodpkg_name/ || true
         }
         bash kmod-sign $kmodpkg_name
         tar zcf x86_64-$kmodpkg_name.tar.gz $kmodpkg_name
@@ -366,11 +353,7 @@ if [ "$platform" = "x86_64" ]; then
     # OTA json
     if [ "$1" = "rc2" ]; then
         mkdir -p ota
-        if [ "$MINIMAL_BUILD" = "y" ]; then
-            OTA_URL="https://x86.cooluc.com/d/minimal/openwrt-24.10"
-        else
-            OTA_URL="https://github.com/sbwml/builder/releases/download"
-        fi
+        OTA_URL="https://github.com/zhiern/ZeroWrt/releases/download"
         VERSION=$(sed 's/v//g' version.txt)
         SHA256=$(sha256sum bin/targets/x86/64*/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
         cat > ota/fw.json <<EOF
