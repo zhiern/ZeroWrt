@@ -194,6 +194,8 @@ sed -i 's/OpenWrt/ZeroWrt/' package/base-files/files/bin/config_generate
 
 curl -s $mirror/openwrt/doc/base-files/banner > package/base-files/files/etc/banner
 
+sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=false/' feeds/packages/lang/rust/Makefile
+
 # Distfeeds.conf
 mkdir -p files/etc/opkg
 cat > files/etc/opkg/distfeeds.conf <<EOF
