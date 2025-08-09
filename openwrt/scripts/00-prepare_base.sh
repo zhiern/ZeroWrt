@@ -62,6 +62,9 @@ curl -s $mirror/openwrt/patch/firewall4/firewall4_patches/999-02-firewall4-add-b
 # fix flow offload
 curl -s $mirror/openwrt/patch/firewall4/firewall4_patches/001-fix-fw4-flow-offload.patch > package/network/config/firewall4/patches/001-fix-fw4-flow-offload.patch
 
+# fw4 add custom nft command support
+curl -s $mirror/openwrt/patch/firewall4/firewall4_patches/100-fw4-add-custom-nft-command-support.patch > package/network/config/firewall4/patches/100-fw4-add-custom-nft-command-support.patch
+
 # add custom nft command support
 curl -s $mirror/openwrt/patch/firewall4/100-openwrt-firewall4-add-custom-nft-command-support.patch | patch -p1
 
