@@ -207,7 +207,7 @@ curl -s $mirror/openwrt/doc/argon/bg1.jpg > package/new/luci-theme-argon/htdocs/
 curl -s $mirror/openwrt/doc/argon/iconfont.ttf > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.ttf
 curl -s $mirror/openwrt/doc/argon/iconfont.woff > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.woff
 curl -s $mirror/openwrt/doc/argon/iconfont.woff2 > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.woff2
-curl -s $mirror/openwrt/doc/argon/cascade.css > package/new/luci-theme-argon/htdocs/luci-static/argon/css/cascade.css
+curl -s "$mirror/openwrt/doc/argon/cascade.css" >> package/new/luci-theme-argon/htdocs/luci-static/argon/css/cascade.css
 
 # argon-config
 rm -rf feeds/luci/applications/luci-app-argon-config
