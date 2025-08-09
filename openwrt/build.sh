@@ -225,6 +225,7 @@ scripts=(
   02-prepare_adguard_core.sh
   03-preset_mihimo_core.sh
   04-convert_translation.sh
+  06-fix-source.sh
   10-custom.sh
   99_clean_build_cache.sh
 )
@@ -243,6 +244,7 @@ bash 01-prepare_package.sh
 bash 02-prepare_adguard_core.sh
 bash 03-preset_mihimo_core.sh
 bash 04-convert_translation.sh
+bash 06-fix-source.sh
 if [ "$platform" = "rockchip" ]; then
     bash 05-rockchip_target_only.sh
 elif [ "$platform" = "x86_64" ]; then
