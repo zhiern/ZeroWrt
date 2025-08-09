@@ -47,6 +47,7 @@ else
 fi
 
 ### FW4 ###
+curl -s $mirror/openwrt/doc/firewall4/Makefile > package/network/config/firewall4/Makefile
 sed -i 's|$(PROJECT_GIT)/project|https://github.com/openwrt|g' package/network/config/firewall4/Makefile
 mkdir -p package/network/config/firewall4/patches
 
