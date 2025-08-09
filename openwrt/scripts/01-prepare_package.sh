@@ -12,7 +12,10 @@ rm -rf feeds/packages/lang/node
 git clone https://$github/sbwml/feeds_packages_lang_node-prebuilt feeds/packages/lang/node -b packages-24.10
 
 # default settings
-git clone https://$github/sbwml/default-settings package/new/default-settings -b openwrt-24.10
+git clone https://$github/zhiern/default-settings package/new/default-settings -b openwrt-24.10
+
+# linkease
+git clone https://$github/zhiern/package_new_linkease package/new/linkease
 
 # luci-app-quickfile
 git clone https://$github/sbwml/luci-app-quickfile package/new/quickfile
