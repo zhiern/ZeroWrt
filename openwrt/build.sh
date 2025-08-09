@@ -348,28 +348,14 @@ else
     exit 1
 fi
 
-if [ "$platform" = "x86_64" ]; then
-    if [ "$NO_KMOD" != "y" ]; then
-        cp -a bin/targets/x86/*/packages $kmodpkg_name
-        rm -f $kmodpkg_name/Packages*
-        cp -a bin/packages/x86_64/base/natflow*.ipk $kmodpkg_name/
-        [ "$OPENWRT_CORE" = "y" ] && {
-            cp -a bin/packages/x86_64/base/*3ginfo*.ipk $kmodpkg_name/
-            cp -a bin/packages/x86_64/base/*modemband*.ipk $kmodpkg_name/
-            cp -a bin/packages/x86_64/base/*sms-tool*.ipk $kmodpkg_name/
-            cp -a bin/packages/x86_64/base/*quectel*.ipk $kmodpkg_name/
-        }
-        bash kmod-sign $kmodpkg_name
-        tar zcf x86_64-$kmodpkg_name.tar.gz $kmodpkg_name
-        rm -rf $kmodpkg_name
-    fi
-    # OTA json
-    if [ "$1" = "rc2" ]; then
-        mkdir -p ota
-        OTA_URL="https://github.com/zhiern/ZeroWrt/releases/download"
-        VERSION=$(sed 's/v//g' version.txt)
-        SHA256=$(sha256sum bin/targets/x86/64*/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
-        cat > ota/fw.json <<EOF
+# OTA json
+if [ "$1" = "v24" ]; then
+    mkdir -p ota
+    OTA_URL="https://github.com/sbwml/builder/releases/download"
+    VERSION=$(sed 's/v//g' version.txt)
+    SHA256=$(sha256sum bin/targets/x86/64*/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
+fi
+cat > ota/fw.json <<EOF
 {
   "x86_64": [
     {
@@ -380,10 +366,4 @@ if [ "$platform" = "x86_64" ]; then
   ]
 }
 EOF
-    fi
-    # Backup download cache
-    if [ "$isCN" = "CN" ] && [ "$1" = "rc2" ]; then
-        rm -rf dl/geo* dl/go-mod-cache
-        tar cf ../dl.gz dl
-    fi
-    exit 0
+
