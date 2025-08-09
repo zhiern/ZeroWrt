@@ -80,6 +80,7 @@ CONFIG_LUCI_LANG_en=y
 # CONFIG_LUCI_JSMIN is not set
 CONFIG_PACKAGE_luci-nginx=y
 CONFIG_PACKAGE_luci-compat=y
+CONFIG_PACKAGE_luci-proto-wireguard=y
 
 ### Nginx
 CONFIG_PACKAGE_nginx-ssl=y
