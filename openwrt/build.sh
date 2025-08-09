@@ -348,14 +348,14 @@ else
     exit 1
 fi
 
-# OTA json
-if [ "$1" = "v24" ]; then
-    mkdir -p ota
-    OTA_URL="https://github.com/sbwml/builder/releases/download"
-    VERSION=$(sed 's/v//g' version.txt)
-    SHA256=$(sha256sum bin/targets/x86/64*/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
-fi
-cat > ota/fw.json <<EOF
+# OTA JSON
+if [ "$platform" = "x86_64" ]; then
+    if [ "$1" = "v24" ]; then
+        mkdir -p ota
+        OTA_URL="https://github.com/sbwml/builder/releases/download"
+        VERSION=$(sed 's/^v//' version.txt)
+        SHA256=$(sha256sum bin/targets/x86/64/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
+        cat > ota/fw.json <<EOF
 {
   "x86_64": [
     {
@@ -366,4 +366,7 @@ cat > ota/fw.json <<EOF
   ]
 }
 EOF
+    fi
+fi
 
+### People come and go, we struggled with laughter and tears,and all the years have gone by,still Ihave you by my side. 你陪了我多少年，花开花落。一路上起起跌跌 ###
