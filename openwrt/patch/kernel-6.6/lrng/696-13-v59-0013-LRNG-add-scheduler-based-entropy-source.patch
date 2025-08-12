@@ -1,7 +1,7 @@
-From b05c6cabbd3dc60e1e1d20f5cd172ee8c470155a Mon Sep 17 00:00:00 2001
+From fdaf7ad027123ba898395db97a001e6a192156f5 Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Wed, 22 Feb 2023 07:05:59 +0100
-Subject: [PATCH v57 13/25] LRNG - add scheduler-based entropy source
+Subject: [PATCH v58 13/25] LRNG - add scheduler-based entropy source
 
 The scheduler-based entropy source (ES) consumes the events triggered by
 the kernel invoked with the add_sched_randomness. Its main goal is:
@@ -59,7 +59,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  create mode 100644 drivers/char/lrng/lrng_testing.h
 
 diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index e67a1f74f025..320cf9639ba0 100644
+index fbe3ca30962a..edd824d05f6d 100644
 --- a/drivers/char/lrng/Kconfig
 +++ b/drivers/char/lrng/Kconfig
 @@ -141,9 +141,9 @@ comment "Common Timer-based Entropy Source Configuration"
@@ -926,5 +926,5 @@ index 000000000000..672a7fca4595
 +
 +#endif /* _LRNG_TESTING_H */
 -- 
-2.46.0
+2.48.1
 

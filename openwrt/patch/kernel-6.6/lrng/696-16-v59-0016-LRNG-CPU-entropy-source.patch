@@ -1,7 +1,7 @@
-From 72d579bebbbfe8d62a43ccd14bac9149e2199089 Mon Sep 17 00:00:00 2001
+From ea827c5d17ba0b5877ee9815ee566605cb82632d Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Mon, 20 Feb 2023 22:08:23 +0100
-Subject: [PATCH v57 16/25] LRNG - CPU entropy source
+Subject: [PATCH v58 16/25] LRNG - CPU entropy source
 
 Certain CPUs provide instructions giving access to an entropy source
 (e.g. RDSEED on Intel/AMD, DARN on POWER, etc.). The LRNG can utilize
@@ -22,7 +22,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  create mode 100644 drivers/char/lrng/lrng_es_cpu.c
 
 diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index 787c3f0361bc..0c9da7bf4e0e 100644
+index 26523e65f822..4f288dab2171 100644
 --- a/drivers/char/lrng/Kconfig
 +++ b/drivers/char/lrng/Kconfig
 @@ -496,44 +496,44 @@ config LRNG_IRQ_ENTROPY_RATE
@@ -407,5 +407,5 @@ index 000000000000..96a621c16feb
 +	.switch_hash		= lrng_cpu_switch_hash,
 +};
 -- 
-2.46.0
+2.48.1
 

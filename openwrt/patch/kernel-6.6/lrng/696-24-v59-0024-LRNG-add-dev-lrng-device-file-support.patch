@@ -1,7 +1,7 @@
-From eb6fc2549cfa8e96163b567af401f96c366fb941 Mon Sep 17 00:00:00 2001
+From 0920011fe1c0c2a29855485e06b75d58bf4f68cf Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Sun, 15 May 2022 18:39:30 +0200
-Subject: [PATCH v57 24/25] LRNG - add /dev/lrng device file support
+Subject: [PATCH v58 24/25] LRNG - add /dev/lrng device file support
 
 The LRNG can create a character device file that operates identically
 to /dev/random including IOCTL, read and write operations.
@@ -15,7 +15,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  create mode 100644 drivers/char/lrng/lrng_interface_dev.c
 
 diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index e55e61eada2a..4bdb2bd169e6 100644
+index eaa648902dad..5fec4d73b1c8 100644
 --- a/drivers/char/lrng/Kconfig
 +++ b/drivers/char/lrng/Kconfig
 @@ -111,15 +111,15 @@ config LRNG_KCAPI_IF
@@ -94,5 +94,5 @@ index 000000000000..e60060d402b3
 +}
 +device_initcall(lrng_dev_if_mod_init);
 -- 
-2.46.0
+2.48.1
 

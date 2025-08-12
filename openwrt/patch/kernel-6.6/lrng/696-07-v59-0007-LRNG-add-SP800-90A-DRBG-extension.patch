@@ -1,7 +1,7 @@
-From ad77ef21779b3ecded6b7a389641f407341e2694 Mon Sep 17 00:00:00 2001
+From 64709de89c3bd400220424f138e566160ef94ee9 Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Sun, 28 Jul 2024 21:39:01 +0200
-Subject: [PATCH v57 07/25] LRNG - add SP800-90A DRBG extension
+Subject: [PATCH v58 07/25] LRNG - add SP800-90A DRBG extension
 
 Using the LRNG switchable DRNG support, the SP800-90A DRBG extension is
 implemented.
@@ -29,7 +29,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  create mode 100644 drivers/char/lrng/lrng_drng_drbg.c
 
 diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index cd79e735a4ff..6611e4f86241 100644
+index 84b6367b0aee..575b54d14ae7 100644
 --- a/drivers/char/lrng/Kconfig
 +++ b/drivers/char/lrng/Kconfig
 @@ -620,11 +620,11 @@ endmenu # "Specific DRNG seeding strategies"
@@ -369,5 +369,5 @@ index 000000000000..0da8150e0d42
 +
 +#endif /* CONFIG_LRNG_DFLT_DRNG_DRBG */
 -- 
-2.46.0
+2.48.1
 

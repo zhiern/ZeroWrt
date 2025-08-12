@@ -86,7 +86,7 @@ index 49bb36865e..87344ea561 100644
  	default "11.3.0"	if GCC_VERSION_11
  	default "12.3.0"	if GCC_VERSION_12
  	default "14.2.0"	if GCC_VERSION_14
-+	default "15.1.0"	if GCC_VERSION_15
++	default "15.2.0"	if GCC_VERSION_15
  	default "13.3.0"
  
  config GCC_USE_DEFAULT_VERSION
@@ -98,8 +98,8 @@ index 0ccf55bd31..1dd644f1d8 100644
    PKG_HASH:=a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9
  endif
  
-+ifeq ($(PKG_VERSION),15.1.0)
-+  PKG_HASH:=e2b09ec21660f01fecffb715e0120265216943f038d0e48a9868713e54f06cea
++ifeq ($(PKG_VERSION),15.2.0)
++  PKG_HASH:=438fd996826b0c82485a29da03a72d71d6e3541a83ec702df4271f6fe025d24e
 +endif
 +
  PATCH_DIR=../patches-$(GCC_MAJOR_VERSION).x
@@ -630,7 +630,7 @@ index 0000000000..c5462e12c8
 +     case OPT_fconstant_string_class_:
 +       constant_string_class_name = arg;
 +       break;
-+@@ -1359,6 +1368,47 @@ c_common_init (void)
++@@ -1361,6 +1370,47 @@ c_common_init (void)
 +       return false;
 +     }
 + 

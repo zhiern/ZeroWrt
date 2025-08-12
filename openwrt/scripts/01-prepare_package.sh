@@ -191,9 +191,6 @@ git clone https://$gitea/zhao/luci-app-sqm feeds/luci/applications/luci-app-sqm
 rm -rf feeds/packages/utils/unzip
 git clone https://$github/sbwml/feeds_packages_utils_unzip feeds/packages/utils/unzip
 
-# adguardhome
-git clone https://$gitea/zhao/luci-app-adguardhome package/new/luci-app-adguardhome
-
 # lucky
 git clone https://$github/gdy666/luci-app-lucky.git package/new/lucky
 
@@ -202,21 +199,7 @@ rm -rf feeds/packages/utils/coremark
 git clone https://$github/sbwml/openwrt_pkgs package/new/custom --depth=1
 
 # argon
-git clone https://$github/jerrykuku/luci-theme-argon.git package/new/luci-theme-argon
-curl -s $mirror/openwrt/doc/argon/bg1.jpg > package/new/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
-curl -s $mirror/openwrt/doc/argon/iconfont.ttf > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.ttf
-curl -s $mirror/openwrt/doc/argon/iconfont.woff > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.woff
-curl -s $mirror/openwrt/doc/argon/iconfont.woff2 > package/new/luci-theme-argon/htdocs/luci-static/argon/fonts/iconfont.woff2
-curl -s "$mirror/openwrt/doc/argon/cascade.css" >> package/new/luci-theme-argon/htdocs/luci-static/argon/css/cascade.css
+git clone https://$github/zhiern/luci-theme-argon package/new/luci-theme-argon
 
 # argon-config
-rm -rf feeds/luci/applications/luci-app-argon-config
-git clone https://$github/jerrykuku/luci-app-argon-config.git package/new/luci-app-argon-config
-sed -i "s/bing/none/g" package/new/luci-app-argon-config/root/etc/config/argon
-
-# 主题设置
-sed -i 's|<a class="luci-link" href="https://github.com/openwrt/luci" target="_blank">Powered by <%= ver.luciname %> (<%= ver.luciversion %>)</a>|<a class="luci-link" href="https://www.kejizero.online" target="_blank">探索无限</a>|g' package/new/luci-theme-argon/luasrc/view/themes/argon/footer.htm
-sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">ArgonTheme <%# vPKG_VERSION %></a>|<a href="https://github.com/zhiern/OpenWRT" target="_blank">ZeroWrt</a> |g' package/new/luci-theme-argon/luasrc/view/themes/argon/footer.htm
-sed -i 's|<a class="luci-link" href="https://github.com/openwrt/luci" target="_blank">Powered by <%= ver.luciname %> (<%= ver.luciversion %>)</a>|<a class="luci-link" href="https://www.kejizero.online" target="_blank">探索无限</a>|g' package/new/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
-sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">ArgonTheme <%# vPKG_VERSION %></a>|<a href="https://github.com/zhiern/OpenWRT" target="_blank">ZeroWrt</a> |g' package/new/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
-
+git clone https://$github/zhiern/luci-app-argon-config package/new/luci-app-argon-config

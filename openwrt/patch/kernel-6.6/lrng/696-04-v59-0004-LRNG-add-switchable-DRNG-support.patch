@@ -1,7 +1,7 @@
-From bef0700072b81d730e17179677b7bf12e2b95d16 Mon Sep 17 00:00:00 2001
+From 821cb98802bd93c5391122d6c06c7dd83a33ce3c Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Mon, 20 Feb 2023 22:02:06 +0100
-Subject: [PATCH v57 04/25] LRNG - add switchable DRNG support
+Subject: [PATCH v58 04/25] LRNG - add switchable DRNG support
 
 The DRNG switch support allows replacing the DRNG mechanism of the
 LRNG. The switching support rests on the interface definition of
@@ -48,7 +48,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  create mode 100644 drivers/char/lrng/lrng_switch.c
 
 diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index 0cd6a1fb28ba..3ac708610b02 100644
+index b44adedb0364..a94aed6280e6 100644
 --- a/drivers/char/lrng/Kconfig
 +++ b/drivers/char/lrng/Kconfig
 @@ -629,10 +629,10 @@ config LRNG_DRNG_CHACHA20
@@ -369,5 +369,5 @@ index 000000000000..13c70797b193
 +}
 +EXPORT_SYMBOL(lrng_set_hash_cb);
 -- 
-2.46.0
+2.48.1
 

@@ -1,7 +1,7 @@
-From 5072ace767c8b03d2fa6f2a25c059d51ce302efd Mon Sep 17 00:00:00 2001
+From 4c4d1134ca00d842f0c97b04cd10bd6d17f1dfcf Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Tue, 25 Apr 2023 23:13:30 +0200
-Subject: [PATCH v57 14/25] LRNG - add SP800-90B compliant health tests
+Subject: [PATCH v58 14/25] LRNG - add SP800-90B compliant health tests
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -119,7 +119,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  create mode 100644 drivers/char/lrng/lrng_health.c
 
 diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index 320cf9639ba0..2c0b0442340a 100644
+index edd824d05f6d..2055257c9a41 100644
 --- a/drivers/char/lrng/Kconfig
 +++ b/drivers/char/lrng/Kconfig
 @@ -229,80 +229,80 @@ config LRNG_COLLECTION_SIZE
@@ -737,5 +737,5 @@ index 000000000000..2c884d1c15c1
 +	return lrng_health_pass;
 +}
 -- 
-2.46.0
+2.48.1
 

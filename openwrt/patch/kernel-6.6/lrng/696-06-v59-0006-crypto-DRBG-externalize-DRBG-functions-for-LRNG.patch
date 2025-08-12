@@ -1,7 +1,7 @@
-From 8ef9f25bc74df148c2747afd855dfb9eccc2c274 Mon Sep 17 00:00:00 2001
+From 82507d3e0789b102d14ac868e743db95fdfcf63b Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Thu, 21 Mar 2024 14:17:33 +0100
-Subject: [PATCH v57 06/25] crypto: DRBG - externalize DRBG functions for LRNG
+Subject: [PATCH v58 06/25] crypto: DRBG - externalize DRBG functions for LRNG
 
 This patch allows several DRBG functions to be called by the LRNG kernel
 code paths outside the drbg.c file.
@@ -13,10 +13,10 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  2 files changed, 17 insertions(+), 6 deletions(-)
 
 diff --git a/crypto/drbg.c b/crypto/drbg.c
-index 3addce90930c..b6cc200e807d 100644
+index f28dfc2511a2..2ad68a760d3b 100644
 --- a/crypto/drbg.c
 +++ b/crypto/drbg.c
-@@ -115,7 +115,7 @@
+@@ -116,7 +116,7 @@
   * HMAC-SHA512 / SHA256 / AES 256 over other ciphers. Thus, the
   * favored DRBGs are the latest entries in this array.
   */
@@ -25,7 +25,7 @@ index 3addce90930c..b6cc200e807d 100644
  #ifdef CONFIG_CRYPTO_DRBG_CTR
  	{
  		.flags = DRBG_CTR | DRBG_STRENGTH128,
-@@ -180,6 +180,7 @@ static const struct drbg_core drbg_cores[] = {
+@@ -181,6 +181,7 @@ static const struct drbg_core drbg_cores[] = {
  	},
  #endif /* CONFIG_CRYPTO_DRBG_HMAC */
  };
@@ -33,7 +33,7 @@ index 3addce90930c..b6cc200e807d 100644
  
  static int drbg_uninstantiate(struct drbg_state *drbg);
  
-@@ -195,7 +196,7 @@ static int drbg_uninstantiate(struct drbg_state *drbg);
+@@ -196,7 +197,7 @@ static int drbg_uninstantiate(struct drbg_state *drbg);
   * Return: normalized strength in *bytes* value or 32 as default
   *	   to counter programming errors
   */
@@ -42,7 +42,7 @@ index 3addce90930c..b6cc200e807d 100644
  {
  	switch (flags & DRBG_STRENGTH_MASK) {
  	case DRBG_STRENGTH128:
-@@ -208,6 +209,7 @@ static inline unsigned short drbg_sec_strength(drbg_flag_t flags)
+@@ -209,6 +210,7 @@ static inline unsigned short drbg_sec_strength(drbg_flag_t flags)
  		return 32;
  	}
  }
@@ -50,7 +50,7 @@ index 3addce90930c..b6cc200e807d 100644
  
  /*
   * FIPS 140-2 continuous self test for the noise source
-@@ -1236,7 +1238,7 @@ static int drbg_seed(struct drbg_state *drbg, struct drbg_string *pers,
+@@ -1237,7 +1239,7 @@ static int drbg_seed(struct drbg_state *drbg, struct drbg_string *pers,
  }
  
  /* Free all substructures in a DRBG state without the DRBG state structure */
@@ -59,7 +59,7 @@ index 3addce90930c..b6cc200e807d 100644
  {
  	if (!drbg)
  		return;
-@@ -1257,12 +1259,13 @@ static inline void drbg_dealloc_state(struct drbg_state *drbg)
+@@ -1258,12 +1260,13 @@ static inline void drbg_dealloc_state(struct drbg_state *drbg)
  		drbg->fips_primed = false;
  	}
  }
@@ -74,7 +74,7 @@ index 3addce90930c..b6cc200e807d 100644
  {
  	int ret = -ENOMEM;
  	unsigned int sb_size = 0;
-@@ -1343,6 +1346,7 @@ static inline int drbg_alloc_state(struct drbg_state *drbg)
+@@ -1344,6 +1347,7 @@ static inline int drbg_alloc_state(struct drbg_state *drbg)
  	drbg_dealloc_state(drbg);
  	return ret;
  }
@@ -82,7 +82,7 @@ index 3addce90930c..b6cc200e807d 100644
  
  /*************************************************************************
   * DRBG interface functions
-@@ -1877,8 +1881,7 @@ static int drbg_kcapi_sym_ctr(struct drbg_state *drbg,
+@@ -1878,8 +1882,7 @@ static int drbg_kcapi_sym_ctr(struct drbg_state *drbg,
   *
   * return: flags
   */
@@ -92,7 +92,7 @@ index 3addce90930c..b6cc200e807d 100644
  {
  	int i = 0;
  	size_t start = 0;
-@@ -1905,6 +1908,7 @@ static inline void drbg_convert_tfm_core(const char *cra_driver_name,
+@@ -1906,6 +1909,7 @@ static inline void drbg_convert_tfm_core(const char *cra_driver_name,
  		}
  	}
  }
@@ -117,5 +117,5 @@ index af5ad51d3eef..b12ae9bdebf4 100644
 +
  #endif /* _DRBG_H */
 -- 
-2.46.0
+2.48.1
 

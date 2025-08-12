@@ -89,4 +89,6 @@ if [ "$USE_GCC15" = y ]; then
     sed -i '/CONFIGURE_ARGS/i TARGET_CFLAGS += -std=gnu17\n' feeds/packages/utils/jq/Makefile
     # coova-chilli
     sed -i '/TARGET_CFLAGS/s/$/ -std=gnu17/' feeds/packages/net/coova-chilli/Makefile
+    # rtl8812au-ct
+    sed -i '/^NOSTDINC_FLAGS/ s/$/ -std=gnu17/' package/kernel/rtl8812au-ct/Makefile
 fi

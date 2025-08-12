@@ -1,7 +1,7 @@
-From 305da0e66acd2ab8cd5c4db7232128cfb3ae7feb Mon Sep 17 00:00:00 2001
+From 4bbb4914a8bfeef9845b0746fe4f32ecfdad4a47 Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Sun, 15 May 2022 18:43:30 +0200
-Subject: [PATCH v57 25/25] LRNG - add hwrand framework interface
+Subject: [PATCH v58 25/25] LRNG - add hwrand framework interface
 
 The LRNG can be registered with the hardware random number generator
 framework. This offers a random number generator with the name "lrng"
@@ -17,7 +17,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  create mode 100644 drivers/char/lrng/lrng_interface_hwrand.c
 
 diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index 4bdb2bd169e6..a8bbefafb35c 100644
+index 5fec4d73b1c8..bbab734b35ac 100644
 --- a/drivers/char/lrng/Kconfig
 +++ b/drivers/char/lrng/Kconfig
 @@ -101,16 +101,16 @@ config LRNG_KCAPI_IF
@@ -131,5 +131,5 @@ index 000000000000..e841eea13348
 +MODULE_AUTHOR("Stephan Mueller <smueller@chronox.de>");
 +MODULE_DESCRIPTION("Entropy Source and DRNG Manager HW-Random Interface");
 -- 
-2.46.0
+2.48.1
 

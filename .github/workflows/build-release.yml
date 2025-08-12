@@ -52,7 +52,7 @@ jobs:
       continue-on-error: true
       uses: actions/checkout@main
       with:
-        path: ZeroWrt-Action
+        path: ZeroWrt
 
     - name: Setup variables
       run: |
@@ -81,7 +81,7 @@ jobs:
         sudo curl -sL -o /usr/bin/caddy https://github.com/sbwml/r4s_build_script/releases/download/caddy/caddy
         sudo chmod 755 /usr/bin/caddy
         echo ":8080 {" > caddyfile
-        echo "    root * $(pwd)/ZeroWrt-Action" >> caddyfile
+        echo "    root * $(pwd)/ZeroWrt" >> caddyfile
         echo "    file_server browse" >> caddyfile
         echo "}" >> caddyfile
         sudo /usr/bin/caddy start --config caddyfile --adapter caddyfile
@@ -203,9 +203,8 @@ jobs:
           cp -a openwrt/bin/targets/x86/*/*-ext4-combined-efi.img.gz rom/
           cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
           cp -a openwrt/bin/targets/x86/*/*-generic-rootfs.tar.gz rom/
-          cp -a openwrt/bin/targets/x86/*/*-x86-64-generic.manifest info/manifest.txt
-          cp -a openwrt/bin/targets/x86/*/config.buildinfo info/config.buildinfo
-          cd rom && sha256sum *gz > ../info/sha256sums.txt
+          cp -a openwrt/x86_64-kmodpkg.tar.gz rom/
+          cp -a openwrt/ota/fw.json rom/
         elif [ "${{ github.event.inputs.device }}" = "netgear_r8500" ]; then
           cp -a openwrt/bin/targets/bcm53xx/generic/*-bcm53xx-generic-netgear_r8500-squashfs.chk rom/
           cp -a openwrt/bin/targets/bcm53xx/generic/*.manifest info/manifest.txt
@@ -236,7 +235,7 @@ jobs:
         name: ${{ env.latest_release }}
         allowUpdates: true
         tag: ${{ env.latest_release }}
-        commit: openwrt-24.10
+        commit: main
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.build_dir }}/rom/*

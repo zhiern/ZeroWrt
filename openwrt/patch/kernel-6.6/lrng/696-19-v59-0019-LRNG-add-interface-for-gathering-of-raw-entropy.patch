@@ -1,7 +1,7 @@
-From b7a9c54455fc04eadde07fdef8b207f275097ee7 Mon Sep 17 00:00:00 2001
+From 163eb36d1f30646d275bcf354c53c44439c59095 Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Sun, 18 Dec 2022 21:22:36 +0100
-Subject: [PATCH v57 19/25] LRNG - add interface for gathering of raw entropy
+Subject: [PATCH v58 19/25] LRNG - add interface for gathering of raw entropy
 
 The test interface allows a privileged process to capture the raw
 unconditioned noise that is collected by the LRNG for statistical
@@ -78,7 +78,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  create mode 100644 drivers/char/lrng/lrng_testing.c
 
 diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index 5aab08fa0d15..3093f5d52970 100644
+index 77f60d68245b..078280317081 100644
 --- a/drivers/char/lrng/Kconfig
 +++ b/drivers/char/lrng/Kconfig
 @@ -718,273 +718,273 @@ choice
@@ -1539,5 +1539,5 @@ index 000000000000..101140085d81
 +
 +module_init(lrng_raw_init);
 -- 
-2.46.0
+2.48.1
 

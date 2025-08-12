@@ -1,7 +1,7 @@
-From d6be742d11c18c1c158c42e3be41f5c3f9cecc60 Mon Sep 17 00:00:00 2001
+From b3b21b4c49032e13b6963d3cc7a8a94f81ff28eb Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Sun, 15 May 2022 18:13:56 +0200
-Subject: [PATCH v57 20/25] LRNG - add power-on and runtime self-tests
+Subject: [PATCH v58 20/25] LRNG - add power-on and runtime self-tests
 
 Parts of the LRNG are already covered by self-tests, including:
 
@@ -54,7 +54,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  create mode 100644 drivers/char/lrng/lrng_selftest.c
 
 diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index 3093f5d52970..3d4ace3f0d0b 100644
+index 078280317081..840cfb16b257 100644
 --- a/drivers/char/lrng/Kconfig
 +++ b/drivers/char/lrng/Kconfig
 @@ -985,32 +985,32 @@ config LRNG_TEST_CPU_ES_COMPRESSION
@@ -529,5 +529,5 @@ index 000000000000..15f1e4a2a719
 +
 +module_init(lrng_selftest_init);
 -- 
-2.46.0
+2.48.1
 

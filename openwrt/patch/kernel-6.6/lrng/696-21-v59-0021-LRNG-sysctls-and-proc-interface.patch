@@ -1,7 +1,7 @@
-From 2b9db136411dba4236f1c8123aabf7effa592b61 Mon Sep 17 00:00:00 2001
+From e654eb99e42ba070cf3a16c363ffd710daf220ac Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
 Date: Sun, 31 Jul 2022 22:34:51 +0200
-Subject: [PATCH v57 21/25] LRNG - sysctls and /proc interface
+Subject: [PATCH v58 21/25] LRNG - sysctls and /proc interface
 
 The LRNG sysctl interface provides the same controls as the existing
 /dev/random implementation. These sysctls behave identically and are
@@ -91,7 +91,7 @@ index 000000000000..1280e03c49f7
 +}
 +
 +static int lrng_sysctl_do_entropy(const struct ctl_table *table, int write,
-+				 void *buffer, size_t *lenp, loff_t *ppos)
++				  void *buffer, size_t *lenp, loff_t *ppos)
 +{
 +	struct ctl_table fake_table;
 +	int entropy_count = lrng_avail_entropy_aux();
@@ -178,5 +178,5 @@ index 000000000000..1280e03c49f7
 +}
 +device_initcall(random_sysctls_init);
 -- 
-2.46.0
+2.48.1
 

@@ -1,7 +1,7 @@
-From ad77ca844a6eae5a9c3774f9940c99b745ce9a00 Mon Sep 17 00:00:00 2001
+From 14dbacba9d2b0fed496d74908539385dd391820b Mon Sep 17 00:00:00 2001
 From: Stephan Mueller <smueller@chronox.de>
-Date: Tue, 25 Apr 2023 22:22:44 +0200
-Subject: [PATCH v57 01/25] LRNG: Entropy Source and DRNG Manager
+Date: Sat, 1 Feb 2025 11:53:01 +0100
+Subject: [PATCH v58 01/25] LRNG: Entropy Source and DRNG Manager
 
 The kernel crypto API contains deterministic random number generators
 (DRNG) which a caller must seed and reseed. The task of seeding a DRNG
@@ -156,7 +156,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  drivers/char/lrng/lrng_es_irq.h               |   24 +
  drivers/char/lrng/lrng_es_jent.h              |   17 +
  drivers/char/lrng/lrng_es_krng.h              |   17 +
- drivers/char/lrng/lrng_es_mgr.c               |  506 ++++++++
+ drivers/char/lrng/lrng_es_mgr.c               |  528 +++++++++
  drivers/char/lrng/lrng_es_mgr.h               |   56 +
  drivers/char/lrng/lrng_es_mgr_cb.h            |   87 ++
  drivers/char/lrng/lrng_es_sched.h             |   20 +
@@ -169,7 +169,7 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  drivers/char/lrng/lrng_sha256.c               |   72 ++
  drivers/char/lrng/lrng_sysctl.h               |   15 +
  include/linux/lrng.h                          |  251 ++++
- 31 files changed, 4034 insertions(+)
+ 31 files changed, 4056 insertions(+)
  create mode 100644 drivers/char/lrng/Kconfig
  create mode 100644 drivers/char/lrng/Makefile
  create mode 100644 drivers/char/lrng/lrng_definitions.h
@@ -201,10 +201,10 @@ Signed-off-by: Stephan Mueller <smueller@chronox.de>
  create mode 100644 include/linux/lrng.h
 
 diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
-index 7c8dd0abcfdf..ffdd6ca797cd 100644
+index 8fb33c90482f..0a09ee313ada 100644
 --- a/drivers/char/Kconfig
 +++ b/drivers/char/Kconfig
-@@ -422,4 +422,6 @@ config ADI
+@@ -423,4 +423,6 @@ config ADI
  	  and SSM (Silicon Secured Memory).  Intended consumers of this
  	  driver include crash and makedumpfile.
  
@@ -223,7 +223,7 @@ index e9b360cdc99a..ee08348a94b8 100644
 +obj-$(CONFIG_LRNG)		+= lrng/
 diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
 new file mode 100644
-index 000000000000..0cd6a1fb28ba
+index 000000000000..b44adedb0364
 --- /dev/null
 +++ b/drivers/char/lrng/Kconfig
 @@ -0,0 +1,1017 @@
@@ -299,20 +299,20 @@ index 000000000000..0cd6a1fb28ba
 +	default n
 +	help
 +	  When enabling this option, two entropy sources must
-+	  deliver 220 bits of entropy each to consider a DRNG
++	  deliver 240 bits of entropy each to consider a DRNG
 +	  as fully seeded. Any two entropy sources can be used
 +	  to fulfill this requirement. If specific entropy sources
 +	  shall not be capable of contributing to this seeding
 +	  strategy, the respective entropy source must be configured
-+	  to provide less than 220 bits of entropy.
++	  to provide less than 240 bits of entropy.
 +
 +	  The strategy is consistent with the requirements for
-+	  NTG.1 compliance in German AIS 20/31 draft from 2022
++	  NTG.1 compliance in German AIS 20/31 version 3.0 from 2024
 +	  and is only enforced with lrng_es_mgr.ntg1=1.
 +
-+	  Compliance with German AIS 20/31 from 2011 is always
-+	  present when using /dev/random with the flag O_SYNC or
-+	  getrandom(2) with GRND_RANDOM.
++	  Compliance with German AIS 20/31 version 2.0 from 2011 is
++	  always present when using /dev/random with the flag O_SYNC
++	  or getrandom(2) with GRND_RANDOM.
 +
 +	  If unsure, say N.
 +
@@ -1263,7 +1263,7 @@ index 000000000000..809e1911d370
 +obj-$(CONFIG_LRNG_DRNG_CHACHA20)	+= lrng_drng_chacha20.o
 diff --git a/drivers/char/lrng/lrng_definitions.h b/drivers/char/lrng/lrng_definitions.h
 new file mode 100644
-index 000000000000..f6eb48e285cc
+index 000000000000..247dd2343ca1
 --- /dev/null
 +++ b/drivers/char/lrng/lrng_definitions.h
 @@ -0,0 +1,163 @@
@@ -1342,7 +1342,7 @@ index 000000000000..f6eb48e285cc
 +#define LRNG_INIT_ENTROPY_BITS		32
 +
 +/* AIS20/31: NTG.1.4 minimum entropy rate for one entropy source*/
-+#define LRNG_AIS2031_NPTRNG_MIN_ENTROPY	220
++#define LRNG_AIS2031_NPTRNG_MIN_ENTROPY	240
 +
 +/*
 + * Wakeup value
@@ -1748,7 +1748,7 @@ index 000000000000..5db25aaf830c
 +#endif /* _LRNG_KCAPI_DRNG_H */
 diff --git a/drivers/char/lrng/lrng_drng_mgr.c b/drivers/char/lrng/lrng_drng_mgr.c
 new file mode 100644
-index 000000000000..69ad26431ac2
+index 000000000000..6865761e1c67
 --- /dev/null
 +++ b/drivers/char/lrng/lrng_drng_mgr.c
 @@ -0,0 +1,742 @@
@@ -2066,7 +2066,7 @@ index 000000000000..69ad26431ac2
 +	 * producing data while this is ongoing.
 +	 */
 +	} while (force_seeding && forced && !drng->fully_seeded &&
-+		 num_es_delivered >= (lrng_ntg1_2022_compliant() ? 2 : 1));
++		 num_es_delivered >= (lrng_ntg1_2024_compliant() ? 2 : 1));
 +
 +	memzero_explicit(&seedbuf, sizeof(seedbuf));
 +
@@ -3078,10 +3078,10 @@ index 000000000000..cf982b9eea05
 +#endif /* _LRNG_ES_RANDOM_H */
 diff --git a/drivers/char/lrng/lrng_es_mgr.c b/drivers/char/lrng/lrng_es_mgr.c
 new file mode 100644
-index 000000000000..8d01bedd3043
+index 000000000000..4ed5de545a3a
 --- /dev/null
 +++ b/drivers/char/lrng/lrng_es_mgr.c
-@@ -0,0 +1,506 @@
+@@ -0,0 +1,528 @@
 +// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
 +/*
 + * LRNG Entropy sources management
@@ -3096,6 +3096,12 @@ index 000000000000..8d01bedd3043
 +#include <linux/utsname.h>
 +#include <linux/workqueue.h>
 +#include <asm/archrandom.h>
++
++#ifdef CONFIG_VDSO_GETRANDOM
++#include <vdso/getrandom.h>
++#include <vdso/datapage.h>
++#include <vdso/vsyscall.h>
++#endif
 +
 +#include "lrng_drng_atomic.h"
 +#include "lrng_drng_mgr.h"
@@ -3186,9 +3192,8 @@ index 000000000000..8d01bedd3043
 +	return lrng_panic_on_permanent_health_failure;
 +}
 +
-+bool lrng_ntg1_2022_compliant(void)
++bool lrng_ntg1_2024_compliant(void)
 +{
-+	/* Implies use of /dev/random w/ O_SYNC / getrandom w/ GRND_RANDOM */
 +	return ntg1;
 +}
 +
@@ -3253,6 +3258,11 @@ index 000000000000..8d01bedd3043
 +	lrng_state.lrng_fully_seeded = false;
 +	lrng_state.lrng_min_seeded = false;
 +	lrng_state.all_online_numa_node_seeded = false;
++
++#ifdef CONFIG_VDSO_GETRANDOM
++	WRITE_ONCE(__arch_get_k_vdso_rng_data()->is_ready, false);
++#endif
++
 +	pr_debug("reset LRNG\n");
 +}
 +
@@ -3289,6 +3299,14 @@ index 000000000000..8d01bedd3043
 +
 +static void lrng_init_wakeup(void)
 +{
++#ifdef CONFIG_VDSO_GETRANDOM
++	/*
++	 * The LRNG does not enable the user space ChaCha20
++	 * DRNG in the VDSO.
++	 */
++	/* WRITE_ONCE(__arch_get_k_vdso_rng_data()->is_ready, true); */
++#endif
++
 +	wake_up_all(&lrng_init_wait);
 +	lrng_init_wakeup_dev();
 +	lrng_kick_random_ready();
@@ -3312,8 +3330,8 @@ index 000000000000..8d01bedd3043
 +bool lrng_fully_seeded(bool fully_seeded, u32 collected_entropy,
 +		       struct entropy_buf *eb)
 +{
-+	/* AIS20/31 NTG.1: two entropy sources with each delivering 220 bits */
-+	if (ntg1) {
++	/* AIS20/31 NTG.1: two entropy sources with each delivering 240 bits */
++	if (!fully_seeded && ntg1) {
 +		u32 i, result = 0, ent_thresh = lrng_avail_entropy_thresh();
 +
 +		for_each_lrng_es(i) {
@@ -3354,6 +3372,10 @@ index 000000000000..8d01bedd3043
 +		pr_debug("LRNG set to non-operational\n");
 +		lrng_state.lrng_operational = false;
 +		lrng_state.lrng_fully_seeded = false;
++
++#ifdef CONFIG_VDSO_GETRANDOM
++		WRITE_ONCE(__arch_get_k_vdso_rng_data()->is_ready, false);
++#endif
 +
 +		/* If sufficient entropy is available, reseed now. */
 +		lrng_es_add_entropy();
@@ -3414,7 +3436,7 @@ index 000000000000..8d01bedd3043
 +		return;
 +
 +	requested_bits = ntg1 ?
-+		/* Approximation so that two ES should deliver 220 bits each */
++		/* Approximation so that two ES should deliver 240 bits each */
 +		(lrng_avail_entropy() + LRNG_AIS2031_NPTRNG_MIN_ENTROPY) :
 +		/* Apply SP800-90C oversampling if applicable */
 +		lrng_get_seed_entropy_osr(state->all_online_numa_node_seeded);
@@ -3590,7 +3612,7 @@ index 000000000000..8d01bedd3043
 +}
 diff --git a/drivers/char/lrng/lrng_es_mgr.h b/drivers/char/lrng/lrng_es_mgr.h
 new file mode 100644
-index 000000000000..7c4fbcb595f4
+index 000000000000..299a58d53829
 --- /dev/null
 +++ b/drivers/char/lrng/lrng_es_mgr.h
 @@ -0,0 +1,56 @@
@@ -3620,7 +3642,7 @@ index 000000000000..7c4fbcb595f4
 +	for ((ctr) = 0; (ctr) < lrng_ext_es_last; (ctr)++)
 +
 +bool lrng_enforce_panic_on_permanent_health_failure(void);
-+bool lrng_ntg1_2022_compliant(void);
++bool lrng_ntg1_2024_compliant(void);
 +bool lrng_pool_all_numa_nodes_seeded_get(void);
 +bool lrng_state_min_seeded(void);
 +void lrng_debug_report_seedlevel(const char *name);
@@ -4426,5 +4448,5 @@ index 000000000000..c0d31a03d51f
 +
 +#endif /* _LRNG_H */
 -- 
-2.46.0
+2.48.1
 
