@@ -197,6 +197,9 @@ git clone https://$github/gdy666/luci-app-lucky.git package/new/lucky
 # custom packages
 rm -rf feeds/packages/utils/coremark
 git clone https://$github/sbwml/openwrt_pkgs package/new/custom --depth=1
+rm -rf package/new/custom/luci-app-adguardhome
+
+# 
 
 # argon
 git clone https://$github/zhiern/luci-theme-argon package/new/luci-theme-argon
