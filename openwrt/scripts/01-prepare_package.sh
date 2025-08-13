@@ -199,7 +199,8 @@ rm -rf feeds/packages/utils/coremark
 git clone https://$github/sbwml/openwrt_pkgs package/new/custom --depth=1
 rm -rf package/new/custom/luci-app-adguardhome
 
-# 
+# adguardhome
+git clone https://$gitea/zhao/luci-app-adguardhome package/new/luci-app-adguardhome 
 
 # argon
 git clone https://$github/zhiern/luci-theme-argon package/new/luci-theme-argon
