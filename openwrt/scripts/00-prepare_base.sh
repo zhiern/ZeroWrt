@@ -46,9 +46,6 @@ else
     git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_generic target/linux/generic -b openwrt-24.10
 fi
 
-# mediatek
-curl -s $mirror/openwrt/patch/mediatek/0001-netcore-n60-pro-512-flash-version.patch | patch -p1
-
 ### FW4 ###
 curl -s $mirror/openwrt/doc/firewall4/Makefile > package/network/config/firewall4/Makefile
 sed -i 's|$(PROJECT_GIT)/project|https://github.com/openwrt|g' package/network/config/firewall4/Makefile
