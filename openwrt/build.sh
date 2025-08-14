@@ -372,7 +372,7 @@ if [ "$platform" = "x86_64" ]; then
         OTA_URL="https://github.com/zhiern/ZeroWrt/releases/download"
         VERSION=$(sed 's/v//g' version.txt)
         SHA256=$(sha256sum bin/targets/x86/64*/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
-        cat > ota/fw.json <<EOF
+        cat > ota/x86_64.json <<EOF
 {
   "x86_64": [
     {
@@ -420,7 +420,7 @@ elif [ "$platform" = "rockchip" ]; then
         SHA256_radxa_rock_5b=$(sha256sum bin/targets/rockchip/armv8*/openwrt-rockchip-armv8-radxa_rock-5b-squashfs-sysupgrade.img.gz | awk '{print $1}')
         SHA256_xunlong_orangepi_5_plus=$(sha256sum bin/targets/rockchip/armv8*/openwrt-rockchip-armv8-xunlong_orangepi-5-plus-squashfs-sysupgrade.img.gz | awk '{print $1}')
         SHA256_xunlong_orangepi_5=$(sha256sum bin/targets/rockchip/armv8*/openwrt-rockchip-armv8-xunlong_orangepi-5-squashfs-sysupgrade.img.gz | awk '{print $1}')
-        cat > ota/ota.json <<EOF
+        cat > ota/rockchip.json <<EOF
 {
   "armsom,sige3": [
     {
