@@ -17,6 +17,9 @@ git clone https://$github/zhiern/default-settings package/new/default-settings -
 # linkease
 git clone https://$github/zhiern/package_new_linkease package/new/linkease
 
+# wwan
+git clone https://github.com/zhiern/QModem package/new/wwan
+
 # luci-app-quickfile
 git clone https://$github/sbwml/luci-app-quickfile package/new/quickfile
 
