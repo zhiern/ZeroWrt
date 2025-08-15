@@ -1,8 +1,8 @@
 <div align="center">
 
-![GitHub Header](date/openwrt.png)
+![GitHub Header](https://git.kejizero.online/zhao/image/raw/branch/main/openwrt.png)
 
-**基于 [OpenWrt](https://github.com/openwrt/openwrt) 打造的高效固件，覆盖 Rockchip、X86_64、Mediatek、Qualcommax 平台，专为进阶用户设计！**  
+**基于 [OpenWrt](https://github.com/openwrt/openwrt) 打造的高效固件，覆盖 Rockchip、X86_64 平台，专为进阶用户设计！**  
 
 </div>
 
@@ -36,7 +36,7 @@ I18N: [English](README_EN.md) | [简体中文](README.md)
 
 ## 💾 ZeroWrt 固件烧写（SD）
 
-**推荐工具：**<a href="https://www.balena.io/etcher/" target="_blank" ><img style="height:25px;" src="date/balenaether.svg" /></a>
+**推荐工具：**<a href="https://www.balena.io/etcher/" target="_blank" ><img style="height:25px;" src="https://git.kejizero.online/zhao/image/raw/branch/main/balenaetcher.svg" /></a>
 
 **SD卡容量：2GB 或更多**
 
@@ -64,7 +64,7 @@ I18N: [English](README_EN.md) | [简体中文](README.md)
 
 - **Mask 模式连接电脑（R5S 断电状态下，取下 SD 卡，使用数据线连接电脑。长按 “Mask” 按钮，接通 R5S 电源直至电脑发现新设备后释放 “Mask” 按钮）**
 
-  <img style="height:100px;" src="date/r5s.webp" />
+  <img style="height:100px;" src="https://git.kejizero.online/zhao/image/raw/branch/main/r5s.webp" />
 
 
 
