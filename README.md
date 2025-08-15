@@ -13,8 +13,6 @@ I18N: [English](README_EN.md) | [简体中文](README.md)
 ## 🔍 固件信息概览 
 - 🛠 **源码基础**：[OpenWrt 官方]
   - Rockchip、X86_64、ARMv8：基于 [OpenWrt 官方](https://github.com/openwrt/openwrt)
-  - Mediatek：基于 [Padavanonly](https://github.com/padavanonly/immortalwrt-mt798x-24.10)
-  - Qualcommax、Bcm27xx、Bcm53xx：基于 [Lede](https://github.com/coolsnowwolf/lede)
 
 - 🔧 **默认设置**：
   - 管理地址：`10.0.0.1`，密码：`password` 或留空
