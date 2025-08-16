@@ -392,7 +392,7 @@ elif [ "$platform" = "rockchip" ]; then
         cp -a bin/packages/aarch64_generic/base/rtl88*-firmware*.ipk kmodpkg/
         cp -a bin/packages/aarch64_generic/base/natflow*.ipk kmodpkg/
         bash kmod-sign kmodpkg
-        tar zcf aarch64-kmodpkg.tar.gz kmodpkg
+        tar zcf aarch64_generic-kmodpkg.tar.gz kmodpkg
         rm -rf kmodpkg
     fi
     # OTA json
