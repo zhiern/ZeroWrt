@@ -175,8 +175,7 @@ jobs:
         
     - name: Sync OTA
       run: |
-        mkdir -p ota
-        
+        mkdir -p ota        
         wget -q $LOCAL_URL/OpenWrt-v${VERSION}/x86_64.json -O x86_64.json
         wget -q $LOCAL_URL/OpenWrt-v${VERSION}/rockchip.json -O rockchip.json
         jq -s '.' x86_64.json rockchip.json > ota/ota.json
