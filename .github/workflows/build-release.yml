@@ -122,13 +122,31 @@ jobs:
         cd openwrt
         make V=s
 
+    - name: Prepare Kernel Files
+      working-directory: /builder
+      run: |
+        base_name=$(basename ${{ env.build_dir }}/openwrt/*-*.tar.gz)
+        kmod_name=$(echo $base_name | sed 's/~/-/g')
+        mv ${{ env.build_dir }}/openwrt/*-*.tar.gz ${{ env.build_dir }}/openwrt/$kmod_name
+
+    - name: Release kernel modules
+      uses: ncipollo/release-action@v1.14.0
+      with:
+        name: kmod-snapshot
+        allowUpdates: true
+        prerelease: true
+        tag: snapshot
+        commit: main
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN  }}
+        artifacts: |
+          ${{ env.build_dir }}/openwrt/*-*.tar.gz   
+        
     - name: Prepare Firmware Files
       working-directory: /builder
       run: |
-        mkdir -p rom info
         if [ "${{ matrix.model }}" = "rockchip" ]; then
           cp -a openwrt/bin/targets/rockchip/*/*.img.gz rom/
-          cp -a openwrt/aarch64_generic-kmodpkg.tar.gz rom/
           cp -a openwrt/ota/rockchip.json rom/
         elif [ "${{ matrix.model }}" = "x86_64" ]; then
           cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
