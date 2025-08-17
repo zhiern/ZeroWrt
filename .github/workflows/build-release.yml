@@ -159,15 +159,26 @@ jobs:
     needs: build
     runs-on: ubuntu-24.04
 
+    env:
+      LOCAL_URL: https://github.com/zhiern/ZeroWrt/releases/download
+      Version_V24: https://raw.githubusercontent.com/zhiern/ZeroWrt/refs/heads/openwrt-24.10/tags/v24
+      
     steps:
     - name: Checkout
       uses: actions/checkout@main
 
+    - name: Get Version
+      run: |
+        VERSION=$(curl -s $VERSION_URL)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "Fetched VERSION=$VERSION"
+        
     - name: Sync OTA
       run: |
         mkdir -p ota
-        wget -q https://github.com/zhiern/ZeroWrt/releases/download/OpenWrt-v24.10.2/x86_64.json -O x86_64.json
-        wget -q https://github.com/zhiern/ZeroWrt/releases/download/OpenWrt-v24.10.2/rockchip.json -O rockchip.json
+        
+        wget -q $LOCAL_URL/OpenWrt-v${VERSION}/x86_64.json -O x86_64.json
+        wget -q $LOCAL_URL/OpenWrt-v${VERSION}/rockchip.json -O rockchip.json
         jq -s '.' x86_64.json rockchip.json > ota/ota.json
 
     - name: Release OTA
