@@ -14,8 +14,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name:  Sync OTA
-          mkdir ota
+      - name: Sync OTA
+        run: |
+          mkdir -p ota
           wget -q https://github.com/zhiern/ZeroWrt/releases/download/OpenWrt-v24.10.2/x86_64.json -O x86_64.json
           wget -q https://github.com/zhiern/ZeroWrt/releases/download/OpenWrt-v24.10.2/rockchip.json -O rockchip.json
           jq -s '.' x86_64.json rockchip.json > ota/ota.json
