@@ -358,13 +358,13 @@ fi
 if [ "$platform" = "x86_64" ]; then
     if [ "$NO_KMOD" != "y" ]; then
         mkdir kmodpkg
-        cp -a bin/targets/x86/*/packages kmodpkg/
+        cp -a bin/targets/x86/*/packages $kmodpkg_name/
         rm -f kmodpkg/Packages*
-        cp -a bin/packages/x86_64/base/rtl88*a-firmware*.ipk kmodpkg/packages
-        cp -a bin/packages/x86_64/base/natflow*.ipk kmodpkg/packages
-        bash kmod-sign kmodpkg/packages
-        tar zcf x86_64-kmodpkg.tar.gz kmodpkg
-        rm -rf kmodpkg
+        cp -a bin/packages/x86_64/base/rtl88*a-firmware*.ipk $kmodpkg_name/
+        cp -a bin/packages/x86_64/base/natflow*.ipk $kmodpkg_name/
+        bash kmod-sign $kmodpkg_name
+        tar zcf x86_64-$kmodpkg_name.tar.gz $kmodpkg_name
+        rm -rf $kmodpkg_name
     fi
     # OTA json
     if [ "$1" = "v24" ]; then
@@ -387,13 +387,13 @@ EOF
 elif [ "$platform" = "rockchip" ]; then
     if [ "$NO_KMOD" != "y" ]; then
         mkdir kmodpkg
-        cp -a bin/targets/rockchip/armv8*/packages kmodpkg
+        cp -a bin/targets/rockchip/armv8*/packages $kmodpkg_name
         rm -f kmodpkg/Packages*
-        cp -a bin/packages/aarch64_generic/base/rtl88*-firmware*.ipk kmodpkg/packages
-        cp -a bin/packages/aarch64_generic/base/natflow*.ipk kmodpkg/packages
-        bash kmod-sign kmodpkg/packages
-        tar zcf aarch64_generic-kmodpkg.tar.gz kmodpkg
-        rm -rf kmodpkg
+        cp -a bin/packages/aarch64_generic/base/rtl88*-firmware*.ipk $kmodpkg_name/
+        cp -a bin/packages/aarch64_generic/base/natflow*.ipk $kmodpkg_name/
+        bash kmod-sign $kmodpkg_name
+        tar zcf armv8-$kmodpkg_name.tar.gz $kmodpkg_name
+        rm -rf $kmodpkg_name
     fi
     # OTA json
     if [ "$1" = "v24" ]; then
