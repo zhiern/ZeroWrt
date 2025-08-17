@@ -155,6 +155,31 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.build_dir }}/rom/*
 
+  OTA:
+    needs: build
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Sync OTA
+      run: |
+        mkdir -p ota
+        wget -q https://github.com/zhiern/ZeroWrt/releases/download/OpenWrt-v24.10.2/x86_64.json -O x86_64.json
+        wget -q https://github.com/zhiern/ZeroWrt/releases/download/OpenWrt-v24.10.2/rockchip.json -O rockchip.json
+        jq -s '.' x86_64.json rockchip.json > ota/ota.json
+
+    - name: Release OTA
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.ftp_address }}
+        username: ftpopenwrt
+        password: ${{ secrets.ftp_password }}
+        server-dir: ota/
+        local-dir: ota/
+        dangerous-clean-slate: true
+          
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
       continue-on-error: true
@@ -162,3 +187,12 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         retain_days: 0
         keep_minimum_runs: 0
+
+    - name: Remove old Releases
+      uses: dev-drprasad/delete-older-releases@v0.3.4
+      with:
+          keep_latest: 3
+          keep_min_download_counts: 1 # Optional parameters
+          delete_tags: true
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
