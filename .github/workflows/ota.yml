@@ -29,4 +29,4 @@ jobs:
           password: ${{ secrets.ftp_password }}
           server-dir: ota/
           local-dir: ota/
-          dangerous-clean-slate: false
+          dangerous-clean-slate: true
