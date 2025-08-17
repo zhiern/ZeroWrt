@@ -3,14 +3,6 @@ name: Build releases
 on:
   workflow_dispatch:
     inputs:
-      device:
-        description: 'Select the build device'
-        required: true
-        default: 'x86_64'
-        type: choice
-        options:
-          - 'rockchip'
-          - 'x86_64'
       version:
         description: 'Select the build version'
         required: true
@@ -38,14 +30,20 @@ on:
         required: false
         default: 'BUILD_FAST=y ENABLE_BPF=y ENABLE_LTO=y ENABLE_OTA=y'
         type: string
-
+          
 jobs:
   build:
-    name: Build ${{ github.event.inputs.device }}
+    name: Build ${{ matrix.model }}
     runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        model:
+          - rockchip
+          - x86_64
 
     steps:
     - name: Checkout
@@ -60,7 +58,7 @@ jobs:
         git config --global user.name 'actions'
         git config --global user.email 'action@github.com'
         echo build_dir="/builder" >> "$GITHUB_ENV"
-        [ "${{ github.event.inputs.version }}" = release ] && echo build_version="v24" >> "$GITHUB_ENV" || echo build_version="dev" >> "$GITHUB_ENV"
+        [ "${{ matrix.model }}" = release ] && echo build_version="v24" >> "$GITHUB_ENV" || echo build_version="dev" >> "$GITHUB_ENV"
 
     - name: Show system
       run: |
@@ -97,27 +95,6 @@ jobs:
     - name: Install LLVM
       uses: sbwml/actions@install-llvm
 
-    - name: Restore Cached
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'rockchip' }}
-      uses: actions/cache/restore@v4
-      with:
-        path: /builder/.ccache
-        key: openwrt-24.10-${{ github.event.inputs.device }}-ccache
-
-    - name: Restore Cached (releases)
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'rockchip' }}
-      continue-on-error: true
-      working-directory: /builder
-      run: |
-        curl -s https://api.github.com/repos/${{ github.repository }}/releases | grep 'browser_download_url' | grep ccache | grep ${{ github.event.inputs.device }} | awk -F '"' '{print $4}' | grep -v '^$' | xargs -n 1 wget -q
-        cat ${{ github.event.inputs.device }}.tar.* | tar -xf - || true
-        rm -rf ${{ github.event.inputs.device }}.tar.* || true
-        [ -d .ccache ] && cache_size=$(du -sb .ccache | awk '{print $1}') || cache_size=0
-        cache_size_mb=$(echo "scale=0; ${cache_size} / (1024 * 1024)" | bc)
-        echo "Cache Size: ~${cache_size_mb} MB (${cache_size} B)"
-        echo "Cache restored successfully"
-        echo "Cache restored from key: ${{ github.event.inputs.device }}"
-
     - name: Compile OpenWrt
       working-directory: /builder
       id: compile
@@ -129,7 +106,7 @@ jobs:
         export ${{ github.event.inputs.build_options }} LAN=${{ github.event.inputs.lan_addr }} USE_GCC15=y
         [ ${{ github.event.inputs.ccache }} = 'true' ] && export ENABLE_CCACHE=y
         [ -n ${{ github.event.inputs.root_password }} ] && export ROOT_PASSWORD="${{ github.event.inputs.root_password }}"
-        bash <(curl -sS http://127.0.0.1:8080/build.sh) ${{ env.build_version }} ${{ github.event.inputs.device }}
+        bash <(curl -sS http://127.0.0.1:8080/build.sh) ${{ env.build_version }} ${{ matrix.model }}
         cd openwrt
         if [ "${{ github.event.inputs.version }}" = release ]; then
           tags=OpenWrt-$(git describe --abbrev=0 --tags)
@@ -145,55 +122,15 @@ jobs:
         cd openwrt
         make V=s
 
-    - name: Delete Cached
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'rockchip' }}
-      continue-on-error: true
-      working-directory: /builder
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_REPO: ${{ github.repository }}
-      run: |
-        gh cache delete openwrt-24.10-${{ github.event.inputs.device }}-ccache || true
-
-    - name: Save Cached
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'rockchip' }}
-      continue-on-error: true
-      uses: actions/cache/save@v4
-      with:
-        path: /builder/.ccache
-        key: openwrt-24.10-${{ github.event.inputs.device }}-ccache
-
-    - name: Create ccache tar files
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'rockchip' }}
-      working-directory: /builder
-      run: |
-        mkdir -p ccache
-        tar cf - .ccache | split -d -b 1800m - ccache/${{ github.event.inputs.device }}.tar.
-
-    - name: Upload Cached (releases - ccache)
-      if: ${{ github.event.inputs.ccache == 'true' && github.event.inputs.device == 'armv8' || github.event.inputs.device == 'nanopi-r4s' }}
-      continue-on-error: true
-      uses: ncipollo/release-action@v1.14.0
-      with:
-        name: ccache
-        allowUpdates: true
-        tag: ccache
-        commit: master
-        replacesArtifacts: true
-        prerelease: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: |
-          ${{ env.build_dir }}/ccache/*
-
     - name: Prepare Firmware Files
       working-directory: /builder
       run: |
         mkdir -p rom info
-        if [ "${{ github.event.inputs.device }}" = "rockchip" ]; then
+        if [ "${{ matrix.model }}" = "rockchip" ]; then
           cp -a openwrt/bin/targets/rockchip/*/*.img.gz rom/
-          cp -a openwrt/aarch64-kmodpkg.tar.gz rom/
+          cp -a openwrt/aarch64_generic-kmodpkg.tar.gz rom/
           cp -a openwrt/ota/rockchip.json rom/
-        elif [ "${{ github.event.inputs.device }}" = "x86_64" ]; then
+        elif [ "${{ matrix.model }}" = "x86_64" ]; then
           cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
           cp -a openwrt/bin/targets/x86/*/*-generic-rootfs.tar.gz rom/
           cp -a openwrt/x86_64-kmodpkg.tar.gz rom/
@@ -203,7 +140,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.event.inputs.device }}-openwrt-${{ env.latest_release }}
+        name: ${{ matrix.model }}-openwrt-${{ env.latest_release }}
         path: ${{ env.build_dir }}/rom/*
 
     - name: Create release
