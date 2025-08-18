@@ -136,11 +136,11 @@ jobs:
         allowUpdates: true
         prerelease: true
         tag: snapshot
-        commit: main
+        commit: openwrt-24.10
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN  }}
         artifacts: |
-          ${{ env.build_dir }}/openwrt/*-*.tar.gz   
+          ${{ env.build_dir }}/openwrt/*-*.tar.gz
         
     - name: Prepare Firmware Files
       working-directory: /builder
