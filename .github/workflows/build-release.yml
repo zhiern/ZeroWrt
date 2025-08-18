@@ -145,13 +145,13 @@ jobs:
     - name: Prepare Firmware Files
       working-directory: /builder
       run: |
+        mkdir -p rom
         if [ "${{ matrix.model }}" = "rockchip" ]; then
           cp -a openwrt/bin/targets/rockchip/*/*.img.gz rom/
           cp -a openwrt/ota/rockchip.json rom/
         elif [ "${{ matrix.model }}" = "x86_64" ]; then
           cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
           cp -a openwrt/bin/targets/x86/*/*-generic-rootfs.tar.gz rom/
-          cp -a openwrt/x86_64-kmodpkg.tar.gz rom/
           cp -a openwrt/ota/x86_64.json rom/
         fi
 
