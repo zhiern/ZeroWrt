@@ -172,59 +172,6 @@ jobs:
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.build_dir }}/rom/*
-
-  OTA:
-    needs: build
-    runs-on: ubuntu-24.04
-
-    steps:
-    - name: Check Server Performance
-      run: |
-        echo "警告⚠"
-        echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
-        echo -e "已知CPU型号(降序): 7763，8370C，8272CL，8171M，E5-2673\n"
-        echo "--------------------------CPU信息--------------------------"
-        echo "CPU物理数量: $(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
-        echo "CPU核心数量: $(nproc)"
-        echo -e "CPU型号信息:$(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')\n"
-        echo "--------------------------内存信息--------------------------"
-        echo "已安装内存详细信息:"
-        echo -e "$(sudo lshw -short -C memory | grep GiB)\n"
-        echo "--------------------------硬盘信息--------------------------"
-        echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
-
-    - name: Initialization Environment
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        docker rmi $(docker images -q)
-        sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
-        sudo -E apt-get -y update
-        sudo -E apt-get -y jq wget
-        
-    - name: Get Version
-      run: |
-        VERSION=$(curl -s https://raw.githubusercontent.com/zhiern/ZeroWrt/refs/heads/openwrt-24.10/tags/v24)
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "Fetched VERSION=$VERSION"
-        
-    - name: Sync OTA
-      run: |
-        mkdir -p ota
-        export URL=https://github.com/zhiern/ZeroWrt/releases/download
-        wget -q $URL/OpenWrt-v${{ env.VERSION }}/x86_64.json -O x86_64.json
-        wget -q $URL/OpenWrt-v${{ env.VERSION }}/rockchip.json -O rockchip.json
-        jq -s '.' x86_64.json rockchip.json > ota/ota.json
-
-    - name: Release OTA
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.ftp_address }}
-        username: ftpopenwrt
-        password: ${{ secrets.ftp_password }}
-        server-dir: ota/
-        local-dir: ota/
-        dangerous-clean-slate: true
           
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
