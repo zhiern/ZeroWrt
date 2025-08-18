@@ -21,6 +21,13 @@ jobs:
           wget -q https://github.com/zhiern/ZeroWrt/releases/download/OpenWrt-v24.10.2/rockchip.json -O rockchip.json
           jq -s '.' x86_64.json rockchip.json > ota/ota.json
 
+      - name: Sync kernel modules
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_zhiern }}
+          repository: zhiern/openwrt-core
+          event-type: sync
+     
       - name: Release OTA
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
