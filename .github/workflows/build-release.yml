@@ -121,6 +121,19 @@ jobs:
       run: |
         cd openwrt
         make V=s
+        
+    - name: Prepare Firmware Files
+      working-directory: /builder
+      run: |
+        mkdir -p rom
+        if [ "${{ matrix.model }}" = "rockchip" ]; then
+          cp -a openwrt/bin/targets/rockchip/*/*.img.gz rom/
+          cp -a openwrt/ota/rockchip.json rom/
+        elif [ "${{ matrix.model }}" = "x86_64" ]; then
+          cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
+          cp -a openwrt/bin/targets/x86/*/*-generic-rootfs.tar.gz rom/
+          cp -a openwrt/ota/x86_64.json rom/
+        fi
 
     - name: Prepare Kernel Files
       working-directory: /builder
@@ -141,20 +154,14 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN  }}
         artifacts: |
           ${{ env.build_dir }}/openwrt/*-*.tar.gz
-        
-    - name: Prepare Firmware Files
-      working-directory: /builder
-      run: |
-        mkdir -p rom
-        if [ "${{ matrix.model }}" = "rockchip" ]; then
-          cp -a openwrt/bin/targets/rockchip/*/*.img.gz rom/
-          cp -a openwrt/ota/rockchip.json rom/
-        elif [ "${{ matrix.model }}" = "x86_64" ]; then
-          cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
-          cp -a openwrt/bin/targets/x86/*/*-generic-rootfs.tar.gz rom/
-          cp -a openwrt/ota/x86_64.json rom/
-        fi
 
+    - name: Sync kernel modules
+      uses: peter-evans/repository-dispatch@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        repository: zhiern/openwrt-core
+        event-type: sync
+        
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
