@@ -399,6 +399,7 @@ elif [ "$platform" = "rockchip" ]; then
     if [ "$1" = "v24" ]; then
         mkdir -p ota
         OTA_URL="https://github.com/zhiern/ZeroWrt/releases/download"
+        VERSION=$(sed 's/v//g' version.txt)
         SHA256_armsom_sige3=$(sha256sum bin/targets/rockchip/armv8*/openwrt-24.10.2-rockchip-armv8-armsom_sige3-squashfs-sysupgrade.img.gz | awk '{print $1}')
         SHA256_armsom_sige7=$(sha256sum bin/targets/rockchip/armv8*/openwrt-24.10.2-rockchip-armv8-armsom_sige7-squashfs-sysupgrade.img.gz | awk '{print $1}')
         SHA256_t4=$(sha256sum bin/targets/rockchip/armv8*/openwrt-24.10.2-rockchip-armv8-friendlyarm_nanopc-t4-squashfs-sysupgrade.img.gz | awk '{print $1}')
