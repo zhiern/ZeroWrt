@@ -1,4 +1,4 @@
-name: Synchronous upload
+name: 🚀 同步处理
 
 on:
   workflow_dispatch:   # 手动触发
