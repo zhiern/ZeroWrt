@@ -42,7 +42,7 @@ jobs:
         uses: GitRML/delete-workflow-runs@main
         continue-on-error: true
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.workflow_token }}
           retain_days: 0
           keep_minimum_runs: 0
 
@@ -53,4 +53,4 @@ jobs:
             keep_min_download_counts: 1 # Optional parameters
             delete_tags: true
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+            GITHUB_TOKEN: ${{ secrets.workflow_token }}
