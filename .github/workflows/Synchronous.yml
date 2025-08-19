@@ -38,19 +38,11 @@ jobs:
           repository: zhiern/openwrt-core
           event-type: sync
 
-      - name: Delete workflow runs
-        uses: GitRML/delete-workflow-runs@main
-        continue-on-error: true
+      - name: Delete releases and workflows runs
+        uses: ophub/delete-releases-workflows@main
         with:
-          token: ${{ secrets.workflow_token }}
-          retain_days: 0
-          keep_minimum_runs: 0
-
-      - name: Remove old Releases
-        uses: dev-drprasad/delete-older-releases@v0.3.4
-        with:
-            keep_latest: 3
-            keep_min_download_counts: 1 # Optional parameters
-            delete_tags: true
-        env:
-            GITHUB_TOKEN: ${{ secrets.workflow_token }}
+          delete_releases: true
+          releases_keep_latest: 5
+          delete_workflows: true
+          workflows_keep_day: 1
+          gh_token: ${{ secrets.workflow_token }}
