@@ -1,4 +1,4 @@
-name: Release OTA
+name: Synchronous upload
 
 on:
   workflow_dispatch:   # 手动触发
@@ -30,3 +30,27 @@ jobs:
           server-dir: ota/
           local-dir: ota/
           dangerous-clean-slate: true
+
+      - name: Sync kernel modules
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.workflow_token }}
+          repository: zhiern/openwrt-core
+          event-type: sync
+
+      - name: Delete workflow runs
+        uses: GitRML/delete-workflow-runs@main
+        continue-on-error: true
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          retain_days: 0
+          keep_minimum_runs: 0
+
+      - name: Remove old Releases
+        uses: dev-drprasad/delete-older-releases@v0.3.4
+        with:
+            keep_latest: 3
+            keep_min_download_counts: 1 # Optional parameters
+            delete_tags: true
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
