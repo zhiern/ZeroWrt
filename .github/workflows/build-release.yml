@@ -1,10 +1,10 @@
-name: Build releases
+name: 💻 固件编译
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Select the build version'
+        description: '选择构建版本'
         required: true
         default: 'release'
         type: choice
@@ -12,21 +12,21 @@ on:
           - 'release'
           - 'snapshot-24.10'
       ccache:
-        description: 'Enable ccache (Use Cache to speed up next build)'
+        description: '启用 ccache（使用缓存加速下一次构建）'
         type: boolean
         default: false
       lan_addr:
-        description: 'Setting default LAN address'
+        description: '设置默认 LAN 地址'
         required: true
         default: '10.0.0.1'
         type: string
       root_password:
-        description: 'Setting default root password (Optional, No password by default)'
+        description: '设置默认 root 密码（可选，默认password）'
         required: false
         default: 'password'
         type: string
       build_options:
-        description: 'Build options (separate multiple options with spaces)'
+        description: '构建选项（多个选项用空格分隔）'
         required: false
         default: 'BUILD_FAST=y ENABLE_BPF=y ENABLE_LTO=y ENABLE_OTA=y'
         type: string
