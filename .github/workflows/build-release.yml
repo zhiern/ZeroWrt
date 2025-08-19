@@ -154,13 +154,6 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN  }}
         artifacts: |
           ${{ env.build_dir }}/openwrt/*-*.tar.gz
-
-    - name: Sync kernel modules
-      uses: peter-evans/repository-dispatch@v3
-      with:
-        token: ${{ secrets.workflow_token }}
-        repository: zhiern/openwrt-core
-        event-type: sync
         
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
@@ -179,20 +172,3 @@ jobs:
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.build_dir }}/rom/*
-          
-    - name: Delete workflow runs
-      uses: GitRML/delete-workflow-runs@main
-      continue-on-error: true
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        retain_days: 0
-        keep_minimum_runs: 0
-
-    - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@v0.3.4
-      with:
-          keep_latest: 3
-          keep_min_download_counts: 1 # Optional parameters
-          delete_tags: true
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
