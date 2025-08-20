@@ -10,6 +10,10 @@ curl -s $mirror/openwrt/patch/kernel-6.6/kernel/0001-linux-module-video.patch > 
 git apply package/0001-linux-module-video.patch
 rm -rf package/0001-linux-module-video.patch
 
+# kenrel Vermagic
+sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
+grep HASH include/kernel-6.6 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
+
 # 移除 SNAPSHOT 标签
 sed -i 's,-SNAPSHOT,,g' include/version.mk
 sed -i 's,-SNAPSHOT,,g' package/base-files/image-config.in
