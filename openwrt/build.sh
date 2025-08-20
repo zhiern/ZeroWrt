@@ -235,9 +235,11 @@ done
 if [ "$platform" = "rockchip" ]; then
     curl -sO "$mirror/openwrt/scripts/05-rockchip_target_only.sh"
     export core=arm64
+    export opkg=aarch64_generic
 elif [ "$platform" = "x86_64" ]; then
     curl -sO "$mirror/openwrt/scripts/05-x86_64_target_only.sh"
     export core=amd64
+    export opkg=x86_64
 fi
 chmod 0755 *sh
 [ "$(whoami)" = "runner" ] && group "patching openwrt"
