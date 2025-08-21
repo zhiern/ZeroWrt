@@ -61,6 +61,9 @@ curl -s $mirror/openwrt/doc/firewall4/Makefile > package/network/config/firewall
 sed -i 's|$(PROJECT_GIT)/project|https://github.com/openwrt|g' package/network/config/firewall4/Makefile
 mkdir -p package/network/config/firewall4/patches
 
+# add custom nft command support
+curl -s $mirror/openwrt/patch/firewall4/100-openwrt-firewall4-add-custom-nft-command-support.patch | patch -p1
+
 # fix ct status dnat
 curl -s $mirror/openwrt/patch/firewall4/firewall4_patches/990-unconditionally-allow-ct-status-dnat.patch > package/network/config/firewall4/patches/990-unconditionally-allow-ct-status-dnat.patch
 
@@ -75,9 +78,6 @@ curl -s $mirror/openwrt/patch/firewall4/firewall4_patches/001-fix-fw4-flow-offlo
 
 # fw4 add custom nft command support
 curl -s $mirror/openwrt/patch/firewall4/firewall4_patches/100-fw4-add-custom-nft-command-support.patch > package/network/config/firewall4/patches/100-fw4-add-custom-nft-command-support.patch
-
-# add custom nft command support
-curl -s $mirror/openwrt/patch/firewall4/100-openwrt-firewall4-add-custom-nft-command-support.patch | patch -p1
 
 # libnftnl
 mkdir -p package/libs/libnftnl/patches
