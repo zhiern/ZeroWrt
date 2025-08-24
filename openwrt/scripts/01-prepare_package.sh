@@ -204,6 +204,3 @@ git clone https://$gitea/zhao/luci-app-adguardhome package/new/luci-app-adguardh
 
 # argon
 git clone https://$github/zhiern/luci-theme-argon package/new/luci-theme-argon
-
-# argon-config
-git clone https://$github/zhiern/luci-app-argon-config package/new/luci-app-argon-config
