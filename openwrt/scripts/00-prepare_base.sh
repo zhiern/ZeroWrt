@@ -283,7 +283,7 @@ chmod +x files/bin/ZeroWrt
 chmod +x files/root/version.txt
 
 # key-build.pub
-curl -so files/root/key-build.pub.pub https://opkg.kejizero.online/key-build.pub
+curl -so files/root/key-build.pub https://opkg.kejizero.online/key-build.pub
 chmod +x files/root/key-build.pub
 
 # NTP
