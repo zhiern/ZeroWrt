@@ -32,6 +32,15 @@ I18N: [English](README_EN.md) | [简体中文](README.md)
 
 ---
 
+## 授权构建
+#### 如果你得到授权，请在构建前执行以下命令
+
+```
+export git_name=账户名 git_password=密码
+```
+
+---
+
 ## 💾 ZeroWrt 固件烧写（SD）
 
 **推荐工具：**<a href="https://www.balena.io/etcher/" target="_blank" ><img style="height:25px;" src="https://git.kejizero.online/zhao/image/raw/branch/main/balenaetcher.svg" /></a>
