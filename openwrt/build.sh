@@ -1,5 +1,4 @@
 #!/bin/bash -e
-# 定义颜色变量
 RED_COLOR='\033[1;31m'
 GREEN_COLOR='\033[1;32m'
 YELLOW_COLOR='\033[1;33m'
@@ -58,7 +57,7 @@ fi
 # 源分支
 if [ "$1" = "v24" ]; then
     latest_release="v$(curl -s $mirror/tags/v24)"
-    export branch=$latest_release
+    export branch=openwrt-24.10
     export version=v24
 fi
 
@@ -81,17 +80,17 @@ export platform toolchain_arch
 # GCC 版本设置
 case "$GCC_VERSION" in
   GCC13)
-    export USE_GCC13=y gcc_version=13
+    export gcc_version=13
     ;;
   GCC14)
-    export USE_GCC14=y gcc_version=14
+    export gcc_version=14
     ;;
   GCC15)
-    export USE_GCC15=y gcc_version=15
+    export gcc_version=15
     ;;
   *)
     echo "⚠️ 未知的 GCC 版本，默认使用 GCC15"
-    export USE_GCC14=y gcc_version=15
+    export gcc_version=15
     ;;
 esac
 
@@ -113,7 +112,7 @@ case "$platform" in
         ;;
 esac
 
-# print build opt
+# 打印构建选项
 get_kernel_version=$(curl -s $mirror/tags/kernel-6.6)
 kmod_hash=$(echo -e "$get_kernel_version" | awk -F'HASH-' '{print $2}' | awk '{print $1}' | tail -1 | md5sum | awk '{print $1}')
 kmodpkg_name=$(echo $(echo -e "$get_kernel_version" | awk -F'HASH-' '{print $2}' | awk '{print $1}')~$(echo $kmod_hash)-r1)
@@ -137,17 +136,18 @@ print_status() {
 [ -n "$ROOT_PASSWORD" ] \
     && echo -e "${GREEN_COLOR}Default Password:${RES} ${BLUE_COLOR}$ROOT_PASSWORD${RES}" \
     || echo -e "${GREEN_COLOR}Default Password:${RES} (${YELLOW_COLOR}No password${RES})"
-[ "$ENABLE_GLIBC" = "y" ] && echo -e "${GREEN_COLOR}Standard C Library:${RES} ${BLUE_COLOR}glibc${RES}" || echo -e "${GREEN_COLOR}Standard C Library:${RES} ${BLUE_COLOR}musl${RES}"
+echo -e "${GREEN_COLOR}Standard C Library:${RES} ${BLUE_COLOR}musl${RES}"
+echo -e "${GREEN_COLOR}Web Server:${RES} ${BLUE_COLOR}$web_server${RES}"
 print_status "ENABLE_OTA"        "$ENABLE_OTA"
 print_status "ENABLE_BPF"        "$ENABLE_BPF" "$GREEN_COLOR" "$RED_COLOR"
 print_status "ENABLE_LTO"        "$ENABLE_LTO" "$GREEN_COLOR" "$RED_COLOR"
 print_status "ENABLE_LOCAL_KMOD" "$ENABLE_LOCAL_KMOD"
 print_status "BUILD_FAST"        "$BUILD_FAST" "$GREEN_COLOR" "$YELLOW_COLOR" "\n"
 
-# clean old files
+# 清理旧的文件
 rm -rf openwrt immortalwrt
 
-# openwrt - releases
+# openwrt - 克隆
 [ "$(whoami)" = "runner" ] && group "source code"
 git clone --depth=1 https://$github/openwrt/openwrt -b $branch
 git clone --depth=1 https://$github/immortalwrt/immortalwrt -b $branch
@@ -160,33 +160,14 @@ else
     exit 1
 fi
 
-# tags
-if [ "$1" = "v24" ]; then
-    git describe --abbrev=0 --tags > version.txt
-else
-    git branch | awk '{print $2}' > version.txt
-fi
+# 版本设置
+git describe --abbrev=0 --tags > version.txt
 
-# feeds mirror
-if [ "$1" = "v24" ]; then
-    packages="^$(grep packages feeds.conf.default | awk -F^ '{print $2}')"
-    luci="^$(grep luci feeds.conf.default | awk -F^ '{print $2}')"
-    routing="^$(grep routing feeds.conf.default | awk -F^ '{print $2}')"
-    telephony="^$(grep telephony feeds.conf.default | awk -F^ '{print $2}')"
-else
-    packages=";$branch"
-    luci=";$branch"
-    routing=";$branch"
-    telephony=";$branch"
-fi
-cat > feeds.conf.default <<EOF
-src-git packages https://$github/openwrt/packages.git$packages
-src-git luci https://$github/openwrt/luci.git$luci
-src-git routing https://$github/openwrt/routing.git$routing
-src-git telephony https://$github/openwrt/telephony.git$telephony
-EOF
 
-# Init feeds
+# 替换更新源
+curl -s $mirror/openwrt/doc/feeds/feeds.conf.default > feeds.conf.default
+
+# 更新并安装源
 [ "$(whoami)" = "runner" ] && group "feeds update -a"
 ./scripts/feeds update -a
 [ "$(whoami)" = "runner" ] && endgroup
@@ -195,7 +176,7 @@ EOF
 ./scripts/feeds install -a
 [ "$(whoami)" = "runner" ] && endgroup
 
-# loader dl
+# 加载程序
 if [ -f ../dl.gz ]; then
     tar xf ../dl.gz -C .
 fi
