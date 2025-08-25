@@ -161,11 +161,12 @@ print_status "ENABLE_LOCAL_KMOD" "$ENABLE_LOCAL_KMOD"
 print_status "BUILD_FAST"        "$BUILD_FAST" "$GREEN_COLOR" "$YELLOW_COLOR" "\n"
 
 # clean old files
-rm -rf openwrt master
+rm -rf openwrt immortalwrt
 
 # openwrt - releases
 [ "$(whoami)" = "runner" ] && group "source code"
 git clone --depth=1 https://$github/openwrt/openwrt -b $branch
+git clone --depth=1 https://$github/immortalwrt/immortalwrt -b $branch
 
 if [ -d openwrt ]; then
     cd openwrt
