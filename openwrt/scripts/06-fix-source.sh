@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # fix gcc14
-if [ "$USE_GCC14" = y ] || [ "$USE_GCC15" = y ]; then
+if [ "$GCC_VERSION" = "GCC14" ] || [ "$GCC_VERSION" = "GCC15" ]; then
     # linux-atm
     rm -rf package/network/utils/linux-atm
     git clone https://$github/sbwml/package_network_utils_linux-atm package/network/utils/linux-atm
@@ -21,7 +21,7 @@ if [ "$USE_GCC15" = y ]; then
 fi
 
 # fix gcc-15.0.1 C23
-if [ "$USE_GCC15" = y ]; then
+if [ "$GCC_VERSION" = "GCC15" ]; then
     # gmp
     mkdir -p package/libs/gmp/patches
     curl -s $mirror/openwrt/patch/openwrt-6.x/gcc-15-c23/gmp/001-fix-build-with-gcc-15.patch > package/libs/gmp/patches/001-fix-build-with-gcc-15.patch
