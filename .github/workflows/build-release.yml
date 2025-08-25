@@ -67,8 +67,7 @@ jobs:
         git config --global user.name 'actions'
         git config --global user.email 'action@github.com'
         echo build_dir="/builder" >> "$GITHUB_ENV"
-        [ "${{ github.event.inputs.version }}" = release ] && echo build_version="v24" >> "$GITHUB_ENV" || echo build_version="dev" >> "$GITHUB_ENV"
-
+        
     - name: Show system
       run: |
         echo -e "\n\e[1;32mCPU:\e[0m"
@@ -109,9 +108,10 @@ jobs:
       id: compile
       continue-on-error: true
       run: |
-        export ${{ github.event.inputs.build_options }} LAN=${{ github.event.inputs.lan_addr }} GCC=${{ github.event.inputs.gcc_version }}
+        export ${{ github.event.inputs.build_options }} LAN=${{ github.event.inputs.lan_addr }} GCC_VERSION=${{ github.event.inputs.gcc_version }} web_server=${{ github.event.inputs.web_server }}
+        [ ${{ github.event.inputs.docker }} = 'true' ] && export ENABLE_DOCKER=y
         [ -n ${{ github.event.inputs.root_password }} ] && export ROOT_PASSWORD="${{ github.event.inputs.root_password }}"
-        bash <(curl -sS http://127.0.0.1:8080/build.sh) ${{ env.build_version }} ${{ matrix.model }}
+        bash <(curl -sS http://127.0.0.1:8080/build.sh) v24 ${{ matrix.model }}
         cd openwrt
         tags=OpenWrt-$(git describe --abbrev=0 --tags)
 

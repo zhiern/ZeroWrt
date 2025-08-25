@@ -30,31 +30,10 @@ curl -s $mirror/openwrt/patch/generic-24.10/0004-rootfs-Add-support-for-local-km
 # rockchip - target
 rm -rf package/boot/{rkbin,uboot-rockchip,arm-trusted-firmware-rockchip}
 rm -rf target/linux/rockchip
-if [ "$(whoami)" = "zhao" ]; then
-    git clone https://$gitea/zhao/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
-    git clone https://$gitea/zhao/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b openwrt-24.10
-    git clone https://$gitea/zhao/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
-else
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_rockchip target/linux/rockchip -b openwrt-24.10
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip -b openwrt-24.10
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name/uboot-rockchip package/boot/uboot-rockchip -b openwrt-24.10
-fi
-
-# x86 - target
-rm -rf target/linux/x86
-if [ "$(whoami)" = "zhao" ]; then
-    git clone https://$gitea/zhao/target_linux_x86 target/linux/x86 -b openwrt-24.10
-else
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_x86 target/linux/x86 -b openwrt-24.10
-fi
-
-# generic - target
-rm -rf target/linux/generic
-if [ "$(whoami)" = "zhao" ]; then
-    git clone https://$gitea/zhao/target_linux_generic target/linux/generic -b openwrt-24.10
-else
-    git clone https://"$git_name":"$git_password"@$gitea/$git_name/target_linux_generic target/linux/generic -b openwrt-24.10
-fi
+cp -rf ../immortalwrt/target/linux/rockchip target/linux/rockchip
+cp -rf ../immortalwrt/package/boot/uboot-rockchip package/boot/uboot-rockchip
+cp -rf ../immortalwrt/package/boot/arm-trusted-firmware-rockchip package/boot/arm-trusted-firmware-rockchip
+sed -i '/REQUIRE_IMAGE_METADATA/d' target/linux/rockchip/armv8/base-files/lib/upgrade/platform.sh
 
 ### FW4 ###
 curl -s $mirror/openwrt/doc/firewall4/Makefile > package/network/config/firewall4/Makefile

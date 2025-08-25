@@ -40,26 +40,22 @@ git clone https://$gitea/zhao/luci-app-upnp feeds/luci/applications/luci-app-upn
 # Docker
 rm -rf feeds/luci/applications/luci-app-dockerman
 git clone https://$gitea/zhao/luci-app-dockerman -b openwrt-24.10 feeds/luci/applications/luci-app-dockerman
-if [ "$version" = "dev" ] || [ "$version" = "v24" ]; then
-    rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
-    git clone https://$github/sbwml/packages_utils_docker feeds/packages/utils/docker
-    git clone https://$github/sbwml/packages_utils_dockerd feeds/packages/utils/dockerd
-    git clone https://$github/sbwml/packages_utils_containerd feeds/packages/utils/containerd
-    git clone https://$github/sbwml/packages_utils_runc feeds/packages/utils/runc
-fi
+rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
+git clone https://$github/sbwml/packages_utils_docker feeds/packages/utils/docker
+git clone https://$github/sbwml/packages_utils_dockerd feeds/packages/utils/dockerd
+git clone https://$github/sbwml/packages_utils_containerd feeds/packages/utils/containerd
+git clone https://$github/sbwml/packages_utils_runc feeds/packages/utils/runc
 
 # Use nginx instead of uhttpd
-if [ "$ENABLE_UHTTPD" != "y" ]; then
+if [ "$web_server" = "nginx" ]; then
     sed -i 's/+uhttpd /+luci-nginx /g' feeds/luci/collections/luci/Makefile
     sed -i 's/+uhttpd-mod-ubus //' feeds/luci/collections/luci/Makefile
     sed -i 's/+uhttpd /+luci-nginx /g' feeds/luci/collections/luci-light/Makefile
     sed -i "s/+luci /+luci-nginx /g" feeds/luci/collections/luci-ssl-openssl/Makefile
     sed -i "s/+luci /+luci-nginx /g" feeds/luci/collections/luci-ssl/Makefile
-    if [ "$version" = "dev" ] || [ "$version" = "v24" ]; then
-        sed -i 's/+uhttpd +uhttpd-mod-ubus /+luci-nginx /g' feeds/packages/net/wg-installer/Makefile
-        sed -i '/uhttpd-mod-ubus/d' feeds/luci/collections/luci-light/Makefile
-        sed -i 's/+luci-nginx \\$/+luci-nginx/' feeds/luci/collections/luci-light/Makefile
-    fi
+    sed -i 's/+uhttpd +uhttpd-mod-ubus /+luci-nginx /g' feeds/packages/net/wg-installer/Makefile
+    sed -i '/uhttpd-mod-ubus/d' feeds/luci/collections/luci-light/Makefile
+    sed -i 's/+luci-nginx \\$/+luci-nginx/' feeds/luci/collections/luci-light/Makefile
 fi
 
 # nginx - latest version
