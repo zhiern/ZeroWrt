@@ -240,6 +240,9 @@ curl -s $mirror/openwrt/24-config-common >> .config
 # ota
 [ "$ENABLE_OTA" = "y" ] && [ "$version" = "v24" ] && echo 'CONFIG_PACKAGE_luci-app-ota=y' >> .config
 
+# docker
+[ "$ENABLE_DOCKER" = "y" ] curl -s $mirror/openwrt/generic/config-docker >> .config
+
 # bpf
 [ "$ENABLE_BPF" = "y" ] && curl -s $mirror/openwrt/generic/config-bpf >> .config
 
