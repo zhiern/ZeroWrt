@@ -109,7 +109,7 @@ jobs:
       id: compile
       continue-on-error: true
       run: |
-        export ${{ github.event.inputs.build_options }} LAN=${{ github.event.inputs.lan_addr }} GCC_VERSION=${{ github.event.inputs.gcc_version }}
+        export ${{ github.event.inputs.build_options }} LAN=${{ github.event.inputs.lan_addr }} GCC_VERSION=${{ github.event.inputs.gcc_version }} web_server=${{ github.event.inputs.web_server }}
         [ -n ${{ github.event.inputs.root_password }} ] && export ROOT_PASSWORD="${{ github.event.inputs.root_password }}"
         bash <(curl -sS http://127.0.0.1:8080/build.sh) ${{ env.build_version }} ${{ matrix.model }}
         cd openwrt
