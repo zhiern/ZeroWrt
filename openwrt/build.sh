@@ -1,63 +1,44 @@
 #!/bin/bash -e
-export RED_COLOR='\e[1;31m'
-export GREEN_COLOR='\e[1;32m'
-export YELLOW_COLOR='\e[1;33m'
-export BLUE_COLOR='\e[1;34m'
-export PINK_COLOR='\e[1;35m'
-export SHAN='\e[1;33;5m'
-export RES='\e[0m'
+# 定义颜色变量
+RED_COLOR='\033[1;31m'
+GREEN_COLOR='\033[1;32m'
+YELLOW_COLOR='\033[1;33m'
+BLUE_COLOR='\033[1;34m'
+PINK_COLOR='\033[1;35m'
+SHAN='\033[1;33;5m'
+RES='\033[0m'
 
-GROUP=
-group() {
-    endgroup
-    echo "::group::  $1"
-    GROUP=1
-}
-endgroup() {
-    if [ -n "$GROUP" ]; then
-        echo "::endgroup::"
-    fi
-    GROUP=
-}
+echo -e ""
+echo -e "${BLUE_COLOR}╔════════════════════════════════════════════════════════════╗${RES}"
+echo -e "${BLUE_COLOR}║${RES}                     OPENWRT BUILD SYSTEM                   ${BLUE_COLOR}║${RES}"
+echo -e "${BLUE_COLOR}╚════════════════════════════════════════════════════════════╝${RES}"
+echo -e "${BLUE_COLOR}┌────────────────────────────────────────────────────────────┐${RES}"
+echo -e "${BLUE_COLOR}│${RES}  🛠️  ${YELLOW_COLOR}Developer:${RES} OPPEN321                                    ${BLUE_COLOR}│${RES}"
+echo -e "${BLUE_COLOR}│${RES}  🌐  ${YELLOW_COLOR}Blog:${RES} www.kejizero.online                             ${BLUE_COLOR}│${RES}"
+echo -e "${BLUE_COLOR}│${RES}  💡  ${YELLOW_COLOR}Philosophy:${RES} Open Source · Customization · Performance ${BLUE_COLOR}│${RES}"
+echo -e "${BLUE_COLOR}└────────────────────────────────────────────────────────────┘${RES}"
+echo -e "${BLUE_COLOR}🔧 ${GREEN_COLOR}Building:${RES} $(date '+%Y-%m-%d %H:%M:%S')"
+echo -e "${BLUE_COLOR}══════════════════════════════════════════════════════════════${RES}"
+echo -e ""
 
-# check
-if [ "$(whoami)" != "zhiern" ] && [ -z "$git_name" ] && [ -z "$git_password" ]; then
-    echo -e "\n${RED_COLOR} Not authorized. Execute the following command to provide authorization information:${RES}\n"
-    echo -e "${BLUE_COLOR} export git_name=your_username git_password=your_password${RES}\n"
-    exit 1
-fi
-
-#####################################
-#        OpenWrt Build Script       #
-#####################################
-
-# script url
-export mirror=https://init.kejizero.online
-
-# github actions - caddy server
-if [ "$(whoami)" = "runner" ] && [ "$git_name" != "zhao" ]; then
-    export mirror=http://127.0.0.1:8080
-fi
-
-# private gitea
+# 自定义链接地址
+export mirror=http://127.0.0.1:8080
 export gitea="git.kejizero.online"
-
-# github mirror
 export github="github.com"
 
-# Check root
+# 检测 Root
 if [ "$(id -u)" = "0" ]; then
     export FORCE_UNSAFE_CONFIGURE=1 FORCE=1
 fi
 
-# Start time
+# 开始时间
 starttime=`date +'%Y-%m-%d %H:%M:%S'`
 CURRENT_DATE=$(date +%s)
 
-# Cpus
+# 处理器核心数设置
 cores=`expr $(nproc --all) + 1`
 
-# $CURL_BAR
+# 进度条设置
 if curl --help | grep progress-bar >/dev/null 2>&1; then
     CURL_BAR="--progress-bar";
 fi
@@ -69,26 +50,22 @@ if [ -z "$1" ] || ! echo "$SUPPORTED_BOARDS" | grep -qw "$2"; then
 
     for board in $SUPPORTED_BOARDS; do
         echo -e "$board releases: ${GREEN_COLOR}bash build.sh v24 $board${RES}"
-        echo -e "$board snapshots: ${GREEN_COLOR}bash build.sh openwrt-24.10 $board${RES}"
     done
     echo
     exit 1
 fi
 
-# Source branch
-if [ "$1" = "dev" ]; then
-    export branch=openwrt-24.10
-    export version=dev
-elif [ "$1" = "v24" ]; then
+# 源分支
+if [ "$1" = "v24" ]; then
     latest_release="v$(curl -s $mirror/tags/v24)"
     export branch=$latest_release
     export version=v24
 fi
 
-# lan
+# LAN
 [ -n "$LAN" ] && export LAN=$LAN || export LAN=10.0.0.1
 
-# platform
+# 设备类型
 case "$2" in
     rockchip)
         platform="rockchip"
@@ -101,23 +78,31 @@ case "$2" in
 esac
 export platform toolchain_arch
 
-# gcc14 & 15
-if [ "$USE_GCC13" = y ]; then
+# GCC 版本设置
+case "$GCC_VERSION" in
+  GCC13)
     export USE_GCC13=y gcc_version=13
-elif [ "$USE_GCC14" = y ]; then
+    ;;
+  GCC14)
     export USE_GCC14=y gcc_version=14
-elif [ "$USE_GCC15" = y ]; then
+    ;;
+  GCC15)
     export USE_GCC15=y gcc_version=15
-else
-    export USE_GCC14=y gcc_version=14
-fi
+    ;;
+  *)
+    echo "⚠️ 未知的 GCC 版本，默认使用 GCC15"
+    export USE_GCC14=y gcc_version=15
+    ;;
+esac
 
-# build.sh flags
+echo "👉 已选择 GCC 版本: $gcc_version"
+
+# 脚本定义
 export \
     ENABLE_BPF=$ENABLE_BPF \
     ROOT_PASSWORD=$ROOT_PASSWORD
 
-# print version
+# 打印设备信息
 echo -e "\r\n${GREEN_COLOR}Building $branch${RES}\r\n"
 case "$platform" in
     x86_64)
@@ -125,7 +110,6 @@ case "$platform" in
         ;;
     rockchip)
         echo -e "${GREEN_COLOR}Model: rockchip${RES}"
-        [ "$1" = "v24" ] && model="rockchip"
         ;;
 esac
 
