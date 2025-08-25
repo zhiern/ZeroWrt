@@ -67,8 +67,7 @@ jobs:
         git config --global user.name 'actions'
         git config --global user.email 'action@github.com'
         echo build_dir="/builder" >> "$GITHUB_ENV"
-        [ "${{ github.event.inputs.version }}" = release ] && echo build_version="v24" >> "$GITHUB_ENV" || echo build_version="dev" >> "$GITHUB_ENV"
-
+        
     - name: Show system
       run: |
         echo -e "\n\e[1;32mCPU:\e[0m"
