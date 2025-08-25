@@ -68,11 +68,9 @@ if [ -z "$1" ] || ! echo "$SUPPORTED_BOARDS" | grep -qw "$2"; then
 fi
 
 # 源分支
-if [ "$1" = "v24" ]; then
-    latest_release="v$(curl -s $mirror/tags/v24)"
-    export branch=openwrt-24.10
-    export version=v24
-fi
+latest_release="v$(curl -s $mirror/tags/v24)"
+export branch=openwrt-24.10
+export version=v24
 
 # LAN
 [ -n "$LAN" ] && export LAN=$LAN || export LAN=10.0.0.1
@@ -101,13 +99,10 @@ case "$GCC_VERSION" in
   GCC15)
     export gcc_version=15
     ;;
-  *)
-    echo "⚠️ 未知的 GCC 版本，默认使用 GCC15"
-    export gcc_version=15
-    ;;
 esac
 
 echo "👉 已选择 GCC 版本: $gcc_version"
+
 
 # 脚本定义
 export \
