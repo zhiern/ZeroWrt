@@ -3,18 +3,27 @@ name: 💻 固件编译
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: '选择构建版本'
+      gcc_version:
+        description: '选择 GCC 构建版本'
         required: true
-        default: 'release'
+        default: 'GCC15'
         type: choice
         options:
-          - 'release'
-          - 'snapshot-24.10'
-      ccache:
-        description: '启用 ccache（使用缓存加速下一次构建）'
+          - 'GCC13'
+          - 'GCC14'
+          - 'GCC15'
+      web_server:
+        description: '选择 Web 服务器'
+        required: true
+        default: 'nginx'
+        type: choice
+        options:
+          - 'nginx'
+          - 'uhttpd'
+      docker:
+        description: '启用 Docker 支持'
         type: boolean
-        default: false
+        default: true
       lan_addr:
         description: '设置默认 LAN 地址'
         required: true
@@ -25,18 +34,6 @@ on:
         required: false
         default: 'password'
         type: string
-      docker:
-        description: '启用 Docker 支持'
-        type: boolean
-        default: true
-      web_server:
-        description: '选择 Web 服务器'
-        required: true
-        default: 'nginx'
-        type: choice
-        options:
-          - 'nginx'
-          - 'uhttpd'
       build_options:
         description: '构建选项（多个选项用空格分隔）'
         required: false
