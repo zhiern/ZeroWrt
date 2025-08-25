@@ -108,21 +108,12 @@ jobs:
       working-directory: /builder
       id: compile
       continue-on-error: true
-      env:
-        git_name: ${{ secrets.username }}
-        git_password: ${{ secrets.password }}
       run: |
-        export ${{ github.event.inputs.build_options }} LAN=${{ github.event.inputs.lan_addr }} USE_GCC15=y
-        [ ${{ github.event.inputs.ccache }} = 'true' ] && export ENABLE_CCACHE=y
+        export ${{ github.event.inputs.build_options }} LAN=${{ github.event.inputs.lan_addr }} GCC=${{ github.event.inputs.gcc_version }}
         [ -n ${{ github.event.inputs.root_password }} ] && export ROOT_PASSWORD="${{ github.event.inputs.root_password }}"
         bash <(curl -sS http://127.0.0.1:8080/build.sh) ${{ env.build_version }} ${{ matrix.model }}
         cd openwrt
-        if [ "${{ github.event.inputs.version }}" = release ]; then
-          tags=OpenWrt-$(git describe --abbrev=0 --tags)
-        else
-          tags=snapshot-24.10-$(git log -n 1 --date=format:"%Y%m%d" --format="%cd")-$(git log --pretty=format:"%h" -1)
-        fi
-        echo "latest_release=$tags" >>$GITHUB_ENV
+        tags=OpenWrt-$(git describe --abbrev=0 --tags)
 
     - name: Extensive logs after a failed compilation
       working-directory: /builder
