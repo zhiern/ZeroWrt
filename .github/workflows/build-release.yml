@@ -25,6 +25,18 @@ on:
         required: false
         default: 'password'
         type: string
+      docker:
+        description: '启用 Docker 支持'
+        type: boolean
+        default: true
+      web_server:
+        description: '选择 Web 服务器'
+        required: true
+        default: 'nginx'
+        type: choice
+        options:
+          - 'nginx'
+          - 'uhttpd'
       build_options:
         description: '构建选项（多个选项用空格分隔）'
         required: false
