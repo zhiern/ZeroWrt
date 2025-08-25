@@ -251,7 +251,7 @@ export ENABLE_LTO=$ENABLE_LTO
 [ "$NO_KMOD" = "y" ] && sed -i '/CONFIG_ALL_KMODS=y/d' .config
 
 # uhttpd
-[ "$ENABLE_UHTTPD" = "y" ] && sed -i '/nginx/d' .config && echo 'CONFIG_PACKAGE_ariang=y' >> .config
+[ "$web_server" = "uhttpd" ] && sed -i '/nginx/d' .config && echo 'CONFIG_PACKAGE_ariang=y' >> .config
 
 # local kmod
 if [ "$ENABLE_LOCAL_KMOD" = "y" ]; then
