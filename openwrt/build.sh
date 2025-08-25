@@ -7,6 +7,19 @@ PINK_COLOR='\033[1;35m'
 SHAN='\033[1;33;5m'
 RES='\033[0m'
 
+GROUP=
+group() {
+    endgroup
+    echo "::group::  $1"
+    GROUP=1
+}
+endgroup() {
+    if [ -n "$GROUP" ]; then
+        echo "::endgroup::"
+    fi
+    GROUP=
+}
+
 echo -e ""
 echo -e "${BLUE_COLOR}╔════════════════════════════════════════════════════════════╗${RES}"
 echo -e "${BLUE_COLOR}║${RES}                     OPENWRT BUILD SYSTEM                   ${BLUE_COLOR}║${RES}"
