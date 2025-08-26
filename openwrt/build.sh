@@ -263,6 +263,9 @@ export ENABLE_LTO=$ENABLE_LTO
 # uhttpd
 [ "$web_server" = "uhttpd" ] && sed -i '/nginx/d' .config && echo 'CONFIG_PACKAGE_ariang=y' >> .config
 
+# version
+curl -s $mirror/openwrt/generic/config-version >> .config
+
 # local kmod
 if [ "$ENABLE_LOCAL_KMOD" = "y" ]; then
     echo -e "\n# local kmod" >> .config
