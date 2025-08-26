@@ -169,7 +169,7 @@ else
 fi
 
 # 版本设置
-echo "v$(curl -s $mirror/tags/v24)" > version.txt
+git describe --abbrev=0 --tags > version.txt
 
 # 替换更新源
 curl -s $mirror/openwrt/doc/feeds/feeds.conf.default > feeds.conf.default
