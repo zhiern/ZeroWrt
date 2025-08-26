@@ -266,8 +266,27 @@ export ENABLE_LTO=$ENABLE_LTO
 # local kmod
 if [ "$ENABLE_LOCAL_KMOD" = "y" ]; then
     echo -e "\n# local kmod" >> .config
-    echo "CONFIG_TARGET_ROOTFS_LOCAL_PACKAGES=y" >> .config
+    echo "CONFIG_VERSION_NUMBER="24.10.2" " >> .config
 fi
+
+# 设置版本号
+export tag=$(curl -s $mirror/tags/v24)
+cat << EOF >> seed.config
+CONFIG_VERSIONOPT=y
+CONFIG_VERSION_BUG_URL=""
+CONFIG_VERSION_CODE=""
+CONFIG_VERSION_CODE_FILENAMES=y
+CONFIG_VERSION_DIST="OpenWrt"
+CONFIG_VERSION_FILENAMES=y
+CONFIG_VERSION_HOME_URL=""
+CONFIG_VERSION_HWREV=""
+CONFIG_VERSION_MANUFACTURER=""
+CONFIG_VERSION_MANUFACTURER_URL=""
+CONFIG_VERSION_NUMBER="$tag"
+CONFIG_VERSION_PRODUCT=""
+CONFIG_VERSION_REPO="https://downloads.openwrt.org/releases/$tag"
+CONFIG_VERSION_SUPPORT_URL=""
+EOF
 
 # gcc15 patches
 [ "$(whoami)" = "runner" ] && group "patching toolchain"
