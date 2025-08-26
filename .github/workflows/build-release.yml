@@ -114,6 +114,7 @@ jobs:
         bash <(curl -sS http://127.0.0.1:8080/build.sh) v24 ${{ matrix.model }}
         cd openwrt
         tags=OpenWrt-$(git describe --abbrev=0 --tags)
+        echo "latest_release=$tags" >>$GITHUB_ENV
 
     - name: Extensive logs after a failed compilation
       working-directory: /builder
