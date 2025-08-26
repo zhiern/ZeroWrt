@@ -185,7 +185,7 @@ show_menu() {
         color_output "\e[36m┃\e[0m  4. Factory Reset                     \e[36m┃\e[0m"
         color_output "\e[36m┃\e[0m  5. Change Software Sources           \e[36m┃\e[0m"
         color_output "\e[36m┃\e[0m  6. One-click Deployment              \e[36m┃\e[0m"
-        color_output "\e[36m┃\e[0m  7. One-click loading of     drivers  \e[36m┃\e[0m"
+        color_output "\e[36m┃\e[0m  7. One-click loading of drivers      \e[36m┃\e[0m"
         color_output "\e[36m┃\e[0m  8. IPv6-Wizard                       \e[36m┃\e[0m"         
         color_output "\e[36m┃\e[0m  9. network_mode_wizard               \e[36m┃\e[0m"
         color_output "\e[36m┃\e[0m  10. iStoreOS Styling                 \e[36m┃\e[0m"
@@ -1850,10 +1850,10 @@ system_info() {
         color_output "\e[38;5;39m2)\e[0m \e[1;97m内存信息\e[0m"
         color_output "\e[38;5;39m3)\e[0m \e[1;97m磁盘信息\e[0m"
         color_output "\e[38;5;39m4)\e[0m \e[1;97m网络信息\e[0m"
-        color_output "\e[38;5;39m6)\e[0m \e[1;97m显示全部信息\e[0m"
+        color_output "\e[38;5;39m5)\e[0m \e[1;97m显示全部信息\e[0m"
         color_output "\e[38;5;39m0)\e[0m \e[1;97m返回主菜单\e[0m"
         echo ""
-        read -p "请选择要查看的信息 [0-6]: " choice
+        read -p "请选择要查看的信息 [0-5]: " choice
 
         case $choice in
             1) show_host_info ;;
