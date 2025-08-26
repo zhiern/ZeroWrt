@@ -271,7 +271,7 @@ fi
 
 # 设置版本号
 export tag=$(curl -s $mirror/tags/v24)
-cat << EOF >> seed.config
+cat << EOF >> .config
 CONFIG_VERSIONOPT=y
 CONFIG_VERSION_BUG_URL=""
 CONFIG_VERSION_CODE=""
