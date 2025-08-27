@@ -18,8 +18,9 @@ jobs:
       - name: Sync OTA
         run: |
           mkdir -p ota
-          wget -q https://github.com/zhiern/ZeroWrt/releases/download/OpenWrt-v24.10.2/x86_64.json -O x86_64.json
-          wget -q https://github.com/zhiern/ZeroWrt/releases/download/OpenWrt-v24.10.2/rockchip.json -O rockchip.json
+          latest_tag=$(curl -s https://api.github.com/repos/zhiern/ZeroWrt/releases/latest | jq -r .tag_name)
+          wget -q https://github.com/zhiern/ZeroWrt/releases/download/$latest_tag/x86_64.json -O x86_64.json
+          wget -q https://github.com/zhiern/ZeroWrt/releases/download/$latest_tag/rockchip.json -O rockchip.json
           jq -s 'add' x86_64.json rockchip.json > ota/ota.json
      
       - name: Release OTA
