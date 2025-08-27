@@ -8,7 +8,7 @@ HP_PATH="package/new/helloworld/luci-app-homeproxy/root/etc/homeproxy"
 rm -rf $HP_PATH/resources/*
 
 # 克隆 surge-rules 仓库
-git clone -q --depth=1 --single-branch --branch "release" "https://github.com/Loyalsoldier/surge-rules.git" $HP_RULE
+git clone -q --depth=1 --single-branch --branch "release" "https://github.com/zhiern/rules.git" $HP_RULE
 RES_VER=$(git -C "$HP_RULE" log -1 --pretty=format:'%s' | grep -o "[0-9]*")
 
 # 写版本号到多个文件
