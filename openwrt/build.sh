@@ -197,7 +197,7 @@ scripts=(
   01-prepare_package.sh
   02-prepare_adguard_core.sh
   03-preset_mihimo_core.sh
-  04-preset_homeproxy_core.sh
+  04-preset_homeproxy.sh
   06-fix-source.sh
   10-custom.sh
   99_clean_build_cache.sh
@@ -220,7 +220,7 @@ bash 00-prepare_base.sh
 bash 01-prepare_package.sh
 bash 02-prepare_adguard_core.sh
 bash 03-preset_mihimo_core.sh
-bash 04-preset_homeproxy_core.sh
+bash 04-preset_homeproxy.sh
 bash 06-fix-source.sh
 if [ "$platform" = "rockchip" ]; then
     bash 05-rockchip_target_only.sh
