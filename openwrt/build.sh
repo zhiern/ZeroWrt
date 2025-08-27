@@ -338,9 +338,8 @@ fi
 
 if [ "$platform" = "x86_64" ]; then
     if [ "$NO_KMOD" != "y" ]; then
-        mkdir kmodpkg
         cp -a bin/targets/x86/*/packages $kmodpkg_name/
-        rm -f kmodpkg/Packages*
+        rm -f $kmodpkg_name/Packages*
         cp -a bin/packages/x86_64/base/rtl88*a-firmware*.ipk $kmodpkg_name/
         cp -a bin/packages/x86_64/base/natflow*.ipk $kmodpkg_name/
         bash kmod-sign $kmodpkg_name
@@ -367,9 +366,8 @@ EOF
     fi
 elif [ "$platform" = "rockchip" ]; then
     if [ "$NO_KMOD" != "y" ]; then
-        mkdir kmodpkg
         cp -a bin/targets/rockchip/armv8*/packages $kmodpkg_name
-        rm -f kmodpkg/Packages*
+        rm -f $kmodpkg_name/Packages*
         cp -a bin/packages/aarch64_generic/base/rtl88*-firmware*.ipk $kmodpkg_name/
         cp -a bin/packages/aarch64_generic/base/natflow*.ipk $kmodpkg_name/
         bash kmod-sign $kmodpkg_name
