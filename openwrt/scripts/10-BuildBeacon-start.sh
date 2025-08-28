@@ -13,7 +13,7 @@ START_TIME=$(date +"%Y-%m-%d %H:%M:%S")
 MESSAGE="💻 主人，新的 OpenWrt 编译任务已经启动！
 
 📦 固件版本：${RELEASE_TAG}
-🔧 编译参数：
+🔧 编译类型：${COMPILE_TYPE}
   • GCC版本：${GCC_VERSION}
   • Web服务：${WEB_SERVER}
   • Docker支持：${DOCKER}
