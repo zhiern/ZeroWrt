@@ -1,0 +1,24 @@
+#!/bin/sh
+
+command -v ethtool >/dev/null 2>&1 || exit 0
+
+(
+for NIC_PATH in /sys/class/net/*; do
+    NIC=$(basename "$NIC_PATH")
+    [ ! -d "/sys/class/net/$NIC/device" ] && continue
+    IF_TYPE=$(cat "/sys/class/net/$NIC/type" 2>/dev/null)
+    [ "$IF_TYPE" != "1" ] && continue
+    ETHTOOL_G_OUTPUT=$(ethtool -g "$NIC" 2>/dev/null)
+    [ -z "$ETHTOOL_G_OUTPUT" ] && continue
+    RX_MAX=$(echo "$ETHTOOL_G_OUTPUT" | awk '/RX:/ {print $2; exit}')
+    TX_MAX=$(echo "$ETHTOOL_G_OUTPUT" | awk '/TX:/ {print $2; exit}')
+    [ -z "$RX_MAX" ] || ethtool -G "$NIC" rx "$RX_MAX"
+    [ -z "$TX_MAX" ] || ethtool -G "$NIC" tx "$TX_MAX"
+    ETHTOOL_C_OUTPUT=$(ethtool -c "$NIC" 2>/dev/null)
+    if echo "$ETHTOOL_C_OUTPUT" | grep -q "Adaptive RX:"; then
+        ethtool -C "$NIC" adaptive-rx on adaptive-tx on >/dev/null 2>&1
+    fi
+done
+
+logger -t net-buffer "NIC buffer sizes set and adaptive coalescing attempted"
+) &

@@ -250,9 +250,13 @@ curl -so files/root/.bashrc $mirror/openwrt/files/root/.bashrc
 
 # rootfs files
 mkdir -p files/etc/sysctl.d
+mkdir -p files/etc/hotplug.d/iface
+mkdir -p files/etc/hotplug.d/net
 curl -so files/etc/sysctl.d/10-default.conf $mirror/openwrt/files/etc/sysctl.d/10-default.conf
 curl -so files/etc/sysctl.d/15-vm-swappiness.conf $mirror/openwrt/files/etc/sysctl.d/15-vm-swappiness.conf
 curl -so files/etc/sysctl.d/16-udp-buffer-size.conf $mirror/openwrt/files/etc/sysctl.d/16-udp-buffer-size.conf
+curl -so files/etc/hotplug.d/iface/99-zzz-odhcpd $mirror/openwrt/files/etc/hotplug.d/iface/99-zzz-odhcpd
+curl -so files/etc/hotplug.d/net/01-maximize_nic_rx_tx_buffers  $mirror/openwrt/files/etc/hotplug.d/net/01-maximize_nic_rx_tx_buffers
 
 # ZeroWrt Options Menu
 mkdir -p files/bin
