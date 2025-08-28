@@ -106,8 +106,6 @@ jobs:
         BUILD_OPTIONS: ${{ github.event.inputs.build_options }}
         TGID: ${{ secrets.TGID }}
         TG_TOKEN: ${{ secrets.TG_TOKEN }}
-        PUSHKEY: ${{ secrets.pushkey }}
-        PUSHSERVE: ${{ secrets.pushserve }}
         
     - name: Free disk space
       uses: sbwml/actions@free-disk
@@ -199,6 +197,4 @@ jobs:
         KERNEL_VERSION: ${{ env.KERNEL_VERSION }}
         TGID: ${{ secrets.TGID }}
         TG_TOKEN: ${{ secrets.TG_TOKEN }}
-        PUSHKEY: ${{ secrets.pushkey }}
-        PUSHSERVE: ${{ secrets.pushserve }}
         RELEASE_LINK: "https://github.com/zhiern/ZeroWrt/releases/tag/${{ env.latest_release }}"
