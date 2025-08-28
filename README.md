@@ -56,8 +56,7 @@
 3. 输入 **/newbot** 创建新机器人  
 4. 设置机器人名称，例如：`danshui`  
 5. 设置机器人用户名，必须以 `_bot` 结尾，例如：`danshui_bot`  
-6. 创建完成后，你会看到类似的 **HTTP API**：9876543201:FEDCBA_dfoiuweSWEczgxT7-l4r9Y
-- 这就是你的 **TELEGRAM_BOT_TOKEN (TGTOKEN)** ⚠️ 请勿泄露  
+6. 创建完成后，你会看到类似的 **HTTP API**：9876543201:FEDCBA_dfoiuweSWEczgxT7-l4r9Y - 这就是你的 **TELEGRAM_BOT_TOKEN (TGTOKEN)** ⚠️ 请勿泄露  
 7. 给机器人发送一条任意消息，这样后续获取 ID 才能成功 💌  
 
 ---
