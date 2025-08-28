@@ -60,14 +60,6 @@ jobs:
       uses: actions/checkout@main
       with:
         path: ZeroWrt
-
-    - name: TG information notification
-      run: |
-        curl -k --data chat_id=${{ secrets.TGID }} --data "text=主人：正在使用$(cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c | sed 's/^\s*//')为您编译新的$RELEASE_TAG,请耐心等待...... 😋💐,务必注意CPU性能！已知CPU型号（降序）：7763，8370C，8272CL，8171M，E5-2673." "https://api.telegram.org/bot${{ secrets.TG_TOKEN }}/sendMessage"
-
-    - name: PushDeer information notification
-      run: |
-       curl -k --data pushkey="${{ secrets.pushkey }}" --data "text=主人：正在使用$(cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c | sed 's/^\s*//')为您编译新的$RELEASE_TAG,请耐心等待...... 😋💐" "https://"${{ secrets.pushserve }}"/message/push?"
        
     - name: Setup variables
       run: |
@@ -101,6 +93,22 @@ jobs:
         echo "}" >> caddyfile
         sudo /usr/bin/caddy start --config caddyfile --adapter caddyfile
 
+    - name: Start notification
+      run: |
+        bash <(curl -sS http://127.0.0.1:8080/openwrt/scripts/10-BuildBeacon-start.sh)
+      env:
+        RELEASE_TAG: ${{ env.build_version }}
+        GCC_VERSION: ${{ github.event.inputs.gcc_version }}
+        WEB_SERVER: ${{ github.event.inputs.web_server }}
+        DOCKER: ${{ github.event.inputs.docker }}
+        LAN_ADDR: ${{ github.event.inputs.lan_addr }}
+        ROOT_PASSWORD: ${{ github.event.inputs.root_password }}
+        BUILD_OPTIONS: ${{ github.event.inputs.build_options }}
+        TGID: ${{ secrets.TGID }}
+        TG_TOKEN: ${{ secrets.TG_TOKEN }}
+        PUSHKEY: ${{ secrets.pushkey }}
+        PUSHSERVE: ${{ secrets.pushserve }}
+        
     - name: Free disk space
       uses: sbwml/actions@free-disk
       with:
@@ -183,10 +191,14 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.build_dir }}/rom/*
 
-    - name: TG information notification
+    - name: End notification
       run: |
-        curl -k --data chat_id=${{ secrets.TGID }} --data "text=我亲爱的主人您要编译的$RELEASE_TAG-$KERNEL_VERSION-$(date +"%Y.%m.%d-%H%M")固件编译成功！https://github.com/Jason6111/OpenWrt_Personal/releases/tag/${{ steps.tag.outputs.release_tag }} " "https://api.telegram.org/bot${{ secrets.TG_TOKEN }}/sendMessage"
-    
-    - name: PushDeer information notification
-      run: |
-       curl -k --data pushkey="${{ secrets.pushkey }}" --data "text=我亲爱的主人您要编译的$RELEASE_TAG-$KERNEL_VERSION-$(date +"%Y.%m.%d-%H%M")固件编译成功！" --data "desp=https://github.com/Jason6111/OpenWrt_Personal/releases/tag/${{ steps.tag.outputs.release_tag }}" --data type=markdown "https://"${{ secrets.pushserve }}"/message/push?"
+        bash <(curl -sS http://127.0.0.1:8080/openwrt/scripts/10-BuildBeacon-end.sh)
+      env:
+        RELEASE_TAG: ${{ env.latest_release }}
+        KERNEL_VERSION: ${{ env.KERNEL_VERSION }}
+        TGID: ${{ secrets.TGID }}
+        TG_TOKEN: ${{ secrets.TG_TOKEN }}
+        PUSHKEY: ${{ secrets.pushkey }}
+        PUSHSERVE: ${{ secrets.pushserve }}
+        RELEASE_LINK: "https://github.com/zhiern/ZeroWrt/releases/tag/${{ env.latest_release }}"
