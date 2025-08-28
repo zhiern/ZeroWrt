@@ -70,10 +70,7 @@
 
 ### 方法二：使用你创建的机器人
 1. 确保你已经给机器人发送过消息  
-2. 将你的 **TGTOKEN** 替换到下面链接中：https://api.telegram.org/bot<你的TGTOKEN>/getUpdates
-
-示例：  
-https://api.telegram.org/bot9876543201:FEDCBA_dfoiuweSWEczgxT7-l4r9Y/getUpdates
+2. 将你的 **TGTOKEN** 替换到下面链接中：https://api.telegram.org/bot<你的TGTOKEN>/getUpdates - 示例：https://api.telegram.org/bot9876543201:FEDCBA_dfoiuweSWEczgxT7-l4r9Y/getUpdates
 3. 在浏览器打开该链接  
 4. 找到 `"from":{"id":1239000174,"is_bot":...}`  
 - 其中的 **1239000174** 就是你的 **TGID** 🆔  
