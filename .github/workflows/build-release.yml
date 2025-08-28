@@ -98,6 +98,7 @@ jobs:
         bash <(curl -sS http://127.0.0.1:8080/openwrt/scripts/10-BuildBeacon-start.sh)
       env:
         RELEASE_TAG: ${{ env.build_version }}
+        COMPILE_TYPE: ${{ matrix.model }}
         GCC_VERSION: ${{ github.event.inputs.gcc_version }}
         WEB_SERVER: ${{ github.event.inputs.web_server }}
         DOCKER: ${{ github.event.inputs.docker }}
