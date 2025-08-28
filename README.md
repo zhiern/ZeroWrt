@@ -36,7 +36,7 @@
 
 ---
 
-### 💾 1️⃣ 添加 GitHub Secrets
+### 📝 1️⃣ 添加 GitHub Secrets
 
 1. 进入你的仓库 → **Settings**  
 2. 左侧点击 **Secrets** → 右上角 **New repository secret**  
