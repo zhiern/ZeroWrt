@@ -1,14 +1,12 @@
 <div align="center">
 
-![GitHub Header](https://git.kejizero.online/zhao/image/raw/branch/main/openwrt.png)
+![GitHub Header](images/openwrt.png)
 
 **基于 [OpenWrt](https://github.com/openwrt/openwrt) 打造的高效固件，覆盖 Rockchip、X86_64 平台，专为进阶用户设计！**  
 
 </div>
 
 ---
-
-I18N: [English](README_EN.md) | [简体中文](README.md) 
 
 ## 🔍 固件信息概览 
 - 🛠 **源码基础**：[OpenWrt 官方]
@@ -32,14 +30,65 @@ I18N: [English](README_EN.md) | [简体中文](README.md)
 
 ---
 
-## 授权构建
-#### 如果你得到授权，请在构建前执行以下命令
+## 📡 Telegram 机器人推送设置指南
 
-```
-export git_name=账户名 git_password=密码  (账号密码请前往交流群获取)
-```
+为了保护你的 Telegram 安全，请在自己的 GitHub 仓库中添加 Secrets，这样可以在编译前后自动接收消息通知。
 
 ---
+
+### 📝 1️⃣ 添加 GitHub Secrets
+
+1. 进入你的仓库 → **Settings**  
+2. 左侧点击 **Secrets** → 右上角 **New repository secret**  
+3. 添加两个 Secrets：  
+   | Name   | Value                          |
+   |--------|--------------------------------|
+   | TGTOKEN | 你的 TELEGRAM_BOT_TOKEN       |
+   | TGID    | 你的 TELEGRAM_CHAT_ID         |
+4. 点击绿色按钮 **Add secret** 保存 ✅
+
+---
+
+### 🤖 2️⃣ 创建 Telegram 机器人
+
+1. 在 Telegram 搜索 **BotFather**  
+2. 点击 **/start**  
+3. 输入 **/newbot** 创建新机器人  
+4. 设置机器人名称，例如：`danshui`  
+5. 设置机器人用户名，必须以 `_bot` 结尾，例如：`danshui_bot`  
+6. 创建完成后，你会看到类似的 **HTTP API**：9876543201:FEDCBA_dfoiuweSWEczgxT7-l4r9Y - 这就是你的 **TELEGRAM_BOT_TOKEN (TGTOKEN)** ⚠️ 请勿泄露  
+7. 给机器人发送一条任意消息，这样后续获取 ID 才能成功 💌  
+
+---
+
+## 🆔 3️⃣ 获取 TELEGRAM_CHAT_ID (TGID)
+
+### 方法一：使用 @GetMyID 机器人
+1. 搜索 `@GetMyID`  
+2. 点击 **Start**  
+3. 会显示你的 **TGID**  
+
+### 方法二：使用你创建的机器人
+1. 确保你已经给机器人发送过消息  
+2. 将你的 **TGTOKEN** 替换到下面链接中：https://api.telegram.org/bot<你的TGTOKEN>/getUpdates - 示例：https://api.telegram.org/bot9876543201:FEDCBA_dfoiuweSWEczgxT7-l4r9Y/getUpdates
+3. 在浏览器打开该链接  
+4. 找到 `"from":{"id":1239000174,"is_bot":...}`  
+- 其中的 **1239000174** 就是你的 **TGID** 🆔  
+
+---
+
+## 💡 4️⃣ 小贴士
+
+- 确保 **TGTOKEN** 和 **TGID** 都是你自己获取的，不要使用他人的  
+- 给机器人发送消息是获取 ID 的关键步骤  
+- 设置完成后，如果开启了 SSH，系统可以自动发送编译前后的信息到 Telegram 🎉  
+
+---
+
+## 📸 5️⃣ 功能展示
+
+![功能截图](https://github.com/Jason6111/OpenWrt_Personal/blob/main/other/TGbot.JPG)
+
 
 ## 💾 ZeroWrt 固件烧写（SD）
 
@@ -113,10 +162,10 @@ emmc-install /tmp/xx-squashfs-sysupgrade.img.gz
 
 <div align="center">
 
-![示例图 1](https://git.kejizero.online/zhao/image/raw/branch/main/0001.png)  
-![示例图 2](https://git.kejizero.online/zhao/image/raw/branch/main/0002.png)  
-![示例图 3](https://git.kejizero.online/zhao/image/raw/branch/main/0003.png)  
-![示例图 4](https://git.kejizero.online/zhao/image/raw/branch/main/0004.png)
+![示例图 1](images/01.png)  
+![示例图 2](images/02.png)  
+![示例图 3](images/03.png)  
+![示例图 4](images/04.png)
 
 </div>
 
