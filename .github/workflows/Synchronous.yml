@@ -1,3 +1,13 @@
+#
+# Copyright (c) 2019-2025 OPPEN321
+#
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+# https://github.com/zhiern/ZeroWrt
+# Description: Build OpenWrt using GitHub Actions
+
+
 name: 🚀 同步处理
 
 on:
@@ -9,7 +19,6 @@ on:
 
 jobs:
   upload:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}   # ✅ 只在成功时执行
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
