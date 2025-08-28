@@ -18,11 +18,3 @@ MESSAGE="🎉 主人，您的 OpenWrt 固件编译已完成！
 curl -k --data chat_id=${TGID} \
      --data "text=$MESSAGE" \
      "https://api.telegram.org/bot${TG_TOKEN}/sendMessage"
-
-# PushDeer 推送（可选）
-curl -k --data pushkey="${PUSHKEY}" \
-     --data "text=OpenWrt 编译完成通知" \
-     --data "desp=$MESSAGE" \
-     --data type=markdown \
-     "https://${PUSHSERVE}/message/push?"
-
