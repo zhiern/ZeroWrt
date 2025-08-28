@@ -1,14 +1,12 @@
 <div align="center">
 
-![GitHub Header](https://git.kejizero.online/zhao/image/raw/branch/main/openwrt.png)
+![GitHub Header](images/openwrt.png)
 
 **基于 [OpenWrt](https://github.com/openwrt/openwrt) 打造的高效固件，覆盖 Rockchip、X86_64 平台，专为进阶用户设计！**  
 
 </div>
 
 ---
-
-I18N: [English](README_EN.md) | [简体中文](README.md) 
 
 ## 🔍 固件信息概览 
 - 🛠 **源码基础**：[OpenWrt 官方]
@@ -29,15 +27,6 @@ I18N: [English](README_EN.md) | [简体中文](README.md)
 - 🎛 **功能优化**：
   - 内置 ZeroWrt 设置菜单，轻松管理
   - 支持高级插件、自定义启动项
-
----
-
-## 授权构建
-#### 如果你得到授权，请在构建前执行以下命令
-
-```
-export git_name=账户名 git_password=密码  (账号密码请前往交流群获取)
-```
 
 ---
 
@@ -113,10 +102,10 @@ emmc-install /tmp/xx-squashfs-sysupgrade.img.gz
 
 <div align="center">
 
-![示例图 1](https://git.kejizero.online/zhao/image/raw/branch/main/0001.png)  
-![示例图 2](https://git.kejizero.online/zhao/image/raw/branch/main/0002.png)  
-![示例图 3](https://git.kejizero.online/zhao/image/raw/branch/main/0003.png)  
-![示例图 4](https://git.kejizero.online/zhao/image/raw/branch/main/0004.png)
+![示例图 1](images/01.png)  
+![示例图 2](images/02.png)  
+![示例图 3](images/03.png)  
+![示例图 4](images/04.png)
 
 </div>
 
