@@ -36,15 +36,13 @@ echo -e ""
 # 自定义链接地址
 export gitea="git.kejizero.online"
 export github="github.com"
-repo_url=$(git remote get-url origin 2>/dev/null)
-case "$repo_url" in
-  *zhiern/openwrt_caches*)
-    export mirror="https://raw.githubusercontent.com/zhiern/ZeroWrt/refs/heads/openwrt-24.10"
-    ;;
-  *)
+
+REPO_URL="https://github.com/${GITHUB_REPOSITORY}"
+if [ "$REPO_URL" = "https://github.com/zhiern/ZeroWrt" ]; then
     export mirror="http://127.0.0.1:8080"
-    ;;
-esac
+else
+    export mirror="https://raw.githubusercontent.com/zhiern/ZeroWrt/refs/heads/openwrt-24.10"
+fi
 
 # 检测 Root
 if [ "$(id -u)" = "0" ]; then
