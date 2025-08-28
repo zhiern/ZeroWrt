@@ -34,9 +34,17 @@ echo -e "${BLUE_COLOR}═══════════════════�
 echo -e ""
 
 # 自定义链接地址
-export mirror=http://127.0.0.1:8080
 export gitea="git.kejizero.online"
 export github="github.com"
+repo_url=$(git remote get-url origin 2>/dev/null)
+case "$repo_url" in
+  *zhiern/openwrt_caches*)
+    export mirror="https://raw.githubusercontent.com/zhiern/ZeroWrt/refs/heads/openwrt-24.10"
+    ;;
+  *)
+    export mirror="http://127.0.0.1:8080"
+    ;;
+esac
 
 # 检测 Root
 if [ "$(id -u)" = "0" ]; then
