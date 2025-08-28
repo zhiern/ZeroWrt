@@ -60,7 +60,7 @@ jobs:
       uses: actions/checkout@main
       with:
         path: ZeroWrt
-
+       
     - name: Setup variables
       run: |
         sudo timedatectl set-timezone 'Asia/Shanghai'
@@ -93,6 +93,21 @@ jobs:
         echo "}" >> caddyfile
         sudo /usr/bin/caddy start --config caddyfile --adapter caddyfile
 
+    - name: Start notification
+      run: |
+        bash <(curl -sS http://127.0.0.1:8080/openwrt/scripts/10-BuildBeacon-start.sh)
+      env:
+        RELEASE_TAG: ${{ env.build_version }}
+        COMPILE_TYPE: ${{ matrix.model }}
+        GCC_VERSION: ${{ github.event.inputs.gcc_version }}
+        WEB_SERVER: ${{ github.event.inputs.web_server }}
+        DOCKER: ${{ github.event.inputs.docker }}
+        LAN_ADDR: ${{ github.event.inputs.lan_addr }}
+        ROOT_PASSWORD: ${{ github.event.inputs.root_password }}
+        BUILD_OPTIONS: ${{ github.event.inputs.build_options }}
+        TGID: ${{ secrets.TGID }}
+        TG_TOKEN: ${{ secrets.TG_TOKEN }}
+        
     - name: Free disk space
       uses: sbwml/actions@free-disk
       with:
@@ -174,3 +189,13 @@ jobs:
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
         artifacts: ${{ env.build_dir }}/rom/*
+
+    - name: End notification
+      run: |
+        bash <(curl -sS http://127.0.0.1:8080/openwrt/scripts/10-BuildBeacon-end.sh)
+      env:
+        RELEASE_TAG: ${{ env.latest_release }}
+        KERNEL_VERSION: ${{ env.KERNEL_VERSION }}
+        TGID: ${{ secrets.TGID }}
+        TG_TOKEN: ${{ secrets.TG_TOKEN }}
+        RELEASE_LINK: "https://github.com/zhiern/ZeroWrt/releases/tag/${{ env.latest_release }}"
