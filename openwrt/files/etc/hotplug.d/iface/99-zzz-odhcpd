@@ -1,0 +1,101 @@
+#!/bin/sh
+[ "$ACTION" = ifup ] || [ "$ACTION" = ifupdate ] || exit 0
+[ "$ACTION" = ifupdate ] && [ -z "$IFUPDATE_ADDRESSES" ] && [ -z "$IFUPDATE_DATA" ] && exit 0
+
+. /lib/functions/network.sh
+network_flush_cache
+network_find_wan6 NET_IF6
+[ "$INTERFACE" = "$NET_IF6" ] || exit 0
+
+(
+mkdir -p /tmp/lock
+LOCK_FILE="/tmp/lock/odhcpd_hotplug_lock"
+[ -f "$LOCK_FILE" ] && exit 1
+echo $$ > "$LOCK_FILE" 2>/dev/null
+trap 'rm -f "$LOCK_FILE"; uci revert dhcp' EXIT
+
+if command -v ping6 >/dev/null 2>&1; then
+    PING6="ping6"
+else
+    PING6="ping -6"
+fi
+
+sleep 10
+
+[ -x /etc/init.d/miniupnpd ] && /etc/init.d/miniupnpd stop >/dev/null 2>&1
+[ -x /etc/init.d/odhcpd ] && /etc/init.d/odhcpd stop >/dev/null 2>&1
+rm -f /tmp/hosts/odhcpd /tmp/hosts/dhcp* 2>/dev/null || true
+
+ORIG_RA_MIN=$(uci -q get dhcp.lan.ra_mininterval)
+ORIG_RA_MAX=$(uci -q get dhcp.lan.ra_maxinterval)
+ORIG_RA_LIFETIME=$(uci -q get dhcp.lan.ra_lifetime)
+ORIG_RA_PREFLFT=$(uci -q get dhcp.lan.ra_preferred_lifetime)
+ORIG_RA_VALLFT=$(uci -q get dhcp.lan.ra_valid_lifetime)
+
+uci set dhcp.lan.ra_mininterval=1
+uci set dhcp.lan.ra_maxinterval=2
+uci set dhcp.lan.ra_lifetime=0
+uci set dhcp.lan.ra_preferred_lifetime=0
+uci set dhcp.lan.ra_valid_lifetime=0
+uci commit dhcp
+/etc/init.d/odhcpd start >/dev/null 2>&1
+
+sleep 8
+/etc/init.d/odhcpd stop >/dev/null 2>&1
+rm -f /tmp/hosts/odhcpd /tmp/hosts/dhcp* 2>/dev/null || true
+
+uci set dhcp.lan.ra_mininterval=1
+uci set dhcp.lan.ra_maxinterval=3
+
+if [ -n "$ORIG_RA_LIFETIME" ]; then
+    uci set dhcp.lan.ra_lifetime="$ORIG_RA_LIFETIME"
+else
+    uci delete dhcp.lan.ra_lifetime
+fi
+
+if [ -n "$ORIG_RA_PREFLFT" ]; then
+    uci set dhcp.lan.ra_preferred_lifetime="$ORIG_RA_PREFLFT"
+else
+    uci delete dhcp.lan.ra_preferred_lifetime
+fi
+
+if [ -n "$ORIG_RA_VALLFT" ]; then
+    uci set dhcp.lan.ra_valid_lifetime="$ORIG_RA_VALLFT"
+else
+    uci delete dhcp.lan.ra_valid_lifetime
+fi
+
+uci commit dhcp
+/etc/init.d/odhcpd start >/dev/null 2>&1
+
+network_get_device LAN_DEVICE lan
+[ -z "$LAN_DEVICE" ] && LAN_DEVICE="br-lan"
+for device in $LAN_DEVICE; do
+    $PING6 -c 4 -I "$device" ff02::1 >/dev/null 2>&1 &
+    $PING6 -c 4 -I "$device" ff02::2 >/dev/null 2>&1 &
+done
+
+sleep 15
+
+/etc/init.d/odhcpd stop >/dev/null 2>&1
+rm -f /tmp/hosts/odhcpd /tmp/hosts/dhcp* 2>/dev/null || true
+
+if [ -n "$ORIG_RA_MIN" ]; then
+    uci set dhcp.lan.ra_mininterval="$ORIG_RA_MIN"
+else
+    uci delete dhcp.lan.ra_mininterval
+fi
+
+if [ -n "$ORIG_RA_MAX" ]; then
+    uci set dhcp.lan.ra_maxinterval="$ORIG_RA_MAX"
+else
+    uci delete dhcp.lan.ra_maxinterval
+fi
+
+uci commit dhcp
+/etc/init.d/odhcpd start >/dev/null 2>&1
+
+[ -x /etc/init.d/miniupnpd ] && /etc/init.d/miniupnpd start >/dev/null 2>&1
+
+logger -t odhcpd "IPv6 complete refresh finished for $INTERFACE"
+) &
