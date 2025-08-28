@@ -192,7 +192,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         name: ${{ env.latest_release }}
-        body_path: ${{ github.workspace }}/info.md
+        bodyFile: "${{ github.workspace }}/info.md"
         allowUpdates: true
         tag: ${{ env.latest_release }}
         commit: openwrt-24.10
