@@ -41,7 +41,7 @@ REPO_URL="https://github.com/${GITHUB_REPOSITORY}"
 if [ "$REPO_URL" = "https://github.com/zhiern/ZeroWrt" ]; then
     export mirror="http://127.0.0.1:8080"
 else
-    export mirror="https://raw.githubusercontent.com/zhiern/ZeroWrt/refs/heads/openwrt-24.10"
+    export mirror="https://init.kejizero.online"
 fi
 
 # 检测 Root
