@@ -87,7 +87,7 @@
 
 ## 📸 5️⃣ 功能展示
 
-![功能截图](https://github.com/Jason6111/OpenWrt_Personal/blob/main/other/TGbot.JPG)
+![功能截图](images/05.png)
 
 
 ## 💾 ZeroWrt 固件烧写（SD）
