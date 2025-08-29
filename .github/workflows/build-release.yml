@@ -94,7 +94,7 @@ jobs:
 
     - name: Install Caddy Server
       run: |
-        sudo curl -sL -o /usr/bin/caddy https://github.com/zhiern/ZeroWrt/releases/download/Caddy/caddy
+        sudo curl -sL -o /usr/bin/caddy https://github.com/NeonPulse-Zero/ZeroWrt/releases/download/Caddy/caddy
         sudo chmod 755 /usr/bin/caddy
         echo ":8080 {" > caddyfile
         echo "    root * $(pwd)/ZeroWrt" >> caddyfile
@@ -208,4 +208,4 @@ jobs:
         KERNEL_VERSION: ${{ env.KERNEL_VERSION }}
         TGID: ${{ secrets.TGID }}
         TG_TOKEN: ${{ secrets.TG_TOKEN }}
-        RELEASE_LINK: "https://github.com/zhiern/ZeroWrt/releases/tag/${{ env.latest_release }}"
+        RELEASE_LINK: "https://github.com/NeonPulse-Zero/ZeroWrt/releases/tag/${{ env.latest_release }}"
