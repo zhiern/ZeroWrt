@@ -38,7 +38,7 @@ export gitea="git.kejizero.online"
 export github="github.com"
 
 REPO_URL="https://github.com/${GITHUB_REPOSITORY}"
-if [ "$REPO_URL" = "https://github.com/zhiern/ZeroWrt" ]; then
+if [ "$REPO_URL" = "https://github.com/NeonPulse-Zero/ZeroWrt" ]; then
     export mirror="http://127.0.0.1:8080"
 else
     export mirror="https://init.kejizero.online"
