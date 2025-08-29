@@ -163,8 +163,8 @@ rm -rf openwrt immortalwrt
 
 # openwrt - 克隆
 [ "$(whoami)" = "runner" ] && group "source code"
-git clone https://$github/openwrt/openwrt -b $branch
-git clone https://$github/immortalwrt/immortalwrt -b $branch
+git clone --depth=1 https://$github/openwrt/openwrt -b $branch
+git clone --depth=1 https://$github/immortalwrt/immortalwrt -b $branch
 
 if [ -d openwrt ]; then
     cd openwrt
@@ -293,7 +293,7 @@ echo -e "CONFIG_GCC_USE_VERSION_${gcc_version}=y\n" >> .config
 if [ "$BUILD_FAST" = "y" ]; then
     echo -e "\n${GREEN_COLOR}Download Toolchain ...${RES}"
     [ -f /etc/os-release ] && source /etc/os-release
-    TOOLCHAIN_URL=https://github.com/zhiern/openwrt_caches/releases/download/openwrt-24.10
+    TOOLCHAIN_URL=https://github.com/NeonPulse-Zero/openwrt_caches/releases/download/openwrt-24.10
     curl -L ${TOOLCHAIN_URL}/toolchain_musl_${toolchain_arch}_gcc-${gcc_version}.tar.zst -o toolchain.tar.zst $CURL_BAR
     echo -e "\n${GREEN_COLOR}Process Toolchain ...${RES}"
     tar -I "zstd" -xf toolchain.tar.zst
@@ -355,7 +355,7 @@ if [ "$platform" = "x86_64" ]; then
     # OTA json
     if [ "$1" = "v24" ]; then
         mkdir -p ota
-        OTA_URL="https://github.com/zhiern/ZeroWrt/releases/download"
+        OTA_URL="https://github.com/NeonPulse-Zero/ZeroWrt/releases/download"
         VERSION=$(sed 's/v//g' version.txt)
         SHA256=$(sha256sum bin/targets/x86/64*/*-generic-squashfs-combined-efi.img.gz | awk '{print $1}')
         cat > ota/x86_64.json <<EOF
@@ -383,7 +383,7 @@ elif [ "$platform" = "rockchip" ]; then
     # OTA json
     if [ "$1" = "v24" ]; then
         mkdir -p ota
-        OTA_URL="https://github.com/zhiern/ZeroWrt/releases/download"
+        OTA_URL="https://github.com/NeonPulse-Zero/ZeroWrt/releases/download"
         VERSION=$(sed 's/v//g' version.txt)
         SHA256_armsom_sige3=$(sha256sum bin/targets/rockchip/armv8*/openwrt-24.10.2-rockchip-armv8-armsom_sige3-squashfs-sysupgrade.img.gz | awk '{print $1}')
         SHA256_armsom_sige7=$(sha256sum bin/targets/rockchip/armv8*/openwrt-24.10.2-rockchip-armv8-armsom_sige7-squashfs-sysupgrade.img.gz | awk '{print $1}')
