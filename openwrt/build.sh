@@ -163,8 +163,8 @@ rm -rf openwrt immortalwrt
 
 # openwrt - 克隆
 [ "$(whoami)" = "runner" ] && group "source code"
-git clone https://$github/openwrt/openwrt -b $branch
-git clone https://$github/immortalwrt/immortalwrt -b $branch
+git clone --depth=1 https://$github/openwrt/openwrt -b $branch
+git clone --depth=1 https://$github/immortalwrt/immortalwrt -b $branch
 
 if [ -d openwrt ]; then
     cd openwrt
