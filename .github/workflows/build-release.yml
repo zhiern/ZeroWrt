@@ -12,6 +12,14 @@ name: 💻 固件编译
 on:
   workflow_dispatch:
     inputs:
+      device:
+        description: '选择构建项目'
+        required: true
+        default: 'x86_64'
+        type: choice
+        options:
+          - 'rockchip'
+          - 'x86_64'
       gcc_version:
         description: '选择 GCC 构建版本'
         required: true
@@ -136,7 +144,7 @@ jobs:
         export ${{ github.event.inputs.build_options }} LAN=${{ github.event.inputs.lan_addr }} GCC_VERSION=${{ github.event.inputs.gcc_version }} web_server=${{ github.event.inputs.web_server }}
         [ ${{ github.event.inputs.docker }} = 'true' ] && export ENABLE_DOCKER=y
         [ -n ${{ github.event.inputs.root_password }} ] && export ROOT_PASSWORD="${{ github.event.inputs.root_password }}"
-        bash <(curl -sS http://127.0.0.1:8080/build.sh) ${{ env.build_version }} ${{ matrix.model }}
+        bash <(curl -sS http://127.0.0.1:8080/build.sh) ${{ env.build_version }} ${{ github.event.inputs.device }}
         cd openwrt
         tags=OpenWrt-$(git describe --abbrev=0 --tags)
         echo "latest_release=$tags" >>$GITHUB_ENV
@@ -152,10 +160,10 @@ jobs:
       working-directory: /builder
       run: |
         mkdir -p rom
-        if [ "${{ matrix.model }}" = "rockchip" ]; then
+        if [ "${{ github.event.inputs.device }}" = "rockchip" ]; then
           cp -a openwrt/bin/targets/rockchip/*/*.img.gz rom/
           cp -a openwrt/ota/rockchip.json rom/
-        elif [ "${{ matrix.model }}" = "x86_64" ]; then
+        elif [ "${{ github.event.inputs.device }}" = "x86_64" ]; then
           cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
           cp -a openwrt/bin/targets/x86/*/*-generic-rootfs.tar.gz rom/
           cp -a openwrt/ota/x86_64.json rom/
@@ -184,7 +192,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.model }}-openwrt-${{ env.latest_release }}
+        name: ${{ github.event.inputs.device }}-openwrt-${{ env.latest_release }}
         path: ${{ env.build_dir }}/rom/*
 
     - name: Create release
