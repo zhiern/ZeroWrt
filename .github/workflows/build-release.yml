@@ -56,10 +56,14 @@ on:
         required: false
         default: 'BUILD_FAST=y ENABLE_BPF=y ENABLE_LTO=y ENABLE_OTA=y'
         type: string
+      notification:
+        description: '启用 Telegram 通知'
+        type: boolean
+        default: false
           
 jobs:
   build:
-    name: Build ${{ matrix.model }}
+    name: Build ${{ github.event.inputs.device }}
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -111,11 +115,12 @@ jobs:
         sudo /usr/bin/caddy start --config caddyfile --adapter caddyfile
 
     - name: Start notification
+      if: ${{ github.event.inputs.notification == 'true' }} 
       run: |
         bash <(curl -sS http://127.0.0.1:8080/openwrt/scripts/10-BuildBeacon-start.sh)
       env:
         RELEASE_TAG: ${{ env.build_version }}
-        COMPILE_TYPE: ${{ matrix.model }}
+        COMPILE_TYPE: ${{ github.event.inputs.device }}
         GCC_VERSION: ${{ github.event.inputs.gcc_version }}
         WEB_SERVER: ${{ github.event.inputs.web_server }}
         DOCKER: ${{ github.event.inputs.docker }}
@@ -209,6 +214,7 @@ jobs:
         artifacts: ${{ env.build_dir }}/rom/*
 
     - name: End notification
+      if: ${{ github.event.inputs.notification == 'true' }}
       run: |
         bash <(curl -sS http://127.0.0.1:8080/openwrt/scripts/10-BuildBeacon-end.sh)
       env:
