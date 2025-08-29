@@ -27,9 +27,9 @@ jobs:
       - name: Sync OTA
         run: |
           mkdir -p ota
-          latest_tag=$(curl -s https://api.github.com/repos/zhiern/ZeroWrt/releases/latest | jq -r .tag_name)
-          wget -q https://github.com/zhiern/ZeroWrt/releases/download/$latest_tag/x86_64.json -O x86_64.json
-          wget -q https://github.com/zhiern/ZeroWrt/releases/download/$latest_tag/rockchip.json -O rockchip.json
+          latest_tag=$(curl -s https://api.github.com/repos/NeonPulse-Zero/ZeroWrt/releases/latest | jq -r .tag_name)
+          wget -q https://github.com/NeonPulse-Zero/ZeroWrt/releases/download/$latest_tag/x86_64.json -O x86_64.json
+          wget -q https://github.com/NeonPulse-Zero/ZeroWrt/releases/download/$latest_tag/rockchip.json -O rockchip.json
           jq -s 'add' x86_64.json rockchip.json > ota/ota.json
      
       - name: Release OTA
@@ -46,7 +46,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.workflow_token }}
-          repository: zhiern/openwrt-core
+          repository: NeonPulse-Zero/openwrt-core
           event-type: sync
 
       - name: Delete releases and workflows runs
