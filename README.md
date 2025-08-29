@@ -30,6 +30,109 @@
 
 ---
 
+## 本地编译环境安装（根据 debian 11 / ubuntu 22）
+```shell
+sudo apt-get update
+sudo apt-get install -y build-essential flex bison g++ gawk gcc-multilib g++-multilib gettext git libfuse-dev libncurses5-dev libssl-dev python3 python3-pip python3-ply python3-distutils python3-pyelftools rsync unzip zlib1g-dev file wget subversion patch upx-ucl autoconf automake curl asciidoc binutils bzip2 lib32gcc-s1 libc6-dev-i386 uglifyjs msmtp texinfo libreadline-dev libglib2.0-dev xmlto libelf-dev libtool autopoint antlr3 gperf ccache swig coreutils haveged scons libpython3-dev jq
+```
+
+---
+
+### 启用 [GCC13](https://gcc.gnu.org/gcc-13/)/[GCC14](https://gcc.gnu.org/gcc-14/)/[GCC15](https://gcc.gnu.org/gcc-15/) 工具链编译
+##### 只需在构建固件前执行以下命令即可启用 GCC13/GCC14/GCC15 交叉工具链
+
+```
+# GCC13
+export GCC_VERSION=GCC13
+```
+
+```
+# GCC14
+export GCC_VERSION=GCC14
+```
+
+```
+# GCC15
+export GCC_VERSION=GCC15
+```
+
+### 启用 [LTO](https://gcc.gnu.org/onlinedocs/gccint/LTO-Overview.html) 优化
+##### 只需在构建固件前执行以下命令即可启用编译器 LTO 优化
+
+```
+export ENABLE_LTO=y
+```
+
+### 启用 [eBPF](https://docs.kernel.org/bpf/) 支持
+##### 只需在构建固件前执行以下命令即可启用 eBPF 支持
+
+```
+export ENABLE_BPF=y
+```
+
+### 启用本地 Kernel Modules 安装源 （For developers）
+##### 启用该标志时，将会拷贝全部 target packages 到 rootfs 并替换 openwrt_core 源为本地方式，以供离线 `opkg install kmod-xxx` 安装操作
+##### 这会增加固件文件大小（大约 70MB），对项目内核版本、模块、补丁 有修改的需求时，该功能可能会有用
+##### 只需在构建固件前执行以下命令即可启用本地 Kernel Modules 安装源
+
+```
+export ENABLE_LOCAL_KMOD=y
+```
+
+### 快速构建（仅限 Github Actions）
+##### 脚本会使用 [toolchain](https://github.com/NeonPulse-Zero/openwrt_caches) 缓存代替源码构建，与常规构建相比能节省大约 60 分钟的编译耗时，仅适用于 Github Actions `ubuntu-24.04` 环境
+##### 只需在构建固件前执行以下命令即可启用快速构建
+---
+
+### 更改 LAN IP 地址
+##### 自定义默认 LAN IP 地址
+##### 只需在构建固件前执行以下命令即可覆盖默认 LAN 地址（默认：10.0.0.1）
+
+```
+export LAN=10.0.0.1
+```
+
+### 更改默认 ROOT 密码
+##### 只需在构建固件前执行以下命令即可设置默认 ROOT 密码（默认：无密码）
+
+```
+export ROOT_PASSWORD=password
+```
+
+### 使用 uhttpd 轻量 web 引擎
+##### 固件默认使用 Nginx（quic） 作为页面引擎，只需在构建固件前执行以下命令即可使用 uhttpd 取代 nginx
+##### Nginx 在具备公网的环境下可以提供更丰富的功能支持
+
+```
+export web_server=nginx
+```
+
+### 禁用全模块编译（For developers）
+##### 启用该标志时，固件仅编译 config 指定的软件包和内核模块，但固件不再支持安装内核模块（opkg install kmod-xxx），强制安装模块将会导致内核崩溃
+##### 最大的可能性降低 OpenWrt 的编译耗时，适用于开发者调试构建
+
+```
+export NO_KMOD=y
+```
+
+---
+
+## 构建 OpenWrt 24.10 最新 Releases
+
+### x86_64
+```shell
+# linux-6.6
+bash <(curl -sS https://init.kejizero.online/build.sh) v24 x86_64
+```
+
+### rockchip
+```shell
+# linux-6.6
+bash <(curl -sS https://init.cooluc.com/build.sh) v24 rockchip
+```
+
+---
+
 ## 📡 Telegram 机器人推送设置指南
 
 为了保护你的 Telegram 安全，请在自己的 GitHub 仓库中添加 Secrets，这样可以在编译前后自动接收消息通知。
@@ -196,6 +299,9 @@ emmc-install /tmp/xx-squashfs-sysupgrade.img.gz
 | <img width="100" src="https://avatars.githubusercontent.com/u/16485166?v=4"/> | <img width="100" src="https://avatars.githubusercontent.com/u/22287562"/> | <img width="100" src="https://avatars.githubusercontent.com/u/45143996"/> | <img width="100" src="https://avatars.githubusercontent.com/u/83120842?v=4"/> |
 
 ---
+
+## 如果你喜欢这个项目的话别忘了点个Star⭐
+[![Stargazers over time](https://starchart.cc/NeonPulse-Zero/ZeroWrt.svg?variant=adaptive)](https://starchart.cc/NeonPulse-Zero/ZeroWrt)
 
 ## ⚠️ 免责声明
 
