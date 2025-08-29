@@ -306,3 +306,6 @@ emmc-install /tmp/xx-squashfs-sysupgrade.img.gz
 > - 使用本固件所带来的一切后果由使用者自行承担  
 > - 不保证完全无 bug，开发者不提供定制支持  
 > - 请遵守国家网络安全相关法律法规  
+
+## 如果你喜欢这个项目的话别忘了点个Star⭐
+[![Stargazers over time](https://starchart.cc/NeonPulse-Zero/ZeroWrt.svg?variant=adaptive)](https://starchart.cc/NeonPulse-Zero/ZeroWrt)
