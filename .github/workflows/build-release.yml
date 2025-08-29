@@ -68,12 +68,6 @@ jobs:
     defaults:
       run:
         shell: bash
-    strategy:
-      fail-fast: false
-      matrix:
-        model:
-          - rockchip
-          - x86_64
 
     steps:
     - name: Checkout
