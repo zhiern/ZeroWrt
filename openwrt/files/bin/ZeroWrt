@@ -1,5 +1,18 @@
 #!/bin/bash
 
+#
+# Copyright (c) 2019-2025 OPPEN321
+#
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+# https://github.com/NeonPulse-Zero/ZeroWrt
+# Description: Custom OpenWrt Options Menu
+#
+# This file defines additional menu options for OpenWrt configuration.
+# Modify with caution and keep structure consistent with menuconfig style.
+#
+
 # 初始化语言变量
 LANG_CHOICE=""
 AGREED="no"
