@@ -56,10 +56,6 @@ on:
         required: false
         default: 'BUILD_FAST=y ENABLE_BPF=y ENABLE_LTO=y ENABLE_OTA=y'
         type: string
-      notification:
-        description: '启用 Telegram 通知'
-        type: boolean
-        default: false
           
 jobs:
   build:
@@ -109,7 +105,6 @@ jobs:
         sudo /usr/bin/caddy start --config caddyfile --adapter caddyfile
 
     - name: Start notification
-      if: ${{ github.event.inputs.notification == 'true' }} 
       run: |
         bash <(curl -sS http://127.0.0.1:8080/openwrt/scripts/10-BuildBeacon-start.sh)
       env:
@@ -123,7 +118,9 @@ jobs:
         BUILD_OPTIONS: ${{ github.event.inputs.build_options }}
         TGID: ${{ secrets.TGID }}
         TG_TOKEN: ${{ secrets.TG_TOKEN }}
-        
+        PUSHKEY: ${{ secrets.PUSHKEY }}
+        PUSHSERVE: ${{ secrets.PUSHSERVE }}
+                
     - name: Free disk space
       uses: sbwml/actions@free-disk
       with:
@@ -208,7 +205,6 @@ jobs:
         artifacts: ${{ env.build_dir }}/rom/*
 
     - name: End notification
-      if: ${{ github.event.inputs.notification == 'true' }}
       run: |
         bash <(curl -sS http://127.0.0.1:8080/openwrt/scripts/10-BuildBeacon-end.sh)
       env:
@@ -216,4 +212,6 @@ jobs:
         KERNEL_VERSION: ${{ env.KERNEL_VERSION }}
         TGID: ${{ secrets.TGID }}
         TG_TOKEN: ${{ secrets.TG_TOKEN }}
+        PUSHKEY: ${{ secrets.PUSHKEY }}
+        PUSHSERVE: ${{ secrets.PUSHSERVE }}
         RELEASE_LINK: "https://github.com/NeonPulse-Zero/ZeroWrt/releases/tag/${{ env.latest_release }}"
