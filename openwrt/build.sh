@@ -169,6 +169,7 @@ git clone https://$github/immortalwrt/immortalwrt -b $branch
 if [ -d openwrt ]; then
     cd openwrt
     curl -Os $mirror/openwrt/patch/key.tar.gz && tar zxf key.tar.gz && rm -f key.tar.gz
+    curl -Os $mirror/info.md
 else
     echo -e "${RED_COLOR}Failed to download source code${RES}"
     exit 1
